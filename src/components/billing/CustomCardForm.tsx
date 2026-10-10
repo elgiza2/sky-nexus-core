@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Loader2, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import "@/styles/checkout.css";
@@ -7,7 +7,6 @@ import { BrandMark, CardPreview } from "./CardPreview";
 
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
-import { openCheckoutUrl } from "@/lib/openCheckout";
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
@@ -59,7 +58,11 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [threeDsUrl, setThreeDsUrl] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [result, setResult] = useState<"idle" | "processing" | "success">("idle");
-  const [stage, setStage] = useState<"choose" | "card">("choose");
+  const [stage, setStage] = useState<"choose" | "card" | "wallet">("choose");
+  const [hostedUrl, setHostedUrl] = useState<string | null>(null);
+  const [phone, setPhone] = useState("");
+  const [walletWaiting, setWalletWaiting] = useState(false);
+  const pollRef = useRef<number | null>(null);
   const [pick, setPick] = useState<TileId>("visa");
 
   useEffect(() => {
@@ -89,8 +92,13 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setOrderId(null);
       setResult("idle");
       setStage("choose");
+      setHostedUrl(null);
+      setPhone("");
+      setWalletWaiting(false);
     }
+    if (!open && pollRef.current) window.clearInterval(pollRef.current);
   }, [open]);
+  useEffect(() => () => { if (pollRef.current) window.clearInterval(pollRef.current); }, []);
   if (!open) return null;
 
   const openHostedCheckout = async (selectedMethod: PaymentMethod) => {
@@ -113,7 +121,8 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       if (checkoutError) throw checkoutError;
       const url = data?.url || data?.checkout_url;
       if (!url) throw new Error(data?.error || "تعذر فتح صفحة الدفع.");
-      openCheckoutUrl(url);
+      setHostedUrl(url);
+      setBusy(false);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "حصلت مشكلة أثناء فتح الدفع.");
       setBusy(false);
@@ -221,18 +230,114 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     }
   };
 
+  const submitWallet = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    const mobile = phone.replace(/\D/g, "");
+    if (!/^01[0125]\d{8}$/.test(mobile)) {
+      setError("اكتب رقم محفظة فودافون كاش صحيح (11 رقم يبدأ بـ 01).");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session?.access_token) throw new Error("انتهت جلسة الدخول. سجّل دخولك تاني.");
+      const { data: order, error: orderError } = await invokeFunction<DirectOrder>("kashier-direct-order", {
+        body: { tier, interval },
+        headers: { Authorization: `Bearer ${session.session.access_token}` },
+      });
+      if (orderError || !order) throw orderError || new Error("تعذر بدء عملية الدفع.");
+      setOrderId(order.order_id);
+      const response = await fetch(order.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Kashier-Hash": order.hash },
+        body: JSON.stringify({
+          apiOperation: "INITIATE_R2P",
+          paymentMethod: { type: "wallet" },
+          order: { reference: order.order_id, amount: order.amount, currency: order.currency },
+          customer: { mobilePhone: mobile, reference: session.session.user.id, email: session.session.user.email ?? "" },
+          interactionSource: "ECOMMERCE",
+          reconciliation: { webhookUrl: order.webhook_url },
+          serverWebhook: order.webhook_url,
+          merchantId: order.merchant_id,
+        }),
+      });
+      const raw = await response.text();
+      let payload: PaymentResponse & { response?: { code?: string } } = {};
+      try { payload = JSON.parse(raw); } catch {}
+      if (!response.ok || payload.status !== "SUCCESS") {
+        throw new Error(payload.messages?.ar || payload.messages?.en || "الرقم ده مش مسجل على محفظة. جرّب رقم تاني.");
+      }
+      setWalletWaiting(true);
+      const reconcileUrl = `${order.endpoint.replace(/\/?$/, "/")}${encodeURIComponent(order.order_id)}`;
+      const started = Date.now();
+      if (pollRef.current) window.clearInterval(pollRef.current);
+      pollRef.current = window.setInterval(async () => {
+        const stop = () => { if (pollRef.current) window.clearInterval(pollRef.current); pollRef.current = null; };
+        if (Date.now() - started > 5 * 60_000) {
+          stop();
+          setWalletWaiting(false);
+          setBusy(false);
+          setError("انتهى وقت الموافقة على الدفع. جرّب تاني.");
+          return;
+        }
+        try {
+          const res = await fetch(reconcileUrl, {
+            method: "PUT",
+            headers: { Accept: "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({ apiOperation: "RECONCILE_WALLET", paymentMethod: { type: "wallet" }, merchantId: order.merchant_id }),
+          });
+          const body = (await res.json().catch(() => ({}))) as PaymentResponse;
+          const st = body.response?.status || body.status;
+          if (st === "SUCCESS" || body.response?.status === "CAPTURED") {
+            stop();
+            setWalletWaiting(false);
+            setBusy(false);
+            setResult("success");
+          } else if (st === "FAILURE" || st === "FAILED") {
+            stop();
+            setWalletWaiting(false);
+            setBusy(false);
+            setError("تم رفض الدفع من المحفظة أو انتهى وقته. جرّب تاني.");
+          }
+        } catch {}
+      }, 4000);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "حصلت مشكلة أثناء الدفع.");
+      setBusy(false);
+    }
+  };
+
+  const onHostedLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
+    try {
+      const href = event.currentTarget.contentWindow?.location.href;
+      if (href && href.startsWith(window.location.origin)) {
+        setHostedUrl(null);
+        const status = new URL(href).searchParams.get("paymentStatus");
+        if (status && status !== "SUCCESS") setError("لم تكتمل عملية الدفع. جرّب تاني.");
+        else setResult("success");
+      }
+    } catch {}
+  };
+
   const tile = TILES.find((t) => t.id === pick) ?? TILES[0];
   const continueWithPick = () => {
     setError(null);
     if (tile.kind === "card") {
       setStage("card");
+    } else if (tile.id === "vodafone") {
+      setStage("wallet");
     } else {
       void openHostedCheckout(tile.method);
     }
   };
   const back = () => {
+    if (hostedUrl) {
+      setHostedUrl(null);
+      return;
+    }
     if (busy) return;
-    if (stage === "card" && !threeDsUrl && result !== "success") {
+    if (stage !== "choose" && !threeDsUrl && result !== "success") {
       setStage("choose");
       setError(null);
     } else onClose();
@@ -243,12 +348,16 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       <div aria-hidden="true" className="glass-texture pointer-events-none absolute inset-0" />
       <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
         <header className="flex items-center">
-          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy} aria-label="رجوع" title="رجوع" className="h-11 w-11 rounded-full border-0 bg-transparent p-0 hover:bg-transparent active:bg-transparent"><ArrowLeft className="rotate-180" /></Button>
+          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy && !hostedUrl} aria-label="رجوع" title="رجوع" className="h-11 w-11 rounded-full border-0 bg-transparent p-0 hover:bg-transparent active:bg-transparent"><ArrowLeft className="rotate-180" /></Button>
         </header>
 
         <div className="glass-appear mt-10 flex flex-1 flex-col sm:mt-12">
-          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : stage === "card" ? "بيانات البطاقة" : "اختار طريقة الدفع"}</h1>
-          {threeDsUrl ? (
+          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : hostedUrl ? `الدفع بـ ${tile.label}` : stage === "card" ? "بيانات البطاقة" : stage === "wallet" ? "فودافون كاش" : "اختار طريقة الدفع"}</h1>
+          {hostedUrl && result !== "success" ? (
+            <div className="mt-6 flex-1">
+              <iframe title={`الدفع بـ ${tile.label}`} src={hostedUrl} onLoad={onHostedLoad} allow="payment *" className="h-[min(640px,72dvh)] w-full rounded-2xl border border-foreground/10 bg-card" />
+            </div>
+          ) : threeDsUrl ? (
             <div className="mt-6 flex-1 space-y-4">
               <p className="text-sm leading-6 text-muted-foreground">أكمل التحقق من البنك لإتمام الدفع.</p>
               <iframe title="تحقق البنك" src={threeDsUrl} className="h-[480px] w-full rounded-lg border border-border bg-card" />
@@ -276,6 +385,21 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               <div className="min-h-8 flex-1" />
               <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier</p>
               <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-4 h-14 w-full rounded-full text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : "ادفع الآن"}</Button>
+            </form>
+          ) : stage === "wallet" ? (
+            <form onSubmit={submitWallet} className="mt-6 flex flex-1 flex-col" autoComplete="off">
+              {walletWaiting ? (
+                <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                  <h2 className="mt-6 text-xl font-semibold">افتح موبايلك ووافق على الدفع</h2>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">بعتنالك طلب دفع على فودافون كاش للرقم {phone}. أكّده بالرقم السري للمحفظة وهنكمّل تلقائيًا.</p>
+                </div>
+              ) : (
+                <label className="block text-sm font-medium">رقم محفظة فودافون كاش<input inputMode="tel" autoComplete="tel" dir="ltr" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="01xxxxxxxxx" className={`${INPUT} text-start`} /></label>
+              )}
+              {error && <ErrorBox text={error} />}
+              <div className="min-h-8 flex-1" />
+              {!walletWaiting && <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-8 h-14 w-full rounded-full text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ الإرسال…</> : "ابعت طلب الدفع"}</Button>}
             </form>
           ) : (
             <div className="mt-7 flex flex-1 flex-col">
@@ -307,7 +431,7 @@ type TileId = "visa" | "mastercard" | "apple_pay" | "google_pay" | "vodafone";
 const TILES: Array<{
   id: TileId;
   label: string;
-  kind: "card" | "hosted";
+  kind: "card" | "hosted" | "wallet";
   method: PaymentMethod;
   instant?: boolean;
 }> = [
@@ -315,7 +439,7 @@ const TILES: Array<{
   { id: "mastercard", label: "Mastercard", kind: "card", method: "card" },
   { id: "apple_pay", label: "Apple Pay", kind: "hosted", method: "card", instant: true },
   { id: "google_pay", label: "Google Pay", kind: "hosted", method: "card", instant: true },
-  { id: "vodafone", label: "فودافون كاش", kind: "hosted", method: "wallet" },
+  { id: "vodafone", label: "فودافون كاش", kind: "wallet", method: "wallet" },
 ];
 
 function TileLogo({ id }: { id: TileId }) {
