@@ -57,10 +57,8 @@
   --glass-panel: var(--glass-surface);
   --glass-panel-on: var(--glass-surface-on);
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.5);
-  --glass-marker: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
-  --glass-marker-edge: inset 0 1px 0 hsl(var(--card) / 0.85);
-  --glass-marker-shadow: 0 20px 40px -18px hsl(var(--foreground) / 0.4);
-  --glass-marker-foreground: hsl(var(--foreground));
+  --glass-fill-on: linear-gradient(165deg, hsl(var(--card) / 0.6), hsl(var(--card) / 0.34));
+
 
   --glass-bg: hsl(var(--background));
 
@@ -80,7 +78,7 @@
 html[data-theme="light"] .megsy-checkout,
 html[data-theme="light"] .megsy-pricing {
   --glass-bg: #ffffff;
-  --glass-dot: hsl(var(--foreground) / 0.13);
+  --glass-dot: hsl(var(--foreground) / 0.18);
   --glass-surface: hsl(var(--foreground) / 0.05);
   --glass-surface-hover: hsl(var(--foreground) / 0.08);
   --glass-surface-on: hsl(var(--card));
@@ -90,12 +88,8 @@ html[data-theme="light"] .megsy-pricing {
   --glass-panel: linear-gradient(165deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.1));
   --glass-panel-on: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.85);
-  /* The chosen square rides a smoked capsule in the same ink as the action
-     button, so the pick is unmistakable while every card keeps its own tint. */
-  --glass-marker: linear-gradient(165deg, hsl(var(--megsy-ink) / 0.94), hsl(var(--megsy-ink) / 0.8));
-  --glass-marker-edge: inset 0 1px 0 rgba(255, 255, 255, 0.28);
-  --glass-marker-shadow: 0 24px 46px -18px hsl(var(--megsy-ink) / 0.55);
-  --glass-marker-foreground: hsl(var(--megsy-ink-foreground));
+  --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55));
+
   --glass-shadow: 0 14px 30px -18px hsl(var(--foreground) / 0.3);
 
   --glass-shadow-on: 0 18px 36px -16px hsl(var(--foreground) / 0.38);
@@ -106,7 +100,7 @@ html[data-theme="light"] .megsy-pricing {
 .glass-texture {
   background-image: radial-gradient(var(--glass-dot) 1px, transparent 1px);
   background-size: 18px 18px;
-  mask-image: radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%);
+  mask-image: radial-gradient(140% 120% at 50% 8%, black 46%, transparent 100%);
 }
 
 /* Frosted tile. Selected state: data-selected="true". */
@@ -230,7 +224,7 @@ html[data-theme="light"] .megsy-pricing {
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
-    --glass-dot: hsl(var(--foreground) / 0.13);
+    --glass-dot: hsl(var(--foreground) / 0.18);
     background: #ffffff !important;
 
 
@@ -247,9 +241,12 @@ html[data-theme="light"] .megsy-pricing {
   inset-inline-start: 0;
   width: calc(50% - 6px);
   border-radius: 24px;
-  background: var(--glass-marker);
-  box-shadow: var(--glass-marker-edge), var(--glass-marker-shadow);
+  background-color: hsl(var(--sunset-orange) / 0.2);
+  background-image: var(--sunset-grain), var(--gradient-cta-liquid);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 26px 50px -18px hsl(var(--sunset-coral) / 0.55);
   backdrop-filter: blur(18px) saturate(160%);
+  animation: sunset-liquid-drift 14s ease-in-out infinite;
+
 
 
 
@@ -274,8 +271,9 @@ html[data-theme="light"] .megsy-pricing {
   border: 0;
   border-radius: 24px;
   background: var(--glass-panel);
-  backdrop-filter: blur(18px) saturate(160%);
-  box-shadow: var(--glass-edge-light), var(--glass-shadow);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: var(--glass-edge-light), inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
+
 
   color: hsl(var(--foreground));
   text-align: center;
@@ -285,17 +283,16 @@ html[data-theme="light"] .megsy-pricing {
 }
 /* The chosen square hands its own surface to the marker sliding underneath,
    so both squares stay fully visible — nothing is dimmed. */
+/* Both squares keep their own pane of glass. The chosen one sits on the brand
+   liquid capsule, so its colour glows up through the frost and the square
+   lifts — no dimming, no colour taken away from anything. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-  color: var(--glass-marker-foreground);
+  background: var(--glass-fill-on);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 26px 46px -20px hsl(var(--foreground) / 0.45);
+  transform: translateY(-6px);
 }
-.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-name,
-.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-unit,
-.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-strike {
-  color: color-mix(in oklab, var(--glass-marker-foreground) 68%, transparent);
-}
+
 
 
 .megsy-pricing .megsy-plan-tile:active {
