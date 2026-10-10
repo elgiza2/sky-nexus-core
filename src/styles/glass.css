@@ -223,8 +223,10 @@ html[data-theme="light"] .megsy-pricing {
   inset-inline-start: 0;
   width: calc(50% - 6px);
   border-radius: 24px;
-  background: var(--glass-surface-on);
-  box-shadow: var(--glass-shadow-on);
+  background: hsl(var(--card) / 0.82);
+  box-shadow: 0 18px 38px -18px hsl(var(--foreground) / 0.35);
+  backdrop-filter: blur(16px) saturate(150%);
+
   pointer-events: none;
   transform: translateX(0);
   transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
@@ -245,16 +247,23 @@ html[data-theme="light"] .megsy-pricing {
   aspect-ratio: 1 / 1;
   border: 0;
   border-radius: 24px;
-  background: transparent;
+  background: var(--glass-surface);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: var(--glass-shadow);
   color: hsl(var(--foreground));
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.megsy-pricing .megsy-plan-tile[data-selected="false"] {
-  opacity: 0.5;
+/* The chosen square hands its own surface to the marker sliding underneath,
+   so both squares stay fully visible — nothing is dimmed. */
+.megsy-pricing .megsy-plan-tile[data-selected="true"] {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
+
 .megsy-pricing .megsy-plan-tile:active {
   transform: scale(0.97);
 }

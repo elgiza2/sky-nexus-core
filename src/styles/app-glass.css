@@ -48,7 +48,6 @@ html.settings-page-active [class*="bg-[var(--mn-card)]"],
   border: 1px solid var(--app-glass-edge) !important;
   box-shadow: var(--app-glass-shadow) !important;
   backdrop-filter: blur(22px) saturate(145%);
-  -webkit-backdrop-filter: blur(22px) saturate(145%);
   color: hsl(var(--foreground)) !important;
 }
 [data-app-sidebar-panel="true"] {
