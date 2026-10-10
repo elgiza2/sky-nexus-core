@@ -1,6 +1,7 @@
 # Megsy — roadmap
 
 ## Pricing animation reference (October 10, 2026)
+- [ ] Replace the rejected generated still mascot with the original chat Megsy character, animated flying upward with raised arms, superhero cape and visible air beneath; bring composition and reveal closer to the uploaded video.
 - [x] Rebuild pricing with the supplied blue-sky animated comparison reference and Megsy mascot, preserving catalog prices and subscription handlers. Verified phone/desktop, Arabic RTL, yearly $120 toggle, FAQ, reduced motion and guest subscribe → sign-in; build OK, no charge performed.
 
 ## Current checkout request
