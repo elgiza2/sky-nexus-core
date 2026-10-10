@@ -314,7 +314,7 @@ export default function MobilePricingScreen({
                 : onSubscribe("pro", { trial: false })
             }
             disabled={isLoading}
-            className={`glass-cta flex w-full items-center justify-center rounded-xl px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
+            className={`glass-cta flex w-full items-center justify-center rounded-full px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
               compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"
             }`}
           >

@@ -18,9 +18,6 @@
 .megsy-checkout .checkout-logo svg { width: 30px; height: 26px; }
 .megsy-checkout .checkout-logo svg[viewBox="0 0 32 20"] { width: 40px; }
 html[data-theme="dark"] .megsy-checkout .checkout-logo { color: hsl(var(--foreground)); }
-/* The tick circle sits low in a tall tile and centered in the wide one. */
-.megsy-checkout .glass-tile > span:last-child { top: auto; bottom: 20px; }
-.megsy-checkout .glass-tile:nth-child(5) > span:last-child { top: 50%; bottom: auto; }
 .payment-visa {
   color: var(--payment-visa);
   font-family: Arial, sans-serif;
@@ -37,16 +34,15 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .payment-green { fill: var(--payment-green); }
 .payment-gold { fill: var(--payment-gold); }
 .payment-white { fill: var(--payment-logo-surface); }
-/* The chosen method carries the same pink-gold accent as the action button. */
+/* The chosen card is obvious on its own: a clear rim in the action colours. */
 .megsy-checkout .glass-tile[data-selected="true"] {
-  border-color: hsl(var(--sunset-pink) / 0.4);
-  box-shadow: var(--glass-shadow), inset 0 0 0 1px hsl(var(--sunset-gold) / 0.25);
+  background: var(--glass-surface-on);
+  border-color: hsl(var(--cta-pink) / 0.6);
+  box-shadow: var(--glass-shadow),
+    inset 0 0 0 1.5px hsl(var(--cta-blue) / 0.4),
+    0 14px 30px -16px hsl(var(--cta-pink) / 0.5);
 }
-.megsy-checkout .glass-tile[data-selected="true"] > span:last-child {
-  background: var(--gradient-pink-gold);
-  color: hsl(var(--sunset-foreground));
-  border-color: transparent;
-}
+
 
 /* The live card face: a lifted glass panel that prints the number and name. */
 .card-face {

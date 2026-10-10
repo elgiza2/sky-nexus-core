@@ -98,7 +98,7 @@ export default function DesktopPricing({ plans, faqs, isYearly, setIsYearly, loa
               <button
                 disabled={isCurrent || loadingTier !== null}
                 onClick={() => onSubscribe(p.tier)}
-                className={`glass-cta mt-8 inline-flex h-12 items-center justify-center gap-2 px-8 text-[14px] font-semibold transition disabled:opacity-60 ${
+                className={`glass-cta mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-full px-8 text-[14px] font-semibold transition disabled:opacity-60 ${
                   featured ? "" : "border-foreground/25"
                 }`}
               >
