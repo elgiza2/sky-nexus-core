@@ -257,3 +257,4 @@
 - [ ] Payment list polish: drop the duplicated wordmark on the Visa row, balance logo visual weights in the slot, and reduce the void above the bottom button.
 - [ ] Verify the real checkout end to end: blocked by external unmanaged authentication — the payment screen was viewed through a temporary flag that has since been removed.
 - [ ] Pricing screen still rejected by the user: make the card faces opaque so dots never bleed through, raise the muted square's contrast to a readable level, and unify the credits copy between the two states.
+- [ ] Restore from the repository: pricing page design back to its stored version (no further edits), and settings/chat/signup pages no longer glassy. Checkout stays exactly as it is now.
