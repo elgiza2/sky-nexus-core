@@ -21,6 +21,8 @@
 - [ ] Make the two billing buttons rectangular with lightly rounded corners.
 - [ ] Main action button: pink, blue and red liquid with the grain inside, round (pill) and clean.
 - [ ] Tidy the payment-method icon inside the continue button so every method lines up the same way.
+- [ ] Payment tiles: no tick circle; the chosen card is obviously marked.
+
 
 
 
