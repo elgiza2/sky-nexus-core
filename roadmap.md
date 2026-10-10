@@ -28,6 +28,31 @@
 - [x] Main action button: pink, blue and red liquid with the grain inside, round (pill) and clean.
 - [x] Tidy the payment-method icon inside the continue button so every method lines up the same way.
 - [x] Payment tiles: no tick circle; the chosen card is obviously marked.
+- [ ] Remove the Terms / Privacy / Restore links from the bottom of the mobile pricing screen.
+- [ ] App glass: drop every panel border and put the pages on a pure white canvas.
+- [ ] Mobile pricing: the main upgrade button is black and pinned to the bottom of the screen.
+- [ ] Mobile pricing: monthly and yearly as two squares side by side, with a clean transition when switching.
+- [ ] Checkout: English only, black bottom button, clean transition between payment methods, tidy rounded back button in the card color.
+- [ ] Checkout: the page background must be the same dotted canvas the pricing screen uses.
+- [ ] Checkout: payment tray without its own background or rounded edges; every payment card a clean unified white.
+- [ ] Checkout: no brand logo inside the continue button (name only), and the back button round.
+- [ ] Mobile pricing: both plan squares always read as clear glass — no dimming the unchosen one.
+- [ ] Checkout: every payment card reads as clear glass at all times, with the chosen one lifted.
+- [ ] Selection clarity: the chosen plan square and the chosen payment card must be obviously obvious (dark glass capsule, light text and logo) in both pricing and checkout.
+- [x] Selection marking: no colored fill — the chosen plan square and payment card are marked by a clean dark rim around their edges, every card stays neutral frosted glass. Verified light theme at phone width.
+- [x] Soft transition (0.42s ease-out) when moving the selection between plan squares and payment cards.
+- [x] Dotted canvas: lighter, wider-spaced dots that fade out on a gradient instead of continuing to the bottom of the page.
+- [x] Glass: blur raised to 20px with a stronger saturate so the frost reads on the white canvas.
+
+
+
+
+
+
+
+
+
+
 
 
 
