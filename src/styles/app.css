@@ -37,5 +37,4 @@
 /* Shared liquid-glass surfaces for checkout and pricing — last, so theme
    sheets cannot flatten the frosted layers back to flat cards. */
 @import "./glass.css";
-@import "./app-glass.css";
 
