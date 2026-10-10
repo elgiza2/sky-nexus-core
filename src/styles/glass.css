@@ -245,11 +245,12 @@ html[data-theme="light"] .megsy-pricing {
   inset-inline-start: 0;
   width: calc(50% - 6px);
   border-radius: 24px;
-  background-color: hsl(var(--sunset-orange) / 0.2);
-  background-image: var(--sunset-grain), var(--gradient-cta-liquid);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 26px 50px -18px hsl(var(--sunset-coral) / 0.55);
-  backdrop-filter: blur(18px) saturate(160%);
-  animation: sunset-liquid-drift 14s ease-in-out infinite;
+  /* The marker stays out of the way: the chosen square is marked by its own
+     rim, not by any colour poured into it. */
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+
 
 
 
@@ -287,15 +288,16 @@ html[data-theme="light"] .megsy-pricing {
 }
 /* The chosen square hands its own surface to the marker sliding underneath,
    so both squares stay fully visible — nothing is dimmed. */
-/* Both squares keep their own pane of glass. The chosen one sits on the brand
-   liquid capsule, so its colour glows up through the frost and the square
-   lifts — no dimming, no colour taken away from anything. */
+/* Both squares are the same neutral frosted glass. The chosen one is told apart
+   by a clean rim around its edges and a soft lift — no colour fill anywhere. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
   background: var(--glass-fill-on);
   backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 26px 46px -20px hsl(var(--foreground) / 0.45);
+  box-shadow: inset 0 0 0 2px var(--megsy-ink), inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 18px 32px -22px hsl(var(--foreground) / 0.5);
   transform: translateY(-6px);
 }
+
 
 
 
