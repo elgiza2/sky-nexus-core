@@ -53,6 +53,7 @@ used, `FOR UPDATE SKIP LOCKED`).
 
 <!-- LOVABLE:BEGIN -->
 - Checkout uses scoped checkout.css and shared Button controls, never pricing overrides. Why: consistent themes without pricing regressions.
+- Settings logout uses the shared Radix-based ConfirmDialog exactly once on all devices. Why: accessible focus management and no duplicate confirmation.
 <!-- LOVABLE:END -->
 
 - Media runs require a live paid-plan check in both authenticated media routes and signed MCP tools; Higgsfield clones only a configured Hypit template, never substitutes a harness. Why: UI locks alone do not prevent free media spending or misrepresent the requested agent.
