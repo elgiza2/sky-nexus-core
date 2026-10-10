@@ -436,20 +436,20 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </button>
           </form>
         ) : (
-          <div className="mt-6 flex flex-1 flex-col">
-            <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5">
-              <div>
-                <p className="text-[14px] font-semibold">اشتراك Megsy {tier}</p>
-                <p className="mt-0.5 text-[12px] text-[#8a8a8e]">
-                  دفع {interval === "yearly" ? "سنوي" : "شهري"} · EGP
-                </p>
-              </div>
-              <ShieldCheck className="h-5 w-5 text-[#34a853]" />
+          <div className="mt-7 flex flex-1 flex-col">
+            <div className="flex items-center gap-3 rounded-[18px] bg-white px-3.5 py-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fde8dd]">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#f25c1c] text-[11px] font-bold text-[#f25c1c]">
+                  !
+                </span>
+              </span>
+              <p className="text-[12px] leading-[18px] text-[#8e8e93]">
+                اشتراك Megsy {tier} {interval === "yearly" ? "سنوي" : "شهري"}. Apple Pay و Google
+                Pay بيتم الدفع بيهم فورًا.
+              </p>
             </div>
 
-            <Notice text="اختار طريقة الدفع. Apple Pay و Google Pay بيتم الدفع بيهم فورًا بلمسة واحدة." />
-
-            <div className="mt-5 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-3 gap-2.5">
               {TILES.map((t) => {
                 const active = t.id === pick;
                 return (
@@ -459,15 +459,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     disabled={busy}
                     onClick={() => setPick(t.id)}
                     aria-pressed={active}
-                    className={`relative flex aspect-square flex-col items-center justify-center gap-1.5 rounded-2xl bg-white p-2 transition disabled:opacity-50 ${active ? "ring-[1.5px] ring-[#f25c1c] shadow-[0_6px_18px_rgba(242,92,28,.15)]" : "hover:shadow-[0_4px_14px_rgba(0,0,0,.06)]"}`}
+                    aria-label={t.label}
+                    className={`flex aspect-square items-center justify-center rounded-[18px] bg-white transition active:scale-[0.97] disabled:opacity-50 ${active ? "border-[1.5px] border-[#f25c1c]" : "border-[1.5px] border-transparent"}`}
                   >
-                    {t.instant && (
-                      <span className="absolute left-1.5 top-1.5 rounded-full bg-[#fff1ea] px-1.5 py-0.5 text-[9px] font-semibold text-[#f25c1c]">
-                        فوري
-                      </span>
-                    )}
                     <TileLogo id={t.id} />
-                    <span className="text-[10px] font-medium text-[#8a8a8e]">{t.caption}</span>
                   </button>
                 );
               })}
