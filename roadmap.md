@@ -37,6 +37,7 @@
 - [ ] Checkout: payment tray without its own background or rounded edges; every payment card a clean unified white.
 - [ ] Checkout: no brand logo inside the continue button (name only), and the back button round.
 - [ ] Mobile pricing: both plan squares always read as clear glass — no dimming the unchosen one.
+- [ ] Checkout: every payment card reads as clear glass at all times, with the chosen one lifted.
 
 
 

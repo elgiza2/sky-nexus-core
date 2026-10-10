@@ -79,8 +79,10 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   top: 0;
   left: 0;
   border-radius: 24px;
-  background: hsl(var(--card));
+  background: hsl(var(--card) / 0.82);
+  backdrop-filter: blur(16px) saturate(150%);
   box-shadow: 0 22px 42px -18px hsl(var(--foreground) / 0.42);
+
   pointer-events: none;
   transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
@@ -96,18 +98,24 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   padding: 18px;
   border: 0;
   border-radius: 24px;
-  background: hsl(var(--card));
+  background: var(--glass-surface);
+  backdrop-filter: blur(14px) saturate(140%);
   color: hsl(var(--foreground));
+
   text-align: start;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   box-shadow: 0 12px 28px -18px hsl(var(--foreground) / 0.22);
   transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
 }
+/* The chosen card hands its own surface to the marker sliding underneath, so
+   every card stays fully visible — nothing is dimmed. */
 .megsy-checkout .megsy-pay-tile[data-selected="true"] {
-  transform: scale(1.025);
-  box-shadow: 0 16px 32px -20px hsl(var(--foreground) / 0.35);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
+
 .megsy-checkout .megsy-pay-tile:disabled { opacity: 0.5; }
 .megsy-checkout .megsy-pay-tile--wide {
   grid-column: span 2;
