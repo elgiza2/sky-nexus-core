@@ -1,6 +1,7 @@
 # Megsy — roadmap
 
 ## Current checkout request
+- [ ] Follow the uploaded prompt more closely: visibly liquid glass, rounded numbered tiles, staggered entrance and slide-to-continue; verify drag and card entry.
 - [x] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity. Selection, formatted card entry, light/dark and phone/desktop verified without a charge; pricing unchanged. Hosted payment completion not exercised (external authentication and real charge required).
 
 ## Current request (October 6, 2026)
