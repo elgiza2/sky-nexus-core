@@ -67,11 +67,14 @@ html.settings-page-active [class*="bg-[var(--mn-card)]"],
 .ms-root :is(.ms-brand, .ms-plan-name) { font-family: inherit; letter-spacing: 0; }
 .ms-root .ms-card { border-radius: 20px; }
 .megsy-auth-screen.megsy-auth-screen {
+  --foreground: inherit;
+  --background: inherit;
   --auth-ink: hsl(var(--foreground));
   --auth-muted: hsl(var(--muted-foreground));
 }
+.megsy-auth-screen :is(h1, h2, .auth-mode-option) { color: hsl(var(--foreground)); }
 .megsy-auth-screen .megsy-auth-primary {
-  background: var(--sunset-grain), var(--gradient-cta) !important;
+  background: var(--sunset-grain), var(--sunset-grad) !important;
   color: hsl(var(--sunset-foreground)) !important;
   border-color: hsl(var(--sunset-foreground) / 0.24) !important;
 }
@@ -105,6 +108,8 @@ html.settings-page-active [class*="bg-[var(--mn-card)]"],
 }
 @media (min-width: 768px) {
   .welcome-root { --w-fg: hsl(var(--foreground)); --w-bg: hsl(var(--background)); background: var(--app-glass-canvas); }
+  .welcome-root .welcome-desc { color: hsl(var(--muted-foreground)); }
+  .welcome-root { --w-dim: hsl(var(--foreground) / 0.25); }
 }
 @supports not (backdrop-filter: blur(1px)) {
   [data-app-sidebar-panel="true"], .ms-root .ms-card.ms-card,
