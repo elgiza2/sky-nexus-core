@@ -125,21 +125,23 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   height: 56px;
   border: 0;
   border-radius: 9999px;
-  background: hsl(var(--brand-ink));
-  color: var(--overlay-white-100);
+  background: var(--megsy-ink);
+  color: var(--megsy-ink-foreground);
   font-size: 16px;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  box-shadow: 0 18px 34px -18px hsl(var(--brand-ink) / 0.6);
+  box-shadow: 0 18px 34px -18px var(--megsy-ink-shadow);
   transition: transform 0.16s ease, opacity 0.16s ease;
 }
+
 .megsy-checkout .megsy-pay-cta:active { transform: scale(0.985); }
 .megsy-checkout .megsy-pay-cta:disabled { opacity: 0.6; }
-.megsy-checkout .megsy-pay-cta .payment-visa { color: var(--overlay-white-100); }
+.megsy-checkout .megsy-pay-cta .payment-visa { color: var(--megsy-ink-foreground); }
 html[data-theme="dark"] .megsy-checkout .megsy-pay-cta .payment-visa {
-  color: var(--overlay-white-100);
+  color: var(--megsy-ink-foreground);
 }
+
 
 /* A quiet secondary action: change number, cancel, start over. */
 .megsy-checkout .megsy-pay-quiet {

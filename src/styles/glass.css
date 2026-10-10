@@ -47,8 +47,16 @@
     ),
     var(--gradient-cta);
 
+  /* The action ink stays black in both themes. The site's own ink tokens
+     invert for light mode (brand-ink becomes white there), so a literal black
+     button needs its own pair. */
+  --megsy-ink: #0a0a0a;
+  --megsy-ink-foreground: #ffffff;
+  --megsy-ink-shadow: rgba(10, 10, 10, 0.45);
+
   --glass-bg: hsl(var(--background));
   --glass-dot: transparent;
+
   background: var(--glass-bg);
   color: hsl(var(--foreground));
   font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
@@ -294,12 +302,13 @@ html[data-theme="light"] .megsy-pricing {
   gap: 8px;
   border: 0;
   border-radius: 9999px;
-  background: hsl(var(--brand-ink));
-  color: var(--overlay-white-100);
+  background: var(--megsy-ink);
+  color: var(--megsy-ink-foreground);
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  box-shadow: 0 16px 30px -16px hsl(var(--brand-ink) / 0.55);
+  box-shadow: 0 16px 30px -16px var(--megsy-ink-shadow);
+
   transition: transform 0.16s ease, opacity 0.16s ease;
 }
 .megsy-pricing .megsy-plan-cta:active {
