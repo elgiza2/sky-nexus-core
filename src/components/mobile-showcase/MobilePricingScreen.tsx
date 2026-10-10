@@ -294,11 +294,11 @@ export default function MobilePricingScreen({
                     <span className="text-[11px] text-muted-foreground">
                       {opt.unit}
                     </span>
-                    <span className="text-[11.5px] line-through text-muted-foreground/70">
+                    <span className="text-[11.5px] line-through text-muted-foreground">
                       {localPrice(opt.strike) ?? `$${opt.strike}`}
                     </span>
                     {localPrice(opt.price) ? (
-                      <span className="text-[11px] text-muted-foreground/70">
+                      <span className="text-[11px] text-muted-foreground">
                         ${opt.price}
                       </span>
                     ) : null}
