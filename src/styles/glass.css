@@ -308,31 +308,28 @@ html[data-theme="light"] .megsy-pricing {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   aspect-ratio: 1 / 1;
   border: 0;
-  border-radius: 24px;
+  border-radius: 22px;
   background: var(--glass-panel);
-  box-shadow: var(--glass-body), var(--glass-edge-light),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
-
-
+  box-shadow: var(--glass-body), var(--glass-edge-light), var(--glass-shadow);
   color: hsl(var(--foreground));
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.42s ease, box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.42s ease;
+  transition: background 0.38s ease, color 0.38s ease,
+    box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* The chosen square hands its own surface to the marker sliding underneath,
-   so both squares stay fully visible — nothing is dimmed. */
-/* Both squares are the same neutral frosted glass. The chosen one is told apart
-   by a clean rim around its edges and a soft lift — no colour fill anywhere. */
+/* The chosen square inverts to solid ink — the same black the upgrade button
+   wears. Nothing else on the page is black, so the pick is unmistakable, and
+   every label inside it flips with the one colour below. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
-  background: var(--glass-fill-on);
-  box-shadow: var(--glass-body), inset 0 0 0 2px var(--megsy-ink),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 32px -22px hsl(var(--foreground) / 0.5);
-  transform: translateY(-6px);
+  background: var(--megsy-ink);
+  color: var(--megsy-ink-foreground);
+  box-shadow: 0 20px 36px -20px var(--megsy-ink-shadow);
+  transform: translateY(-5px);
 }
 
 
@@ -342,21 +339,23 @@ html[data-theme="light"] .megsy-pricing {
   transform: scale(0.97);
 }
 .megsy-pricing .megsy-plan-name {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, currentColor 55%, transparent);
 }
 .megsy-pricing .megsy-plan-price {
-  font-size: 23px;
+  font-size: 26px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   animation: megsy-plan-pop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .megsy-pricing .megsy-plan-unit,
 .megsy-pricing .megsy-plan-strike {
   font-size: 11px;
-  color: hsl(var(--muted-foreground));
+  color: color-mix(in oklab, currentColor 45%, transparent);
 }
 .megsy-pricing .megsy-plan-strike {
   text-decoration: line-through;
@@ -423,6 +422,7 @@ html[data-theme="light"] .megsy-pricing {
   background-repeat: no-repeat;
   background-size: 220% 220%;
   opacity: 0.9;
+  transition: opacity 0.3s ease;
   animation: glass-sheen-drift 12s ease-in-out infinite alternate;
 }
 .megsy-pricing .megsy-plan-tile > *,
@@ -472,19 +472,11 @@ html[data-theme="light"] .megsy-pricing {
   backdrop-filter: blur(5px) saturate(200%) brightness(1.04) url(#megsy-glass-warp-tight);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
+  transition: opacity 0.3s ease;
 }
-/* The chosen pane is thicker: its rim bends a little harder and catches more
-   light, so the pick still reads first, before any rim colour is considered. */
+/* A solid ink pane has no glass left to bend: both wet layers fade away on the
+   chosen square rather than fogging over it. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"]::before,
-.megsy-checkout .megsy-pay-tile[data-selected="true"]::before {
-  padding: 19px;
-  backdrop-filter: blur(7px) saturate(210%) brightness(1.06);
-  backdrop-filter: blur(7px) saturate(210%) brightness(1.06) url(#megsy-glass-warp-tight);
-  background: linear-gradient(
-    158deg,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(255, 255, 255, 0.3) 45%,
-    rgba(255, 255, 255, 0.2) 65%,
-    rgba(255, 255, 255, 0.65) 100%
-  );
+.megsy-pricing .megsy-plan-tile[data-selected="true"]::after {
+  opacity: 0;
 }

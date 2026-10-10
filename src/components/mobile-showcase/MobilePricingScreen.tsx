@@ -244,8 +244,6 @@ export default function MobilePricingScreen({
           className="glass-appear relative mt-4 grid grid-cols-2 gap-3"
           style={{ "--i": 3 } as React.CSSProperties}
         >
-          {/* One tile slides under the chosen square. */}
-          <span aria-hidden className="megsy-plan-flag" data-side={isYearly ? "b" : "a"} />
           {options.map((opt) => {
             const selected = isYearly === opt.yearly;
             return (
