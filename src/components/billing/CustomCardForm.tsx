@@ -269,7 +269,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               <div className="mt-8 space-y-5">
 
                 <label className="block text-sm font-medium">رقم البطاقة<input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className={INPUT} /></label>
-                <label className="block text-sm font-medium">الاسم على البطاقة<input autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="الاسم كما يظهر على البطاقة" className={INPUT} /></label>
+                <label className="block text-sm font-medium">الاسم على البطاقة<input dir="ltr" autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="الاسم كما يظهر على البطاقة" className={`${INPUT} text-start`} /></label>
                 <div className="grid grid-cols-3 gap-3"><Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" /><Field label="السنة" value={year} onChange={setYear} placeholder="YY" /><Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret /></div>
               </div>
               {error && <ErrorBox text={error} />}
