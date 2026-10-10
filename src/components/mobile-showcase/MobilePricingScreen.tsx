@@ -183,9 +183,9 @@ export default function MobilePricingScreen({
       {/* Spacer so content clears the fixed header */}
       <div className="shrink-0" style={{ height: "calc(max(env(safe-area-inset-top), 0.25rem) + 44px)" }} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[104px]">
+      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[96px]">
         {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.4]" />
+        <div className="flex-[0.55]" />
 
 
         {/* Megsy star mark */}
@@ -199,10 +199,10 @@ export default function MobilePricingScreen({
 
         {/* Title */}
         <h1
-          className={`glass-appear text-center font-normal leading-[1.2] tracking-[-0.015em] text-foreground ${
-            compact ? "mt-2 text-[22px]" : "mt-2.5 text-[25px]"
+          className={`glass-appear text-center font-semibold leading-[1.15] tracking-[-0.028em] text-foreground ${
+            compact ? "mt-2 text-[21px]" : "mt-2.5 text-[23px]"
           }`}
-          style={{ "--i": 1, fontFamily: '"Instrument Serif", Georgia, serif' } as React.CSSProperties}
+          style={{ "--i": 1 } as React.CSSProperties}
         >
           {t.title}
         </h1>
@@ -216,7 +216,7 @@ export default function MobilePricingScreen({
           style={{ "--i": 2 } as React.CSSProperties}
         >
           <ul className={`flex flex-col ${compact ? "gap-[12px]" : "gap-[18px]"}`}>
-            {features.map(({ icon: Icon, text }) => (
+            {features.map(({ icon: Icon, text }, i) => (
               <li
                 key={text}
                 className={`flex items-center gap-3 ${isAr ? "flex-row-reverse text-right" : ""}`}
@@ -226,7 +226,11 @@ export default function MobilePricingScreen({
                   strokeWidth={1.5}
                 />
                 <span
-                  className={`flex-1 leading-[1.35] text-foreground ${compact ? "text-[13px]" : "text-[14px]"}`}
+                  className={`flex-1 leading-[1.4] ${
+                    i === 0
+                      ? "font-semibold text-foreground"
+                      : "font-normal text-foreground/75"
+                  } ${compact ? "text-[13px]" : "text-[14px]"}`}
                 >
                   {text}
                 </span>
@@ -268,7 +272,7 @@ export default function MobilePricingScreen({
         </div>
 
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.45]" />
       </main>
 
       {/* Upgrade action — black, pinned to the bottom of the screen. */}
