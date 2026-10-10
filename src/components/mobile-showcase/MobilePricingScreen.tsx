@@ -269,7 +269,7 @@ export default function MobilePricingScreen({
                   <span
                     className={`flex items-center gap-2 ${isAr ? "flex-row-reverse" : ""} justify-start`}
                   >
-                    <span className="text-[12.5px] font-medium text-muted-foreground">
+                    <span className={`text-[12.5px] font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}>
                       {opt.label}
                     </span>
                   </span>

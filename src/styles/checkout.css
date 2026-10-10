@@ -41,14 +41,6 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .payment-green { fill: var(--payment-green); }
 .payment-gold { fill: var(--payment-gold); }
 .payment-white { fill: var(--payment-logo-surface); }
-/* The chosen card is obvious on its own: a clear rim in the action colours. */
-.megsy-checkout .glass-tile[data-selected="true"] {
-  background: var(--glass-surface-on);
-  border-color: hsl(var(--cta-pink) / 0.6);
-  box-shadow: var(--glass-shadow),
-    inset 0 0 0 1.5px hsl(var(--cta-blue) / 0.4),
-    0 14px 30px -16px hsl(var(--cta-pink) / 0.5);
-}
 
 
 /* The live card face: a lifted glass panel that prints the number and name. */
