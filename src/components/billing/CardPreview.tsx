@@ -73,8 +73,8 @@ export function CardPreview({
       </div>
       <p
         className="mt-9 flex items-center justify-between font-medium tabular-nums tracking-[0.06em] text-foreground"
-        aria-label="رقم البطاقة"
       >
+
         {groups.map((group, index) => (
           <span key={index} className={index === 0 ? "me-3" : index === groups.length - 1 ? "ms-3" : "mx-3"}>
             {group}
