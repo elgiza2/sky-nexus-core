@@ -407,3 +407,41 @@ html[data-theme="light"] .megsy-pricing {
 .megsy-pricing .megsy-plan-cta:disabled {
   opacity: 0.6;
 }
+
+/* ── Liquid specular ──────────────────────────────────────────────────────
+ * The wet highlight a pane carries: light gathers at the top face and the
+ * pane sits heavier toward its base. It lives under the content, so names,
+ * prices and brand marks stay exactly as crisp as before. */
+.megsy-pricing .megsy-plan-tile::after,
+.megsy-checkout .megsy-pay-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--glass-sheen);
+  background-repeat: no-repeat;
+  background-size: 220% 220%;
+  opacity: 0.9;
+  animation: glass-sheen-drift 12s ease-in-out infinite alternate;
+}
+.megsy-pricing .megsy-plan-tile > *,
+.megsy-checkout .megsy-pay-tile > * {
+  position: relative;
+  z-index: 1;
+}
+@keyframes glass-sheen-drift {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .megsy-pricing .megsy-plan-tile::after,
+  .megsy-checkout .megsy-pay-tile::after {
+    animation: none;
+  }
+}
