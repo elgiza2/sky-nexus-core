@@ -269,6 +269,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         throw new Error(payload.messages?.ar || payload.messages?.en || "الرقم ده مش مسجل على محفظة. جرّب رقم تاني.");
       }
       setWalletWaiting(true);
+      setBusy(false);
       const reconcileUrl = `${order.endpoint.replace(/\/?$/, "/")}${encodeURIComponent(order.order_id)}`;
       const started = Date.now();
       if (pollRef.current) window.clearInterval(pollRef.current);
@@ -308,6 +309,14 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     }
   };
 
+  const cancelWallet = () => {
+    if (pollRef.current) window.clearInterval(pollRef.current);
+    pollRef.current = null;
+    setWalletWaiting(false);
+    setBusy(false);
+    setError(null);
+  };
+
   const onHostedLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
     try {
       const href = event.currentTarget.contentWindow?.location.href;
@@ -334,6 +343,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const back = () => {
     if (hostedUrl) {
       setHostedUrl(null);
+      return;
+    }
+    if (walletWaiting) {
+      cancelWallet();
       return;
     }
     if (busy) return;
@@ -392,7 +405,13 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                 <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
                   <Loader2 className="h-10 w-10 animate-spin text-primary" />
                   <h2 className="mt-6 text-xl font-semibold">افتح موبايلك ووافق على الدفع</h2>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">بعتنالك طلب دفع على فودافون كاش للرقم {phone}. أكّده بالرقم السري للمحفظة وهنكمّل تلقائيًا.</p>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">بعتنا طلب دفع للرقم <span dir="ltr">{phone}</span>.</p>
+                  <ol className="glass-tile mt-6 w-full space-y-3 p-5 text-start text-sm leading-6">
+                    <li>١. افتح تطبيق «أنا فودافون» أو اطلب <span dir="ltr" className="font-semibold">*9#</span></li>
+                    <li>٢. ادخل على «طلبات الدفع» ووافق على الطلب</li>
+                    <li>٣. اكتب الرقم السري للمحفظة — والصفحة هتكمّل لوحدها</li>
+                  </ol>
+                  <Button variant="ghost" type="button" onClick={cancelWallet} className="mt-6 h-11 rounded-full px-6 text-sm text-foreground/70">تغيير الرقم أو الإلغاء</Button>
                 </div>
               ) : (
                 <label className="block text-sm font-medium">رقم محفظة فودافون كاش<input inputMode="tel" autoComplete="tel" dir="ltr" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="01xxxxxxxxx" className={`${INPUT} text-start`} /></label>
