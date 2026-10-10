@@ -238,11 +238,12 @@ export default function MobilePricingScreen({
 
         {/* Billing options */}
         <div
-          className={`glass-appear mt-4 flex flex-col ${compact ? "gap-2" : "gap-3"}`}
+          className="glass-appear relative mt-4 grid grid-cols-2 gap-3"
           style={{ "--i": 3 } as React.CSSProperties}
         >
-
-          {options.map((opt, index) => {
+          {/* One tile slides under the chosen square. */}
+          <span aria-hidden className="megsy-plan-flag" data-side={isYearly ? "b" : "a"} />
+          {options.map((opt) => {
             const selected = isYearly === opt.yearly;
             return (
               <button
@@ -251,49 +252,16 @@ export default function MobilePricingScreen({
                 onClick={() => onToggleYearly(opt.yearly)}
                 data-selected={selected}
                 aria-pressed={selected}
-                className={`glass-tile glass-tile--row flex w-full items-center gap-3 px-4 text-start transition-all duration-200 ${
-                  compact ? "py-2" : "py-2.5"
-                } ${isAr ? "flex-row-reverse" : ""}`}
-                style={{ "--i": 4 + index } as React.CSSProperties}
+                className={`megsy-plan-tile ${compact ? "p-3" : "p-4"}`}
               >
-                <span
-                  className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                    selected ? "border-foreground" : "border-foreground/40"
-                  }`}
-                >
-                  {selected && (
-                    <span className="h-[8px] w-[8px] rounded-full bg-foreground" />
-                  )}
+                <span className="megsy-plan-name">{opt.label}</span>
+                {/* Re-keyed so the price replays its entrance on every switch. */}
+                <span className="megsy-plan-price" key={String(selected)}>
+                  {localPrice(opt.price) ?? `$${opt.price}`}
                 </span>
-                <span className="flex flex-1 flex-col gap-[3px]">
-                  <span
-                    className={`flex items-center gap-2 ${isAr ? "flex-row-reverse" : ""} justify-start`}
-                  >
-                    <span className={`text-[12.5px] font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}>
-                      {opt.label}
-                    </span>
-                  </span>
-                  <span
-                    className={`flex items-baseline gap-2 tabular-nums ${isAr ? "flex-row-reverse" : ""} justify-start`}
-                  >
-                    {/* The local currency is the price, not a footnote: the
-                        dollar amount moves to the small secondary line. */}
-                    <span className={`${compact ? "text-[15px]" : "text-[16px]"} font-semibold text-foreground`}>
-                      {localPrice(opt.price) ?? `$${opt.price}`}
-                    </span>
-                    <span className="text-[11px] text-foreground/65">
-                      {opt.unit}
-                    </span>
-                    <span className="text-[11.5px] line-through text-foreground/65">
-
-                      {localPrice(opt.strike) ?? `$${opt.strike}`}
-                    </span>
-                    {localPrice(opt.price) ? (
-                      <span className="text-[11px] text-foreground/65">
-                        ${opt.price}
-                      </span>
-                    ) : null}
-                  </span>
+                <span className="megsy-plan-unit">{opt.unit}</span>
+                <span className="megsy-plan-strike">
+                  {localPrice(opt.strike) ?? `$${opt.strike}`}
                 </span>
               </button>
             );
