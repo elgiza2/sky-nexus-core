@@ -1,0 +1,162 @@
+/* Shared liquid-glass language: one recipe, used by checkout and pricing.
+ * Keep every rule scoped so a screen that opts out stays untouched. */
+.megsy-checkout,
+.megsy-pricing {
+  --glass-surface: hsl(var(--card) / 0.22);
+  --glass-surface-hover: hsl(var(--card) / 0.4);
+  --glass-surface-on: hsl(var(--card) / 0.7);
+  --glass-edge: hsl(var(--foreground) / 0.08);
+  --glass-edge-on: hsl(var(--foreground) / 0.18);
+  --glass-rim: linear-gradient(
+    180deg,
+    hsl(var(--card) / 0.95),
+    hsl(var(--foreground) / 0.09) 22%,
+    transparent 45%,
+    transparent 60%,
+    hsl(var(--foreground) / 0.06) 80%,
+    hsl(var(--card) / 0.9)
+  );
+  --glass-shadow: inset 0 1px 2px hsl(var(--card) / 0.9),
+    0 10px 30px hsl(var(--foreground) / 0.035);
+  --glass-shadow-on: inset 0 1px 2px hsl(var(--card)),
+    0 8px 24px hsl(var(--foreground) / 0.06);
+  --glass-cta-shadow: inset 0 1px 1px hsl(var(--card) / 0.95),
+    0 14px 34px hsl(var(--foreground) / 0.12);
+  --glass-bg: hsl(var(--background));
+  --glass-dot: transparent;
+  background: radial-gradient(
+      900px 460px at 60% -10%,
+      hsl(var(--primary) / 0.08),
+      transparent 70%
+    ),
+    var(--glass-bg);
+  color: hsl(var(--foreground));
+  font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+/* Dotted backdrop layer; sits above the surface, below the content. */
+.glass-texture {
+  background-image: radial-gradient(var(--glass-dot) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%);
+}
+
+/* Frosted tile with a luminous rim. Selected state: data-selected="true". */
+.glass-tile {
+  position: relative;
+  background: var(--glass-surface);
+  border: 1px solid var(--glass-edge);
+  border-radius: 32px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(8px) saturate(125%);
+  color: hsl(var(--foreground));
+  transition: border-color 0.18s ease, background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+.glass-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.4px;
+  border-radius: inherit;
+  background: var(--glass-rim);
+  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.glass-tile:hover {
+  background: var(--glass-surface-hover);
+}
+.glass-tile[data-selected="true"] {
+  background: var(--glass-surface-on);
+  border-color: var(--glass-edge-on);
+  box-shadow: var(--glass-shadow-on);
+}
+
+/* Primary action: the same glass, lifted so it still reads as the main CTA. */
+.glass-cta {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--card) / 0.92),
+    hsl(var(--card) / 0.58)
+  );
+  color: hsl(var(--foreground));
+  font-weight: 500;
+  border: 1px solid hsl(var(--foreground) / 0.14);
+  box-shadow: var(--glass-cta-shadow);
+  backdrop-filter: blur(14px) saturate(150%);
+  transition: background 0.18s ease, box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.glass-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.4px;
+  border-radius: inherit;
+  background: var(--glass-rim);
+  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.glass-cta:hover {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--card) / 1),
+    hsl(var(--card) / 0.74)
+  );
+  border-color: hsl(var(--foreground) / 0.22);
+}
+
+/* Field surface inside the glass screens. */
+.glass-input {
+  background: hsl(var(--card) / 0.72);
+  border: 1px solid var(--glass-edge);
+  color: hsl(var(--foreground));
+}
+.glass-input:focus {
+  border-color: hsl(var(--foreground) / 0.5);
+  box-shadow: 0 0 0 3px hsl(var(--foreground) / 0.06);
+}
+
+/* Staggered entrance; set --i on each element (0, 1, 2 …). */
+.glass-appear {
+  animation: glass-appear 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 0.08s);
+}
+@keyframes glass-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass-appear {
+    animation: none;
+  }
+  .glass-tile,
+  .glass-cta {
+    transition: none;
+  }
+}
+
+/* Phones: a flat surface reads better than the desktop wash under the glass. */
+@media (max-width: 767px) {
+  .megsy-checkout,
+  .megsy-pricing {
+    --glass-bg: oklch(0.15 0 0);
+    --glass-dot: hsl(var(--foreground) / 0.08);
+    background: var(--glass-bg);
+  }
+  html[data-theme="light"] .megsy-checkout,
+  html[data-theme="light"] .megsy-pricing {
+    --glass-bg: oklch(0.961 0 0);
+    --glass-dot: hsl(var(--foreground) / 0.1);
+  }
+}
