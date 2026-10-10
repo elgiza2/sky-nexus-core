@@ -541,7 +541,7 @@ function TileLogo({ id }: { id: TileId }) {
       );
     case "visa":
       return (
-        <svg viewBox="0 0 64 22" className="h-6 w-[64px]" dir="ltr">
+        <svg viewBox="0 0 64 22" className="h-6 w-[64px]">
           <text x="0" y="19" fontSize="23" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial Black, Arial, sans-serif" letterSpacing="-0.5">VISA</text>
           <path d="M1 4 l6 0 l-1.4 3 z" fill="#F7B600" />
         </svg>
