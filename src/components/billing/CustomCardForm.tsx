@@ -63,30 +63,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const pollRef = useRef<number | null>(null);
   const [pick, setPick] = useState<TileId>("visa");
 
-  /* The chosen card is marked by one surface that slides across the tray, so
-     switching methods reads as a single movement instead of a state flip. */
-  const gridRef = useRef<HTMLDivElement | null>(null);
-  const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
-  const [flag, setFlag] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-
-  useEffect(() => {
-    const move = () => {
-      const grid = gridRef.current;
-      const tile = tileRefs.current[pick];
-      if (!grid || !tile) return;
-      const box = grid.getBoundingClientRect();
-      const face = tile.getBoundingClientRect();
-      setFlag({ x: face.left - box.left, y: face.top - box.top, w: face.width, h: face.height });
-    };
-    move();
-    const settle = window.setTimeout(move, 140);
-    window.addEventListener("resize", move);
-    return () => {
-      window.clearTimeout(settle);
-      window.removeEventListener("resize", move);
-    };
-  }, [pick]);
-
   useEffect(() => {
     if (!open) return;
     const listener = (event: MessageEvent) => {
@@ -465,14 +441,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </form>
           ) : (
             <div className="mt-7 flex flex-1 flex-col">
-              <div className="megsy-pay-grid glass-appear" ref={gridRef} style={{ "--i": 0 } as React.CSSProperties}>
-                {flag && (
-                  <span
-                    aria-hidden
-                    className="megsy-pay-flag"
-                    style={{ transform: `translate(${flag.x}px, ${flag.y}px)`, width: flag.w, height: flag.h }}
-                  />
-                )}
+              <div className="megsy-pay-list glass-appear" style={{ "--i": 0 } as React.CSSProperties}>
                 {TILES.map((t, index) => {
                   const active = t.id === pick;
                   return (
@@ -483,11 +452,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                       onClick={() => setPick(t.id)}
                       aria-pressed={active}
                       data-selected={active}
-                      ref={(el) => { tileRefs.current[t.id] = el; }}
-                      className={`megsy-pay-tile glass-appear ${t.id === "vodafone" ? "megsy-pay-tile--wide" : ""}`}
-                      style={{ "--i": index } as React.CSSProperties}
+                      className="megsy-pay-row glass-appear"
+                      style={{ "--i": index + 1 } as React.CSSProperties}
                     >
-                      <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center" dir="ltr">
+                      <span className="megsy-pay-mark checkout-logo" dir="ltr">
                         <TileLogo id={t.id} />
                       </span>
                       <span className="megsy-pay-name">{t.label}</span>
