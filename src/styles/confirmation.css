@@ -12,5 +12,6 @@
 .cfd-card .cfd-btn { height: 48px; border-radius: 10px; background: hsl(var(--muted)); color: hsl(var(--foreground)); font-size: 14px; font-weight: 500; }
 .cfd-card .cfd-btn-primary { background: hsl(var(--foreground)); color: hsl(var(--background)); }
 .cfd-card .cfd-btn-primary.is-danger { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
+.cfd-card .cfd-btn:focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; box-shadow: none; }
 @keyframes cfd-fade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .cfd-overlay, .cfd-card { animation: none; } }

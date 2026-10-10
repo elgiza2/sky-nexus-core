@@ -95,12 +95,13 @@ html[data-theme="dark"] .megsy-checkout {
 .checkout-field > span { display: block; margin-bottom: 9px; color: var(--checkout-text); font-size: 13px; font-weight: 500; }
 .checkout-input-wrap { height: 56px; display: flex; align-items: center; border: 1px solid var(--checkout-line); border-radius: 12px; background: var(--checkout-surface); transition: border-color .2s ease, box-shadow .2s ease; }
 .checkout-input-wrap:focus-within { border-color: var(--checkout-text); box-shadow: 0 0 0 1px var(--checkout-text); }
-.checkout-input-wrap input { width: 100%; min-width: 0; height: 100%; padding: 0 16px; outline: none; border: 0; background: transparent; color: var(--checkout-text); font-size: 16px; letter-spacing: 0; font-variant-numeric: tabular-nums; }
+.checkout-input-wrap input { width: 100%; min-width: 0; height: 100%; padding: 0 16px; outline: none; border: 0; border-radius: inherit; background: transparent; color: var(--checkout-text); font-size: 16px; font-weight: 400; letter-spacing: 0; font-variant-numeric: tabular-nums; box-shadow: none; }
+.checkout-input-wrap input:focus { outline: none; box-shadow: none; }
 .checkout-input-wrap input::placeholder { color: var(--checkout-muted); }
 .wallet-identity { display: flex; align-items: center; gap: 12px; margin-top: 28px; font-weight: 500; }
 .wallet-identity svg { width: 36px; height: 36px; }
 .wallet-input { height: 64px; }
-.wallet-prefix { padding: 0 16px; border-right: 1px solid var(--checkout-line); font-size: 16px; }
+.wallet-prefix { flex-shrink: 0; white-space: nowrap; padding: 0 16px; border-right: 1px solid var(--checkout-line); font-size: 16px; }
 @keyframes checkout-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (min-width: 640px) { .checkout-layout { padding-inline: 32px; } .checkout-stage { margin-top: 40px; } }
 @media (max-height: 740px) { .checkout-stage { margin-top: 20px; } .megsy-pay-list { grid-template-rows: repeat(4, minmax(82px, 1fr)); gap: 10px; } .megsy-checkout .megsy-pay-row { min-height: 82px; padding-block: 14px; } .card-face { aspect-ratio: 1.9; } .checkout-fields { margin-top: 20px; gap: 14px; } }
