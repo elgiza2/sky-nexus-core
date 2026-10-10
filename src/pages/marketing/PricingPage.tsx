@@ -276,6 +276,12 @@ const PricingPage = () => {
     if (loadingTier) return;
     const interval: "monthly" | "yearly" = opts.interval ?? (isYearly ? "yearly" : "monthly");
 
+    // TEMP(paytest): render the picker for a visual check; removed after the shot.
+    if (new URLSearchParams(window.location.search).get("paytest")) {
+      setCustomCard({ tier, interval });
+      return;
+    }
+
     // Ensure signed in before opening the picker.
     let {
       data: { session },
