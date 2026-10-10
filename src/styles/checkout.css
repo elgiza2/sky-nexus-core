@@ -51,7 +51,7 @@
   --checkout-card-bottom: oklch(.88 0 0);
   color: var(--checkout-text);
 }
-html[data-theme="dark"] .megsy-checkout {
+html.dark .megsy-checkout {
   --checkout-surface: oklch(.22 0 0);
   --checkout-input: oklch(.26 0 0);
   --checkout-line: oklch(.4 0 0);
@@ -102,6 +102,12 @@ html[data-theme="dark"] .megsy-checkout {
 .wallet-identity svg { width: 36px; height: 36px; }
 .wallet-input { height: 64px; }
 .wallet-prefix { flex-shrink: 0; white-space: nowrap; padding: 0 16px; border-right: 1px solid var(--checkout-line); font-size: 16px; }
+/* Isolate payment from the legacy chat-wide dialog overrides. */
+[role="dialog"].megsy-checkout { background: var(--glass-bg) !important; color: var(--checkout-text) !important; border: 0 !important; box-shadow: none !important; }
+.megsy-checkout .checkout-title { color: var(--checkout-text) !important; font-weight: 600 !important; letter-spacing: 0; }
+.megsy-checkout .checkout-input-wrap input { background: transparent !important; border: 0 !important; box-shadow: none !important; color: var(--checkout-text) !important; font-weight: 400 !important; }
+.megsy-checkout .checkout-input-wrap input:focus-visible { outline: none !important; border: 0 !important; box-shadow: none !important; }
+.megsy-checkout .checkout-logo .payment-visa { width: 56px; height: 19px; }
 @keyframes checkout-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 @media (min-width: 640px) { .checkout-layout { padding-inline: 32px; } .checkout-stage { margin-top: 40px; } }
 @media (max-height: 740px) { .checkout-stage { margin-top: 20px; } .megsy-pay-list { grid-template-rows: repeat(4, minmax(82px, 1fr)); gap: 10px; } .megsy-checkout .megsy-pay-row { min-height: 82px; padding-block: 14px; } .card-face { aspect-ratio: 1.9; } .checkout-fields { margin-top: 20px; gap: 14px; } }

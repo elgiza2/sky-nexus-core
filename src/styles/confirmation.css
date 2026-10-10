@@ -13,5 +13,8 @@
 .cfd-card .cfd-btn-primary { background: hsl(var(--foreground)); color: hsl(var(--background)); }
 .cfd-card .cfd-btn-primary.is-danger { background: hsl(var(--destructive)); color: hsl(var(--destructive-foreground)); }
 .cfd-card .cfd-btn:focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: 3px; box-shadow: none; }
+[role="dialog"].cfd-card { background: hsl(var(--card)) !important; color: hsl(var(--foreground)) !important; border: 0 !important; box-shadow: var(--confirmation-shadow) !important; }
+[role="dialog"].cfd-card .cfd-title { color: hsl(var(--foreground)) !important; font-weight: 600 !important; letter-spacing: 0; }
+[role="dialog"].cfd-card .cfd-btn { border: 0 !important; box-shadow: none !important; }
 @keyframes cfd-fade { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .cfd-overlay, .cfd-card { animation: none; } }
