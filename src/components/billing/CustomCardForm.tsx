@@ -492,8 +492,7 @@ const TILES: Array<{
   method: PaymentMethod;
   instant?: boolean;
 }> = [
-  { id: "visa", label: "Visa", kind: "card", method: "card" },
-  { id: "mastercard", label: "Mastercard", kind: "card", method: "card" },
+  { id: "visa", label: "Visa / Mastercard", kind: "card", method: "card" },
   { id: "apple_pay", label: "Apple Pay", kind: "hosted", method: "card", instant: true },
   { id: "google_pay", label: "Google Pay", kind: "hosted", method: "card", instant: true },
   { id: "vodafone", label: "Vodafone Cash", kind: "wallet", method: "wallet" },
@@ -502,9 +501,17 @@ const TILES: Array<{
 function TileLogo({ id }: { id: TileId }) {
   switch (id) {
     case "visa":
-      return <BrandMark brand="visa" />;
     case "mastercard":
-      return <BrandMark brand="mastercard" />;
+      return (
+        <span className="flex items-center gap-1" aria-hidden="true">
+          <svg viewBox="0 0 32 20" className="h-[20px] w-[32px]">
+            <rect width="32" height="20" rx="4" fill="#1A1F71" />
+            <path fill="#fff" d="M9.2 6h2.3l2.1 6.2L15.8 6h2.2l-3.4 8h-2.1zM19 6h2v8h-2z" />
+            <path fill="#F7B600" d="M5 6h3.2l.4 1.6H5z" />
+          </svg>
+          <BrandMark brand="mastercard" className="!h-[20px] !w-[32px]" />
+        </span>
+      );
 
     case "apple_pay":
       return (
