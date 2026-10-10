@@ -186,12 +186,14 @@ export default function MobilePricingScreen({
 
       <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
         {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.45]" />
+
         {/* Megsy star mark */}
         <div
-          className={`glass-appear flex justify-center ${compact ? "mt-[2%]" : "mt-[4%]"}`}
+          className="glass-appear flex justify-center"
           style={{ "--i": 0 } as React.CSSProperties}
         >
+
           <MegsyStar className={`${compact ? "h-7 w-7" : "h-8 w-8"} text-foreground`} />
         </div>
 
@@ -208,8 +210,9 @@ export default function MobilePricingScreen({
         {/* Feature card — single column, airy rows on one frosted panel */}
         <div
           className={`glass-tile glass-appear ${
-            compact ? "mt-3.5 px-4 py-3.5" : "mt-5 px-5 py-4"
+            compact ? "mt-3 px-4 py-3.5" : "mt-4 px-5 py-4"
           }`}
+
           style={{ "--i": 2 } as React.CSSProperties}
         >
           <ul className={`flex flex-col ${compact ? "gap-[11px]" : "gap-[14px]"}`}>
@@ -232,14 +235,12 @@ export default function MobilePricingScreen({
           </ul>
         </div>
 
-        {/* Breathing room between the feature card and billing options */}
-        <div className="flex-[0.4] min-h-[12px] max-h-10" />
-
         {/* Billing options */}
         <div
-          className={`glass-appear flex flex-col ${compact ? "gap-2" : "gap-2.5"}`}
+          className={`glass-appear mt-4 flex flex-col ${compact ? "gap-2" : "gap-3"}`}
           style={{ "--i": 3 } as React.CSSProperties}
         >
+
           {options.map((opt, index) => {
             const selected = isYearly === opt.yearly;
             return (
@@ -300,7 +301,7 @@ export default function MobilePricingScreen({
 
         {/* Fine print + CTA + legal, pinned to the very bottom */}
         <div
-          className={`glass-appear shrink-0 ${compact ? "pt-2" : "pt-3"}`}
+          className={`glass-appear shrink-0 ${compact ? "pt-3" : "pt-4"}`}
           style={{
             "--i": 6,
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
@@ -342,7 +343,7 @@ export default function MobilePricingScreen({
           </nav>
         </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.55]" />
       </main>
     </div>
   );
