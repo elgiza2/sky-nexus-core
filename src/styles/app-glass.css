@@ -1,0 +1,117 @@
+/* App-only glass layer. Checkout and pricing remain independent. */
+:root {
+  --app-glass-fill: hsl(var(--card) / 0.48);
+  --app-glass-raised: hsl(var(--card) / 0.68);
+  --app-glass-edge: hsl(var(--foreground) / 0.12);
+  --app-glass-highlight: hsl(var(--foreground) / 0.08);
+  --app-glass-shadow: inset 0 1px 1px hsl(var(--card) / 0.85), 0 12px 36px -18px hsl(var(--foreground) / 0.2);
+  --app-glass-canvas: linear-gradient(135deg, hsl(var(--primary) / 0.09), transparent 48%, hsl(var(--accent) / 0.07)), hsl(var(--background));
+}
+
+/* Full-page canvases stay unframed; only controls and grouped items refract. */
+[data-shell="megsy"], .settings-desktop-canvas, .ms-root.ms-root,
+.megsy-auth-screen.megsy-auth-screen, .amber-settings {
+  background: var(--app-glass-canvas) !important;
+  color: hsl(var(--foreground));
+}
+[data-chat-main="true"], [data-shell="megsy"] .chat-surface-dark,
+.settings-canvas-bg, .settings-popover-menu.settings-popover-menu {
+  background: transparent !important;
+}
+.settings-popover-menu.settings-popover-menu {
+  border: 0; box-shadow: none; padding: 0;
+}
+[data-app-sidebar-panel="true"],
+[data-shell="megsy"] .chat-composer-frame.chat-composer-frame,
+[data-shell="megsy"] [data-tour="composer"],
+.desktop-fastshot-empty .desktop-fastshot-card,
+.ms-root .ms-card.ms-card,
+.settings-desktop-content .bg-card,
+.settings-desktop-content [class*="bg-card/"],
+.amber-settings :is(.amb-plate, .amb-plate-strong, .ios26-glass),
+html.settings-page-active [class*="bg-[var(--mn-card)]"],
+.megsy-auth-screen .megsy-auth-pill,
+.megsy-auth-screen .megsy-auth-input,
+.megsy-auth-screen .auth-glass-field {
+  background: var(--app-glass-fill) !important;
+  border: 1px solid var(--app-glass-edge) !important;
+  box-shadow: var(--app-glass-shadow) !important;
+  backdrop-filter: blur(22px) saturate(145%);
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  color: hsl(var(--foreground)) !important;
+}
+[data-app-sidebar-panel="true"] {
+  background-image: linear-gradient(160deg, var(--app-glass-highlight), transparent 55%) !important;
+  font-family: inherit !important;
+  border-radius: 0;
+}
+[data-chat-sidebar="true"], [data-chat-sidebar-underlay="true"] {
+  background: transparent !important;
+}
+[data-desktop-chat-header="true"], .ms-root .ms-header.ms-header {
+  background: hsl(var(--background) / 0.58) !important;
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid var(--app-glass-edge);
+}
+[data-shell="megsy"] .chat-composer-frame > div,
+[data-shell="megsy"] [data-tour="composer"] > div {
+  background: transparent !important;
+}
+[data-shell="megsy"] .chat-bubble-user {
+  background: hsl(var(--primary) / 0.14) !important;
+  border: 1px solid hsl(var(--primary) / 0.22);
+  backdrop-filter: blur(12px);
+  color: hsl(var(--foreground)) !important;
+}
+.ms-root .ms-row-div::before { background: var(--app-glass-edge); }
+.ms-root :is(.ms-brand, .ms-plan-name) { font-family: inherit; letter-spacing: 0; }
+.ms-root .ms-card { border-radius: 20px; }
+.megsy-auth-screen.megsy-auth-screen {
+  --foreground: inherit;
+  --background: inherit;
+  --auth-ink: hsl(var(--foreground));
+  --auth-muted: hsl(var(--muted-foreground));
+}
+.megsy-auth-screen :is(h1, h2, .auth-mode-option) { color: hsl(var(--foreground)); }
+.megsy-auth-screen .megsy-auth-primary {
+  background: var(--sunset-grain), var(--sunset-grad) !important;
+  color: hsl(var(--sunset-foreground)) !important;
+  border-color: hsl(var(--sunset-foreground) / 0.24) !important;
+}
+.megsy-auth-screen :is(.megsy-auth-forgot, .megsy-auth-legal, .megsy-auth-divider) {
+  color: hsl(var(--muted-foreground));
+}
+.megsy-auth-screen .megsy-auth-divider::before,
+.megsy-auth-screen .megsy-auth-divider::after { background: var(--app-glass-edge); }
+.megsy-auth-screen .megsy-auth-back { background: transparent; color: hsl(var(--foreground)); }
+.megsy-auth-screen .megsy-auth-input::placeholder { color: hsl(var(--muted-foreground)); }
+.megsy-auth-screen .auth-mode-toggle {
+  background: var(--app-glass-fill); border: 1px solid var(--app-glass-edge);
+  border-radius: 999px; padding: 4px; display: grid; grid-template-columns: 1fr 1fr;
+  backdrop-filter: blur(18px); margin-bottom: 22px;
+}
+.auth-mode-toggle .auth-mode-option { min-height: 40px; border-radius: 999px; }
+.auth-mode-toggle .auth-mode-option[aria-pressed="true"] {
+  background: var(--app-glass-raised); box-shadow: var(--app-glass-shadow);
+}
+.welcome-root .welcome-btn {
+  background: hsl(var(--background) / 0.28); color: var(--w-fg);
+  border: 1px solid var(--app-glass-edge); box-shadow: var(--app-glass-shadow);
+  backdrop-filter: blur(22px) saturate(150%);
+}
+.welcome-root .welcome-glass-controls {
+  padding: 12px 16px; border-radius: 999px;
+  background: hsl(var(--background) / 0.26);
+  border: 1px solid var(--app-glass-edge);
+  backdrop-filter: blur(22px) saturate(150%);
+  box-shadow: var(--app-glass-shadow);
+}
+@media (min-width: 768px) {
+  .welcome-root { --w-fg: hsl(var(--foreground)); --w-bg: hsl(var(--background)); background: var(--app-glass-canvas); }
+  .welcome-root .welcome-desc { color: hsl(var(--muted-foreground)); }
+  .welcome-root { --w-dim: hsl(var(--foreground) / 0.25); }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  [data-app-sidebar-panel="true"], .ms-root .ms-card.ms-card,
+  .megsy-auth-screen .megsy-auth-pill { background: hsl(var(--card)) !important; }
+}

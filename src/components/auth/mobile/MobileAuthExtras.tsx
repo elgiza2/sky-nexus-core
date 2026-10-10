@@ -49,7 +49,7 @@ const TopBar = ({ onBack }: { onBack: () => void }) => (
       aria-label={authT("back")}
       className="mt-4 w-9 h-9 rounded-full grid place-items-center text-foreground/85 active:scale-95 transition-transform"
       style={{
-        background: "#ffffff",
+        background: "var(--app-glass-fill)",
         border: "1px solid var(--overlay-white-12)",
         backdropFilter: "blur(10px)",
         WebkitBackdropFilter: "blur(10px)",
@@ -127,8 +127,8 @@ export default function MobileAuthExtras(p: Props) {
   };
 
   const fieldStyle = {
-    background: "#ffffff",
-    border: "1px solid #e9e9eb",
+    background: "var(--app-glass-fill)",
+    border: "1px solid var(--app-glass-edge)",
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
   } as const;
@@ -221,7 +221,7 @@ export default function MobileAuthExtras(p: Props) {
                       }}
                       onPaste={(e) => p.onOtpPaste(e, i)}
                       autoFocus={i === 0}
-                      className="auth-input-white w-11 text-center text-[19px] font-semibold rounded-2xl !text-foreground outline-none transition-colors focus:border-foreground/40"
+                      className="auth-glass-field auth-input-white w-11 text-center text-[19px] font-semibold rounded-2xl !text-foreground outline-none transition-colors focus:border-foreground/40"
                       style={{ ...fieldStyle, height: 56 }}
                     />
                   ))}
@@ -230,7 +230,7 @@ export default function MobileAuthExtras(p: Props) {
 
               {isPwd && (
                 <div
-                  className="rounded-full px-5 h-[52px] flex items-center gap-2"
+                  className="auth-glass-field rounded-full px-5 h-[52px] flex items-center gap-2"
                   style={fieldStyle}
                 >
                   <input
@@ -255,7 +255,7 @@ export default function MobileAuthExtras(p: Props) {
 
               {p.screen === "forgot-password" && (
                 <div
-                  className="rounded-full px-5 h-[52px] flex items-center"
+                  className="auth-glass-field rounded-full px-5 h-[52px] flex items-center"
                   style={fieldStyle}
                 >
                   <input
