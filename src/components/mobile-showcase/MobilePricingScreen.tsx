@@ -11,7 +11,7 @@ import {
   Search,
   Infinity as InfinityIcon,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import MegsyStar from "@/components/branding/MegsyStar";
 import { MobileSidebarButton } from "@/components/shared/MobileSidebarButton";
@@ -326,22 +326,6 @@ export default function MobilePricingScreen({
               t.cta
             )}
           </button>
-          <nav
-            className={`flex items-center justify-center gap-6 leading-none text-muted-foreground ${
-              compact ? "mt-2 text-[11px]" : "mt-3 text-[11.5px]"
-            }`}
-            aria-label="Legal"
-          >
-            <Link to="/terms" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70">
-              {t.terms}
-            </Link>
-            <Link to="/privacy" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70">
-              {t.privacy}
-            </Link>
-            <Link to="/restore" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70">
-              {t.restore}
-            </Link>
-          </nav>
         </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
         <div className="flex-[0.6]" />
