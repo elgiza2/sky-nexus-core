@@ -28,6 +28,9 @@
 - [x] Main action button: pink, blue and red liquid with the grain inside, round (pill) and clean.
 - [x] Tidy the payment-method icon inside the continue button so every method lines up the same way.
 - [x] Payment tiles: no tick circle; the chosen card is obviously marked.
+- [ ] Remove the Terms / Privacy / Restore links from the bottom of the mobile pricing screen.
+- [ ] App glass: drop every panel border and put the pages on a pure white canvas.
+
 
 
 
