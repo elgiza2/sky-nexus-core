@@ -241,7 +241,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       <div aria-hidden="true" className="checkout-texture pointer-events-none absolute inset-0" />
       <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
         <header className="flex items-center">
-          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy} aria-label="رجوع" title="رجوع" className="rounded-full border border-border/60 bg-card/60"><ArrowLeft className="rotate-180" /></Button>
+          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy} aria-label="رجوع" title="رجوع" className="h-11 w-11 rounded-full border-0 bg-transparent p-0 hover:bg-transparent active:bg-transparent"><ArrowLeft className="rotate-180" /></Button>
         </header>
 
         <div className="checkout-content mt-10 flex flex-1 flex-col sm:mt-12">

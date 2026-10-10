@@ -1,8 +1,10 @@
 # Megsy — roadmap
 
 ## Checkout tidy-up (October 10, 2026)
-- [ ] Replace slide-to-continue with a plain "متابعة" button.
-- [ ] Remove the "دفع آمن ومشفّر" line, the 01–05 tile numbers and the header close (X) button.
+- [x] Replace slide-to-continue with a plain "متابعة" button.
+- [x] Remove the "دفع آمن ومشفّر" line, the 01–05 tile numbers and the header close (X) button.
+- [x] Remove the Megsy header badge and make the back button borderless with no background.
+
 
 ## Current checkout request
 
