@@ -272,6 +272,16 @@ html[data-theme="light"] .megsy-pricing {
   }
 }
 
+/* The benefit panel would otherwise be a 5% wash on white — its edges vanish
+   into the canvas. On the white canvas it gets a real pane: denser fill, a
+   deeper bend and a shadow that lifts it clear of the dots. */
+html[data-theme="light"] .megsy-pricing .glass-tile {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.62));
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--glass-body), var(--glass-edge-light),
+    0 22px 44px -28px hsl(var(--foreground) / 0.34);
+}
+
 /* ── Mobile pricing: two squares and one black action ─────────────────────
  * The chosen square inverts to solid ink; the price replays its own entrance
  * so switching plans feels deliberate. */

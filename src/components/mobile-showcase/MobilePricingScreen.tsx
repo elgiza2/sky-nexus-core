@@ -177,15 +177,15 @@ export default function MobilePricingScreen({
         <MobileSidebarButton
           onClick={() => onMenuClick?.()}
           ariaLabel="Menu"
-          className="text-foreground"
+          className="h-11 w-11 rounded-full bg-card/70 shadow-sm backdrop-blur-md"
         />
       </header>
       {/* Spacer so content clears the fixed header */}
       <div className="shrink-0" style={{ height: "calc(max(env(safe-area-inset-top), 0.25rem) + 44px)" }} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[96px]">
-        {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.55]" />
+      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[88px]">
+        {/* Top flexible space — keeps the block clear of the header */}
+        <div className="flex-[0.7]" />
 
 
         {/* Megsy star mark */}
@@ -226,11 +226,9 @@ export default function MobilePricingScreen({
                   strokeWidth={1.5}
                 />
                 <span
-                  className={`flex-1 leading-[1.4] ${
-                    i === 0
-                      ? "font-semibold text-foreground"
-                      : "font-normal text-foreground/75"
-                  } ${compact ? "text-[13px]" : "text-[14px]"}`}
+                  className={`flex-1 leading-[1.4] font-normal text-foreground/80 ${
+                    compact ? "text-[13px]" : "text-[14px]"
+                  }`}
                 >
                   {text}
                 </span>
@@ -270,7 +268,7 @@ export default function MobilePricingScreen({
         </div>
 
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.45]" />
+        <div className="flex-[0.3]" />
       </main>
 
       {/* Upgrade action — black, pinned to the bottom of the screen. */}
