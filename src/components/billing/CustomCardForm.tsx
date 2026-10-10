@@ -530,29 +530,61 @@ function TileLogo({ id }: { id: TileId }) {
   switch (id) {
     case "mastercard":
       return (
-        <span className="flex items-center" dir="ltr">
-          <span className="h-7 w-7 rounded-full bg-[#eb001b]" />
-          <span className="-ml-3 h-7 w-7 rounded-full bg-[#f79e1b] mix-blend-multiply" />
+        <span className="flex flex-col items-center gap-0.5" dir="ltr">
+          <svg viewBox="0 0 48 30" className="h-8 w-[52px]">
+            <circle cx="17" cy="15" r="14" fill="#EB001B" />
+            <circle cx="31" cy="15" r="14" fill="#F79E1B" />
+            <path d="M24 3.1a14 14 0 0 1 0 23.8 14 14 0 0 1 0-23.8z" fill="#FF5F00" />
+          </svg>
+          <span className="text-[9px] font-semibold tracking-tight text-[#1c1c1e]">mastercard</span>
         </span>
       );
     case "visa":
-      return <span className="text-[22px] font-black italic tracking-tight text-[#1a1f71]">VISA</span>;
+      return (
+        <svg viewBox="0 0 64 22" className="h-6 w-[64px]" dir="ltr">
+          <text x="0" y="19" fontSize="23" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial Black, Arial, sans-serif" letterSpacing="-0.5">VISA</text>
+          <path d="M1 4 l6 0 l-1.4 3 z" fill="#F7B600" />
+        </svg>
+      );
     case "meeza":
-      return <span className="text-[17px] font-extrabold text-[#0b7a3e]">meeza</span>;
+      return <span className="text-[19px] font-extrabold tracking-tight text-[#0b7a3e]" dir="ltr">meeza</span>;
     case "apple_pay":
-      return <span className="text-[19px] font-semibold tracking-tight" dir="ltr"> Pay</span>;
+      return (
+        <span className="flex items-center gap-0.5" dir="ltr">
+          <svg viewBox="0 0 17 20" className="h-[22px] w-[19px]" fill="#000">
+            <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
+          </svg>
+          <span className="text-[22px] font-medium tracking-[-0.03em] text-black">Pay</span>
+        </span>
+      );
     case "google_pay":
       return (
-        <span className="text-[17px] font-semibold" dir="ltr">
-          <span className="text-[#4285f4]">G</span> Pay
+        <span className="flex items-center gap-1" dir="ltr">
+          <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]">
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
+            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
+            <path fill="#FBBC05" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
+            <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
+          </svg>
+          <span className="text-[21px] font-medium tracking-[-0.02em] text-[#5f6368]">Pay</span>
         </span>
       );
     case "wallet":
-      return <Smartphone className="h-7 w-7 text-[#e60000]" />;
+      return (
+        <span className="flex flex-col items-center gap-1">
+          <Smartphone className="h-7 w-7 text-[#e60000]" strokeWidth={1.8} />
+          <span className="text-[10px] font-semibold text-[#1c1c1e]">Wallet</span>
+        </span>
+      );
     case "bank_installments":
-      return <Banknote className="h-7 w-7 text-[#5856d6]" />;
+      return (
+        <span className="flex flex-col items-center gap-1">
+          <Banknote className="h-7 w-7 text-[#5856d6]" strokeWidth={1.8} />
+          <span className="text-[10px] font-semibold text-[#1c1c1e]">تقسيط</span>
+        </span>
+      );
     case "bnpl":
-      return <span className="text-[19px] font-extrabold text-[#00a19a]">valU</span>;
+      return <span className="text-[22px] font-extrabold tracking-tight text-[#00a19a]" dir="ltr">valU</span>;
   }
 }
 
