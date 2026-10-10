@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Check, CreditCard, Loader2, LockKeyhole } from "lucide-react";
+import { ArrowLeft, Check, Loader2, LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import "@/styles/checkout.css";
+import { BrandMark, CardPreview } from "./CardPreview";
+
 
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
@@ -263,12 +265,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </div>
           ) : stage === "card" ? (
             <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
-              <div className="mb-7 flex items-center gap-3 border-b border-border/70 pb-5">
-                <span className="checkout-logo flex h-11 w-[72px] items-center justify-center rounded-lg" dir="ltr"><TileLogo id={pick} /></span>
-                <span className="text-sm font-medium" dir="ltr">{tile.label}</span>
-                <CreditCard className="ms-auto h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="space-y-5">
+              <CardPreview number={number} name={name} month={month} year={year} fallbackBrand={pick === "mastercard" ? "mastercard" : "visa"} />
+              <div className="mt-8 space-y-5">
+
                 <label className="block text-sm font-medium">رقم البطاقة<input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className={INPUT} /></label>
                 <label className="block text-sm font-medium">الاسم على البطاقة<input autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="الاسم كما يظهر على البطاقة" className={INPUT} /></label>
                 <div className="grid grid-cols-3 gap-3"><Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" /><Field label="السنة" value={year} onChange={setYear} placeholder="YY" /><Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret /></div>
@@ -324,17 +323,10 @@ const TILES: Array<{
 function TileLogo({ id }: { id: TileId }) {
   switch (id) {
     case "visa":
-      return (
-        <span className="payment-visa" aria-hidden="true">VISA</span>
-      );
+      return <BrandMark brand="visa" />;
     case "mastercard":
-      return (
-        <svg viewBox="0 0 32 20" className="h-[22px] w-[36px]">
-          <circle cx="11" cy="10" r="9" className="payment-red" />
-          <circle cx="21" cy="10" r="9" className="payment-yellow" />
-          <path d="M16 2.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" className="payment-orange" />
-        </svg>
-      );
+      return <BrandMark brand="mastercard" />;
+
     case "apple_pay":
       return (
         <svg viewBox="0 0 17 20" className="h-[17px] w-[15px]" fill="currentColor">
