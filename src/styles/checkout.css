@@ -1,0 +1,71 @@
+/* Checkout shares the pricing surface; keep every override inside this screen. */
+.megsy-checkout {
+  --checkout-bg: hsl(var(--background));
+  --checkout-dot: transparent;
+  --checkout-surface: hsl(var(--card) / .72);
+  --checkout-edge: hsl(var(--foreground) / .10);
+  --checkout-shadow: 0 6px 20px hsl(var(--foreground) / .035), inset 0 1px 0 hsl(var(--card) / .8);
+  --payment-logo-surface: oklch(1 0 0);
+  --payment-visa: oklch(.29 .14 275);
+  --payment-black: oklch(.15 0 0);
+  --payment-red: oklch(.59 .24 27);
+  --payment-yellow: oklch(.77 .17 70);
+  --payment-orange: oklch(.7 .21 42);
+  --payment-blue: oklch(.61 .2 260);
+  --payment-green: oklch(.64 .16 145);
+  --payment-gold: oklch(.83 .17 85);
+  background: radial-gradient(900px 460px at 60% -10%, hsl(var(--primary) / .08), transparent 70%), var(--checkout-bg);
+  color: hsl(var(--foreground));
+  font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.checkout-texture {
+  background-image: radial-gradient(var(--checkout-dot) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%);
+}
+.checkout-choice {
+  background: var(--checkout-surface);
+  border: 1px solid var(--checkout-edge);
+  box-shadow: var(--checkout-shadow);
+  backdrop-filter: blur(8px);
+  color: hsl(var(--foreground));
+  transition: border-color .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.checkout-choice:hover { background: hsl(var(--card) / .95); }
+.checkout-choice[aria-pressed="true"] {
+  border-color: hsl(var(--foreground) / .65);
+  background: hsl(var(--card) / .95);
+  box-shadow: inset 0 0 0 1px hsl(var(--foreground) / .18), var(--checkout-shadow);
+}
+.checkout-logo {
+  background: var(--payment-logo-surface);
+  color: var(--payment-black);
+  border: 1px solid var(--checkout-edge);
+}
+.payment-visa { color: var(--payment-visa); font-family: Arial, sans-serif; font-style: italic; font-weight: 900; font-size: 22px; line-height: 1; }
+.payment-red { fill: var(--payment-red); }
+.payment-yellow { fill: var(--payment-yellow); }
+.payment-orange { fill: var(--payment-orange); }
+.payment-blue { fill: var(--payment-blue); }
+.payment-green { fill: var(--payment-green); }
+.payment-gold { fill: var(--payment-gold); }
+.payment-white { fill: var(--payment-logo-surface); }
+.checkout-input {
+  background: hsl(var(--card) / .72);
+  border: 1px solid var(--checkout-edge);
+  color: hsl(var(--foreground));
+}
+.checkout-input:focus { border-color: hsl(var(--foreground) / .5); box-shadow: 0 0 0 3px hsl(var(--foreground) / .06); }
+.checkout-cta {
+  background: hsl(var(--foreground));
+  color: hsl(var(--background));
+}
+.checkout-cta:hover { background: hsl(var(--foreground) / .9); }
+@media (max-width: 767px) {
+  .megsy-checkout { --checkout-bg: oklch(.15 0 .0); --checkout-dot: hsl(var(--foreground) / .08); background: var(--checkout-bg); }
+  html[data-theme="light"] .megsy-checkout { --checkout-bg: oklch(.961 0 0); --checkout-dot: hsl(var(--foreground) / .10); }
+}
+@keyframes checkout-appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.checkout-content { animation: checkout-appear .28s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .checkout-content { animation: none; } .checkout-choice { transition: none; } }
