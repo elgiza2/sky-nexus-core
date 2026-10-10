@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Check, Loader2, LockKeyhole } from "lucide-react";
+import { ArrowLeft, ChevronRight, Check, Loader2 } from "lucide-react";
 import "@/styles/checkout.css";
+import { Button } from "@/components/ui/button";
 import { BrandMark, CardPreview } from "./CardPreview";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -359,15 +360,15 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   return (
     <section className="megsy-checkout fixed inset-0 z-[120] overflow-y-auto overscroll-contain" dir="ltr" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
       <div aria-hidden="true" className="glass-texture pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
+      <div className="checkout-layout">
         <header className="flex items-center">
-          <button type="button" onClick={back} disabled={busy && !hostedUrl} aria-label="Back" title="Back" className="megsy-back">
+          <Button variant="ghost" type="button" onClick={back} disabled={busy && !hostedUrl} aria-label="Back" title="Back" className="megsy-back">
             <ArrowLeft className="h-5 w-5" />
-          </button>
+          </Button>
         </header>
 
-        <div key={view} className="glass-appear mt-10 flex flex-1 flex-col sm:mt-12">
-          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">
+        <div key={view} className="checkout-stage">
+          <h1 id="checkout-title" className="checkout-title">
             {result === "success"
               ? "Payment complete"
               : threeDsUrl
@@ -397,28 +398,44 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">We’re confirming the payment and activating your subscription in a moment.</p>
                 {orderId && <p className="mt-2 max-w-full break-all font-mono text-xs text-muted-foreground">{orderId}</p>}
               </div>
-              <button type="button" className="megsy-pay-cta" onClick={onClose}>Continue</button>
+              <Button variant="ghost" type="button" className="megsy-pay-cta" onClick={onClose}>Continue</Button>
             </div>
           ) : stage === "card" ? (
             <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
-              <CardPreview number={number} name={name} month={month} year={year} fallbackBrand={pick === "mastercard" ? "mastercard" : "visa"} />
-              <div className="mt-8 overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-18px_rgba(0,0,0,0.18)]">
-                <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Card number</span><input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60 tabular-nums tracking-wide" /></label>
-                <div className="mx-4 h-px bg-border/70" />
-                <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Name on card</span><input dir="ltr" autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60" /></label>
-                <div className="mx-4 h-px bg-border/70" />
-                <div className="grid grid-cols-[1fr_1fr_1fr] divide-x divide-border/70">
-                  <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Month</span><input inputMode="numeric" value={month} onChange={(e) => setMonth(e.target.value.replace(/\D/g, "").slice(0, 2))} placeholder="MM" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60 tabular-nums" /></label>
-                  <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Year</span><input inputMode="numeric" value={year} onChange={(e) => setYear(e.target.value.replace(/\D/g, "").slice(0, 2))} placeholder="YY" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60 tabular-nums" /></label>
-                  <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">CVV</span><input type="password" inputMode="numeric" autoComplete="cc-csc" value={cvv} onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="•••" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60 tabular-nums" /></label>
+              <CardPreview number={number} name={name} month={month} year={year} fallbackBrand="visa" />
+              <div className="checkout-fields">
+                <label className="checkout-field">
+                  <span>Card number</span>
+                  <div className="checkout-input-wrap">
+                    <input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" aria-required="true" />
+                  </div>
+                </label>
+                <label className="checkout-field">
+                  <span>Name on card</span>
+                  <div className="checkout-input-wrap">
+                    <input autoComplete="cc-name" dir="ltr" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" aria-required="true" />
+                  </div>
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <label className="checkout-field">
+                    <span>Expiry date</span>
+                    <div className="checkout-input-wrap">
+                      <input inputMode="numeric" autoComplete="cc-exp" value={month ? `${month}${month.length === 2 ? " / " : ""}${year}` : ""} onChange={(e) => { const digits = e.target.value.replace(/\D/g, "").slice(0, 4); setMonth(digits.slice(0, 2)); setYear(digits.slice(2)); }} placeholder="MM / YY" aria-required="true" />
+                    </div>
+                  </label>
+                  <label className="checkout-field">
+                    <span>Security code</span>
+                    <div className="checkout-input-wrap">
+                      <input type="password" inputMode="numeric" autoComplete="cc-csc" value={cvv} onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="CVV" aria-required="true" />
+                    </div>
+                  </label>
                 </div>
               </div>
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
-              <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Secure payment via Kashier</p>
-              <button type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-4">
+              <Button variant="ghost" type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-4">
                 {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</> : "Pay now"}
-              </button>
+              </Button>
             </form>
           ) : stage === "wallet" ? (
             <form onSubmit={submitWallet} className="mt-6 flex flex-1 flex-col" autoComplete="off">
@@ -432,52 +449,55 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     <li>2. Go to “Payment requests” and approve it</li>
                     <li>3. Enter your wallet PIN — this page continues on its own</li>
                   </ol>
-                  <button type="button" onClick={cancelWallet} className="megsy-pay-quiet mt-6">Change number or cancel</button>
+                  <Button variant="ghost" type="button" onClick={cancelWallet} className="megsy-pay-quiet mt-6">Change number or cancel</Button>
                 </div>
               ) : (
                 <div>
                   <p className="text-[15px] leading-6 text-muted-foreground">Enter the number linked to your wallet. We’ll send a payment request to approve on your phone.</p>
-                  <label className="mt-6 flex items-center overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-18px_rgba(0,0,0,0.18)]">
-                    <span className="flex h-[60px] items-center gap-2 border-e border-border/70 px-4 text-[16px] font-medium" dir="ltr">🇪🇬 +20</span>
-                    <input inputMode="tel" autoComplete="tel" dir="ltr" aria-label="Vodafone Cash wallet number" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="010 0000 0000" className="h-[60px] w-full bg-transparent px-4 text-[17px] tabular-nums tracking-wide outline-none placeholder:text-muted-foreground/60" />
+                  <div className="wallet-identity"><TileLogo id="vodafone" /><span>Vodafone Cash</span></div>
+                  <label className="checkout-field mt-7">
+                    <span>Wallet phone number</span>
+                    <div className="checkout-input-wrap wallet-input">
+                      <span className="wallet-prefix">+20</span>
+                      <input inputMode="tel" autoComplete="tel-national" dir="ltr" aria-label="Vodafone Cash wallet number" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="010 0000 0000" />
+                    </div>
                   </label>
                 </div>
               )}
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
               {!walletWaiting && (
-                <button type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-8">
+                <Button variant="ghost" type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-8">
                   {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Sending…</> : "Send payment request"}
-                </button>
+                </Button>
               )}
             </form>
           ) : (
-            <div className="mt-7 flex flex-1 flex-col">
-              <div className="megsy-pay-list glass-appear" style={{ "--i": 0 } as React.CSSProperties}>
-                {TILES.map((t, index) => {
+            <div className="checkout-methods">
+              <div className="megsy-pay-list">
+                {TILES.map((t) => {
                   const active = t.id === pick;
                   return (
-                    <button
+                    <Button variant="ghost"
                       key={t.id}
                       type="button"
                       disabled={busy}
                       onClick={() => setPick(t.id)}
                       aria-pressed={active}
                       data-selected={active}
-                      className="megsy-pay-row glass-appear"
-                      style={{ "--i": index + 1 } as React.CSSProperties}
+                      className="megsy-pay-row"
                     >
                       <span className="megsy-pay-mark checkout-logo" dir="ltr">
                         <TileLogo id={t.id} />
                       </span>
-                      <span className="megsy-pay-name">{t.label}</span>
-                    </button>
+                      <span className="megsy-pay-copy"><span className="megsy-pay-name">{t.label}</span><span className="megsy-pay-detail">{t.id === "visa" ? "Credit or debit card" : t.id === "vodafone" ? "Mobile wallet" : "Digital wallet"}</span></span>
+                      <ChevronRight className="megsy-pay-chevron" aria-hidden="true" />
+                    </Button>
                   );
                 })}
               </div>
               {error && <ErrorBox text={error} />}
-              <div className="min-h-8 flex-1" />
-              <button type="button" disabled={busy} onClick={continueWithPick} className="megsy-pay-cta mt-8">
+              <Button variant="ghost" type="button" disabled={busy} onClick={continueWithPick} className="megsy-pay-cta mt-8">
                 {busy ? (
                   <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</>
                 ) : (
@@ -485,7 +505,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     <span>Continue with {tile.label}</span>
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -493,8 +513,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     </section>
   );
 }
-
-const INPUT = "glass-input mt-2 h-14 w-full rounded-lg px-4 text-base outline-none transition placeholder:text-muted-foreground";
 
 type TileId = "visa" | "mastercard" | "apple_pay" | "google_pay" | "vodafone";
 const TILES: Array<{
@@ -515,13 +533,9 @@ function TileLogo({ id }: { id: TileId }) {
     case "visa":
     case "mastercard":
       return (
-        <span className="flex items-center gap-1" aria-hidden="true">
-          <svg viewBox="0 0 32 20" className="h-[20px] w-[32px]">
-            <rect width="32" height="20" rx="4" fill="#1A1F71" />
-            <path fill="#fff" d="M9.2 6h2.3l2.1 6.2L15.8 6h2.2l-3.4 8h-2.1zM19 6h2v8h-2z" />
-            <path fill="#F7B600" d="M5 6h3.2l.4 1.6H5z" />
-          </svg>
-          <BrandMark brand="mastercard" className="!h-[20px] !w-[32px]" />
+        <span className="payment-card-pair" aria-hidden="true">
+          <BrandMark brand="visa" />
+          <BrandMark brand="mastercard" />
         </span>
       );
 
@@ -558,35 +572,5 @@ function ErrorBox({ text }: { text: string }) {
     >
       {text}
     </p>
-  );
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  secret = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder: string;
-  secret?: boolean;
-}) {
-  return (
-    <label className="block text-sm font-medium">
-      {label}
-      <input
-        inputMode="numeric"
-        dir="ltr"
-        type={secret ? "password" : "text"}
-        maxLength={secret ? 4 : 2}
-        value={value}
-        onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, secret ? 4 : 2))}
-        placeholder={placeholder}
-        className={`${INPUT} text-center`}
-      />
-    </label>
   );
 }
