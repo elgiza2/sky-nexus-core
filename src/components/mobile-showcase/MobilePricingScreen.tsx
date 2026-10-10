@@ -177,7 +177,6 @@ export default function MobilePricingScreen({
         <MobileSidebarButton
           onClick={() => onMenuClick?.()}
           ariaLabel="Menu"
-          className="h-11 w-11 rounded-full bg-card/70 shadow-sm backdrop-blur-md"
         />
       </header>
       {/* Spacer so content clears the fixed header */}
