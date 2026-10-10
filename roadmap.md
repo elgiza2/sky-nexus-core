@@ -249,3 +249,10 @@
 - [x] Keep long provider tasks connected or reconcile them after transient stream/network interruptions.
 - [x] Present real activity badges for every tool, including search, code, Python, images and video, with a readable fallback.
 - [x] Fully redesign Agents (unified with site style) as a clean, clear, simple page within the original site navigation after visual selection.
+
+## Full redesign pass (October 10, 2026)
+- [x] Payment methods: replaced the two-column tray and sliding marker with a quiet vertical list — one row per method, logo in a fixed slot, the chosen row turns solid ink. Verified five rows, both selection states, no console errors.
+- [x] Pricing squares: the chosen square inverts to solid ink (same signal as the payment list and the black action); dots behind the price are blurred into a soft wash; strikethrough and label contrast raised.
+- [x] Pricing screen: one typeface (serif headline removed), feature list set to one light weight with shorter copy, feature panel given a real pane of glass, block rebalanced toward the button.
+- [ ] Payment list polish: drop the duplicated wordmark on the Visa row, balance logo visual weights in the slot, and reduce the void above the bottom button.
+- [ ] Verify the real checkout end to end: blocked by external unmanaged authentication — the payment screen was viewed through a temporary flag that has since been removed.

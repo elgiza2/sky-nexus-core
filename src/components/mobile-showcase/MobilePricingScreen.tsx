@@ -9,6 +9,8 @@ import {
   Clock,
   Bot,
   Search,
+  Coins,
+  Film,
   Infinity as InfinityIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +21,6 @@ import { useUserLang } from "@/lib/authI18n";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
 
-function MegsyFeatureIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return <MegsyStar className={className ?? "h-5 w-5"} />;
-}
 
 function useLocalPrice() {
   return (_usd: number) => null;
@@ -85,7 +84,7 @@ export default function MobilePricingScreen({
         ];
 
     const head = {
-      icon: MegsyFeatureIcon,
+      icon: Coins,
       text: isYearly
         ? isAr
           ? "1000 رصيد Megsy كل شهر"
@@ -96,8 +95,8 @@ export default function MobilePricingScreen({
     };
 
     return [head, ...base, {
-      icon: MegsyFeatureIcon,
-      text: isAr ? "صور وفيديو Higgsfield للمشتركين فقط" : "Higgsfield images & video — subscribers only",
+      icon: Film,
+      text: isAr ? "صور وفيديو Higgsfield" : "Higgsfield images & video",
     }];
   }, [isAr, isYearly]);
 
@@ -178,15 +177,15 @@ export default function MobilePricingScreen({
         <MobileSidebarButton
           onClick={() => onMenuClick?.()}
           ariaLabel="Menu"
-          className="text-foreground"
+          className="h-11 w-11 rounded-full bg-card/70 shadow-sm backdrop-blur-md"
         />
       </header>
       {/* Spacer so content clears the fixed header */}
       <div className="shrink-0" style={{ height: "calc(max(env(safe-area-inset-top), 0.25rem) + 44px)" }} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[104px]">
-        {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.4]" />
+      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[88px]">
+        {/* Top flexible space — keeps the block clear of the header */}
+        <div className="flex-[0.7]" />
 
 
         {/* Megsy star mark */}
@@ -200,10 +199,10 @@ export default function MobilePricingScreen({
 
         {/* Title */}
         <h1
-          className={`glass-appear text-center font-normal leading-[1.2] tracking-[-0.015em] text-foreground ${
-            compact ? "mt-2 text-[22px]" : "mt-2.5 text-[25px]"
+          className={`glass-appear text-center font-semibold leading-[1.15] tracking-[-0.028em] text-foreground ${
+            compact ? "mt-2 text-[21px]" : "mt-2.5 text-[23px]"
           }`}
-          style={{ "--i": 1, fontFamily: '"Instrument Serif", Georgia, serif' } as React.CSSProperties}
+          style={{ "--i": 1 } as React.CSSProperties}
         >
           {t.title}
         </h1>
@@ -227,7 +226,9 @@ export default function MobilePricingScreen({
                   strokeWidth={1.5}
                 />
                 <span
-                  className={`flex-1 leading-[1.35] text-foreground ${compact ? "text-[13px]" : "text-[14px]"}`}
+                  className={`flex-1 leading-[1.4] font-normal text-foreground/80 ${
+                    compact ? "text-[13px]" : "text-[14px]"
+                  }`}
                 >
                   {text}
                 </span>
@@ -241,8 +242,6 @@ export default function MobilePricingScreen({
           className="glass-appear relative mt-4 grid grid-cols-2 gap-3"
           style={{ "--i": 3 } as React.CSSProperties}
         >
-          {/* One tile slides under the chosen square. */}
-          <span aria-hidden className="megsy-plan-flag" data-side={isYearly ? "b" : "a"} />
           {options.map((opt) => {
             const selected = isYearly === opt.yearly;
             return (
@@ -269,7 +268,7 @@ export default function MobilePricingScreen({
         </div>
 
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.3]" />
       </main>
 
       {/* Upgrade action — black, pinned to the bottom of the screen. */}

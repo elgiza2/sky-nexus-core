@@ -59,98 +59,57 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .megsy-checkout .megsy-back:active { transform: scale(0.94); }
 .megsy-checkout .megsy-back:disabled { opacity: 0.45; }
 
-/* Payment methods: no tray, no frame. Every card is the same white and only the
-   chosen one sits higher — a white marker slides underneath it and casts a
-   deeper shadow, so the pick reads as a lift rather than a colour change. */
-.megsy-checkout .megsy-pay-grid {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-}
-.megsy-checkout .megsy-pay-flag {
-  position: absolute;
-  top: 0;
-  left: 0;
-  border-radius: 24px;
-  /* The marker stays out of the way: the chosen card is marked by its own rim,
-     not by any colour poured into it. */
-  background: transparent;
-  backdrop-filter: none;
-  box-shadow: none;
-
-
-
-
-
-  pointer-events: none;
-  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
-}
-.megsy-checkout .megsy-pay-tile {
-  position: relative;
+/* Payment methods: a quiet vertical list, one row per method. Every row is the
+   same white pane of glass; the one you picked turns solid ink — the very same
+   signal the pricing squares and the black action already use, so the choice
+   reads at a glance without a tick, a rim or a sliding marker. */
+.megsy-checkout .megsy-pay-list {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  height: 132px;
-  padding: 18px;
+  gap: 8px;
+}
+.megsy-checkout .megsy-pay-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 58px;
+  padding: 0 16px;
   border: 0;
-  border-radius: 24px;
+  border-radius: 16px;
   background: var(--glass-panel);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
-
-
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: var(--glass-body), var(--glass-edge-light),
+    0 10px 20px -16px hsl(var(--foreground) / 0.22);
   color: hsl(var(--foreground));
-
   text-align: start;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  box-shadow: var(--glass-edge-light), inset 0 -1px 0 rgba(255, 255, 255, 0.5), 0 14px 30px -18px hsl(var(--foreground) / 0.28);
-  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.42s ease, backdrop-filter 0.42s ease;
-
+  transition: background 0.3s ease, color 0.3s ease, backdrop-filter 0.3s ease,
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1), transform 0.16s ease;
 }
-/* The chosen card hands its own surface to the marker sliding underneath, so
-   every card stays fully visible — nothing is dimmed. */
-/* Every card keeps its own pane of glass. The chosen one sits on the brand
-   liquid capsule — its colour glows up through the frost and the card lifts —
-   so the pick is obvious without taking any brand logo out of its colours. */
-/* Every card is the same neutral frosted glass. The chosen one is told apart
-   by a clean rim around its edges and a soft lift — no colour fill anywhere. */
-.megsy-checkout .megsy-pay-tile[data-selected="true"] {
-  background: var(--glass-fill-on);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
-  box-shadow: var(--glass-body), inset 0 0 0 2px var(--megsy-ink),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 16px 28px -20px hsl(var(--foreground) / 0.5);
-  transform: translateY(-6px);
+.megsy-checkout .megsy-pay-row[data-selected="true"] {
+  background: var(--megsy-ink);
+  color: var(--megsy-ink-foreground);
+  backdrop-filter: none;
+  box-shadow: 0 18px 30px -18px var(--megsy-ink-shadow);
 }
-
-
-
-
-.megsy-checkout .megsy-pay-tile:disabled { opacity: 0.5; }
-.megsy-checkout .megsy-pay-tile--wide {
-  grid-column: span 2;
-  height: 88px;
-  flex-direction: row;
+.megsy-checkout .megsy-pay-row:active { transform: scale(0.995); }
+.megsy-checkout .megsy-pay-row:disabled { opacity: 0.5; }
+/* Marks drawn in currentColor follow the row's own colour; brand-filled ones
+   (Mastercard's circles, Google's G, Vodafone's red) keep their real colours. */
+.megsy-checkout .megsy-pay-row[data-selected="true"] .checkout-logo,
+.megsy-checkout .megsy-pay-row[data-selected="true"] .payment-visa {
+  color: var(--megsy-ink-foreground);
+}
+.megsy-checkout .megsy-pay-mark {
+  display: flex;
+  width: 62px;
+  flex-shrink: 0;
   align-items: center;
-  justify-content: flex-start;
-  gap: 14px;
+  justify-content: center;
 }
-
-.megsy-checkout .megsy-pay-tile .megsy-pay-name {
+.megsy-checkout .megsy-pay-row .megsy-pay-name {
   font-size: 16px;
   font-weight: 500;
 }

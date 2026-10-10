@@ -68,16 +68,21 @@
   --glass-refract-liquid: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
     url(#megsy-glass-warp);
   /* Thickness: the light a real pane gathers along its inner face. */
-  --glass-body: inset 0 0 22px rgba(255, 255, 255, 0.55),
-    inset 0 0 4px rgba(255, 255, 255, 0.7);
+  --glass-body: inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 0 26px rgba(255, 255, 255, 0.6);
   --glass-sheen: linear-gradient(
-      168deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.2) 36%,
-      rgba(255, 255, 255, 0) 56%,
-      rgba(10, 10, 10, 0.06) 100%
+      112deg,
+      rgba(255, 255, 255, 0) 14%,
+      rgba(255, 255, 255, 0.9) 34%,
+      rgba(255, 255, 255, 0.3) 50%,
+      rgba(255, 255, 255, 0) 66%
     ),
-    radial-gradient(90% 60% at 18% 4%, rgba(255, 255, 255, 0.7), transparent 62%);
+    linear-gradient(
+      168deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0) 46%,
+      rgba(15, 23, 42, 0.05) 100%
+    );
 
 
 
@@ -90,7 +95,7 @@
   background-color: var(--glass-bg) !important;
   /* Dots sit on top of the canvas and are washed away by a soft gradient, so
      they thin out and vanish on their own instead of running to the bottom. */
-  background-image: linear-gradient(to bottom, transparent 0%, var(--glass-bg) 72%),
+  background-image: linear-gradient(to bottom, transparent 0%, transparent 58%, var(--glass-bg) 94%),
     radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
   background-size: 100% 100%, 22px 22px !important;
 
@@ -104,21 +109,21 @@
 html[data-theme="light"] .megsy-checkout,
 html[data-theme="light"] .megsy-pricing {
   --glass-bg: #ffffff;
-  --glass-dot: hsl(var(--foreground) / 0.16);
+  --glass-dot: hsl(var(--foreground) / 0.3);
   --glass-surface: hsl(var(--foreground) / 0.05);
   --glass-surface-hover: hsl(var(--foreground) / 0.08);
   --glass-surface-on: hsl(var(--card));
-  /* Frost on white: a sheen that deepens downward, a blur strong enough to wipe
-     the dotted canvas clean behind the panel, and a lit top edge — the three
-     cues that make a pane read as glass instead of a flat card. */
-  --glass-panel: linear-gradient(165deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.1));
+  /* Glass on white: the pane stays a thin white veil so the dotted canvas keeps
+     showing through it — that is what tells the eye the panel is see-through.
+     The bend lives at the rim (see the liquid rim below), not in a heavy frost. */
+  --glass-panel: linear-gradient(165deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
   --glass-panel-on: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.85);
-  --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55));
+  --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.42));
 
-  --glass-shadow: 0 14px 30px -18px hsl(var(--foreground) / 0.3);
+  --glass-shadow: 0 18px 40px -24px hsl(var(--foreground) / 0.3);
 
-  --glass-shadow-on: 0 18px 36px -16px hsl(var(--foreground) / 0.38);
+  --glass-shadow-on: 0 28px 56px -30px hsl(var(--foreground) / 0.4);
 
 }
 
@@ -257,9 +262,9 @@ html[data-theme="light"] .megsy-pricing {
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
-    --glass-dot: hsl(var(--foreground) / 0.16);
+    --glass-dot: hsl(var(--foreground) / 0.3);
     background-color: #ffffff !important;
-    background-image: linear-gradient(to bottom, transparent 0%, #ffffff 72%),
+    background-image: linear-gradient(to bottom, transparent 0%, transparent 58%, #ffffff 94%),
       radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
     background-size: 100% 100%, 22px 22px !important;
 
@@ -267,73 +272,51 @@ html[data-theme="light"] .megsy-pricing {
   }
 }
 
-/* ── Mobile pricing: two squares, one sliding marker, one black action ──
- * The marker is a plain surface that slides between the two squares; the
- * price replays its own entrance so switching plans feels deliberate. */
-.megsy-pricing .megsy-plan-flag {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  inset-inline-start: 0;
-  width: calc(50% - 6px);
-  border-radius: 24px;
-  /* The marker stays out of the way: the chosen square is marked by its own
-     rim, not by any colour poured into it. */
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-
-
-
-
-
-  pointer-events: none;
-  transform: translateX(0);
-  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+/* The benefit panel would otherwise be a 5% wash on white — its edges vanish
+   into the canvas. On the white canvas it gets a real pane: denser fill, a
+   deeper bend and a shadow that lifts it clear of the dots. */
+html[data-theme="light"] .megsy-pricing .glass-tile {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.62));
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: var(--glass-body), var(--glass-edge-light),
+    0 22px 44px -28px hsl(var(--foreground) / 0.34);
 }
-.megsy-pricing .megsy-plan-flag[data-side="b"] {
-  transform: translateX(calc(100% + 12px));
-}
-.megsy-pricing[dir="rtl"] .megsy-plan-flag[data-side="b"] {
-  transform: translateX(calc(-100% - 12px));
-}
+
+/* ── Mobile pricing: two squares and one black action ─────────────────────
+ * The chosen square inverts to solid ink; the price replays its own entrance
+ * so switching plans feels deliberate. */
 .megsy-pricing .megsy-plan-tile {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 6px;
   aspect-ratio: 1 / 1;
   border: 0;
-  border-radius: 24px;
+  border-radius: 22px;
   background: var(--glass-panel);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
-  box-shadow: var(--glass-body), var(--glass-edge-light),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
-
-
+  /* The canvas stays visible through the pane, but its dots are bent into a
+     soft wash instead of sitting sharp behind the price. */
+  backdrop-filter: blur(16px) saturate(160%);
+  box-shadow: var(--glass-body), var(--glass-edge-light), var(--glass-shadow);
   color: hsl(var(--foreground));
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.42s ease, box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.42s ease;
+  transition: background 0.38s ease, color 0.38s ease, backdrop-filter 0.38s ease,
+    box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* The chosen square hands its own surface to the marker sliding underneath,
-   so both squares stay fully visible — nothing is dimmed. */
-/* Both squares are the same neutral frosted glass. The chosen one is told apart
-   by a clean rim around its edges and a soft lift — no colour fill anywhere. */
+/* The chosen square inverts to solid ink — the same black the upgrade button
+   wears. Nothing else on the page is black, so the pick is unmistakable, and
+   every label inside it flips with the one colour below. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
-  background: var(--glass-fill-on);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
-  box-shadow: var(--glass-body), inset 0 0 0 2px var(--megsy-ink),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 32px -22px hsl(var(--foreground) / 0.5);
-  transform: translateY(-6px);
+  background: var(--megsy-ink);
+  color: var(--megsy-ink-foreground);
+  backdrop-filter: none;
+  box-shadow: 0 20px 36px -20px var(--megsy-ink-shadow);
+  transform: translateY(-5px);
 }
 
 
@@ -343,23 +326,26 @@ html[data-theme="light"] .megsy-pricing {
   transform: scale(0.97);
 }
 .megsy-pricing .megsy-plan-name {
-  font-size: 12.5px;
-  font-weight: 500;
-  color: hsl(var(--muted-foreground));
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, currentColor 68%, transparent);
 }
 .megsy-pricing .megsy-plan-price {
-  font-size: 23px;
+  font-size: 26px;
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   animation: megsy-plan-pop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .megsy-pricing .megsy-plan-unit,
 .megsy-pricing .megsy-plan-strike {
   font-size: 11px;
-  color: hsl(var(--muted-foreground));
+  color: color-mix(in oklab, currentColor 62%, transparent);
 }
 .megsy-pricing .megsy-plan-strike {
+  margin-top: 3px;
   text-decoration: line-through;
 }
 @keyframes megsy-plan-pop {
@@ -406,4 +392,79 @@ html[data-theme="light"] .megsy-pricing {
 }
 .megsy-pricing .megsy-plan-cta:disabled {
   opacity: 0.6;
+}
+
+/* ── Liquid specular ──────────────────────────────────────────────────────
+ * The wet highlight a pane carries: light gathers at the top face and the
+ * pane sits heavier toward its base. It lives under the content, so names,
+ * prices and brand marks stay exactly as crisp as before. */
+.megsy-pricing .megsy-plan-tile::after,
+.megsy-checkout .megsy-pay-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: var(--glass-sheen);
+  background-repeat: no-repeat;
+  background-size: 220% 220%;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+  animation: glass-sheen-drift 12s ease-in-out infinite alternate;
+}
+.megsy-pricing .megsy-plan-tile > *,
+.megsy-checkout .megsy-pay-tile > * {
+  position: relative;
+  z-index: 1;
+}
+@keyframes glass-sheen-drift {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 100% 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .megsy-pricing .megsy-plan-tile::after,
+  .megsy-checkout .megsy-pay-tile::after {
+    animation: none;
+  }
+}
+
+/* ── The liquid rim ───────────────────────────────────────────────────────
+ * A pane of glass is only convincing where its edge bends what sits behind it.
+ * A narrow band at the rim samples the canvas through the displacement filter
+ * and drags the dotted backdrop with it, while the middle of the pane stays
+ * clear — that contrast is what reads as thickness rather than a flat card.
+ * The band is a masked ring (the padding box minus the content box), so it
+ * follows the rounded corners exactly and never draws an outline. */
+.megsy-pricing .megsy-plan-tile::before,
+.megsy-checkout .megsy-pay-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 15px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 255, 255, 0.18) 42%,
+    rgba(255, 255, 255, 0.1) 62%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  backdrop-filter: blur(5px) saturate(200%) brightness(1.04);
+  backdrop-filter: blur(5px) saturate(200%) brightness(1.04) url(#megsy-glass-warp-tight);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  transition: opacity 0.3s ease;
+}
+/* A solid ink pane has no glass left to bend: both wet layers fade away on the
+   chosen square rather than fogging over it. */
+.megsy-pricing .megsy-plan-tile[data-selected="true"]::before,
+.megsy-pricing .megsy-plan-tile[data-selected="true"]::after {
+  opacity: 0;
 }
