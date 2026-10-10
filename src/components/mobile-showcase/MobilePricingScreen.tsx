@@ -249,7 +249,7 @@ export default function MobilePricingScreen({
                 onClick={() => onToggleYearly(opt.yearly)}
                 data-selected={selected}
                 aria-pressed={selected}
-                className={`glass-tile flex w-full items-center gap-3 px-4 text-start transition-all duration-200 ${
+                className={`glass-tile glass-tile--row flex w-full items-center gap-3 px-4 text-start transition-all duration-200 ${
                   compact ? "py-2" : "py-2.5"
                 } ${isAr ? "flex-row-reverse" : ""}`}
                 style={{ "--i": 4 + index } as React.CSSProperties}
