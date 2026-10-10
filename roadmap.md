@@ -38,6 +38,8 @@
 - [ ] Checkout: no brand logo inside the continue button (name only), and the back button round.
 - [ ] Mobile pricing: both plan squares always read as clear glass — no dimming the unchosen one.
 - [ ] Checkout: every payment card reads as clear glass at all times, with the chosen one lifted.
+- [ ] Selection clarity: the chosen plan square and the chosen payment card must be obviously obvious (dark glass capsule, light text and logo) in both pricing and checkout.
+
 
 
 
