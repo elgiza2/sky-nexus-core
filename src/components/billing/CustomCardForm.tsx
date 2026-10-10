@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, Check, Loader2, LockKeyhole } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import "@/styles/checkout.css";
 import { BrandMark, CardPreview } from "./CardPreview";
-
 
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
@@ -65,6 +63,30 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const pollRef = useRef<number | null>(null);
   const [pick, setPick] = useState<TileId>("visa");
 
+  /* The chosen card is marked by one surface that slides across the tray, so
+     switching methods reads as a single movement instead of a state flip. */
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const tileRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [flag, setFlag] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+
+  useEffect(() => {
+    const move = () => {
+      const grid = gridRef.current;
+      const tile = tileRefs.current[pick];
+      if (!grid || !tile) return;
+      const box = grid.getBoundingClientRect();
+      const face = tile.getBoundingClientRect();
+      setFlag({ x: face.left - box.left, y: face.top - box.top, w: face.width, h: face.height });
+    };
+    move();
+    const settle = window.setTimeout(move, 140);
+    window.addEventListener("resize", move);
+    return () => {
+      window.clearTimeout(settle);
+      window.removeEventListener("resize", move);
+    };
+  }, [pick]);
+
   useEffect(() => {
     if (!open) return;
     const listener = (event: MessageEvent) => {
@@ -74,7 +96,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setThreeDsUrl(null);
       setBusy(false);
       if (data.params?.status === "SUCCESS") setResult("success");
-      else setError("لم يتم تأكيد العملية من البنك. جرّب بطاقة أخرى أو اختر وسيلة دفع مختلفة.");
+      else setError("Your bank didn’t confirm the payment. Try another card or a different method.");
     };
     window.addEventListener("message", listener);
     return () => window.removeEventListener("message", listener);
@@ -106,7 +128,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     setError(null);
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("انتهت جلسة الدخول. سجّل دخولك تاني.");
+      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
       const { data, error: checkoutError } = await invokeFunction("kashier-checkout", {
         body: {
           kind: "checkout",
@@ -114,17 +136,17 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           interval,
           provider: "kashier",
           method: selectedMethod,
-          display: "ar",
+          display: "en",
         },
         headers: { Authorization: `Bearer ${session.session.access_token}` },
       });
       if (checkoutError) throw checkoutError;
       const url = data?.url || data?.checkout_url;
-      if (!url) throw new Error(data?.error || "تعذر فتح صفحة الدفع.");
+      if (!url) throw new Error(data?.error || "Couldn’t open the payment page.");
       setHostedUrl(url);
       setBusy(false);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "حصلت مشكلة أثناء فتح الدفع.");
+      setError(cause instanceof Error ? cause.message : "Something went wrong while opening the payment page.");
       setBusy(false);
     }
   };
@@ -140,14 +162,14 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       !/^\d{2}$/.test(year) ||
       !/^\d{3,4}$/.test(cvv)
     ) {
-      setError("راجع بيانات البطاقة وتأكد إنها كاملة.");
+      setError("Check the card details and make sure they’re complete.");
       return;
     }
     setBusy(true);
     setResult("processing");
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("انتهت جلسة الدخول. سجّل دخولك تاني.");
+      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
       const { data: order, error: orderError } = await invokeFunction<DirectOrder>(
         "kashier-direct-order",
         {
@@ -155,7 +177,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           headers: { Authorization: `Bearer ${session.session.access_token}` },
         },
       );
-      if (orderError || !order) throw orderError || new Error("تعذر بدء عملية الدفع.");
+      if (orderError || !order) throw orderError || new Error("Couldn’t start the payment.");
       setOrderId(order.order_id);
       const redirect = `${window.location.origin}/billing/success?provider=kashier&order=${encodeURIComponent(order.order_id)}`;
       const response = await fetch(order.endpoint, {
@@ -199,10 +221,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       } catch {}
       if (!response.ok)
         throw new Error(
-          payload.messages?.ar ||
-            payload.messages?.en ||
+          payload.messages?.en ||
+            payload.messages?.ar ||
             rawResponse ||
-            `رفض مزود الدفع الطلب (${response.status}).`,
+            `The payment provider rejected the request (${response.status}).`,
         );
       const auth = payload.response?.authentication;
       if (auth?.redirectUrl && sameOrigin(auth.redirectUrl)) {
@@ -216,9 +238,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
         setResult("success");
         return;
       }
-      throw new Error(payload.messages?.ar || payload.messages?.en || "تم رفض العملية.");
+      throw new Error(payload.messages?.en || payload.messages?.ar || "The payment was declined.");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "حصلت مشكلة أثناء الدفع.");
+      setError(cause instanceof Error ? cause.message : "Something went wrong while paying.");
       setBusy(false);
       setResult("idle");
     } finally {
@@ -235,18 +257,18 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     setError(null);
     const mobile = phone.replace(/\D/g, "");
     if (!/^01[0125]\d{8}$/.test(mobile)) {
-      setError("اكتب رقم محفظة فودافون كاش صحيح (11 رقم يبدأ بـ 01).");
+      setError("Enter a valid Vodafone Cash wallet number (11 digits starting with 01).");
       return;
     }
     setBusy(true);
     try {
       const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("انتهت جلسة الدخول. سجّل دخولك تاني.");
+      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
       const { data: order, error: orderError } = await invokeFunction<DirectOrder>("kashier-direct-order", {
         body: { tier, interval },
         headers: { Authorization: `Bearer ${session.session.access_token}` },
       });
-      if (orderError || !order) throw orderError || new Error("تعذر بدء عملية الدفع.");
+      if (orderError || !order) throw orderError || new Error("Couldn’t start the payment.");
       setOrderId(order.order_id);
       const response = await fetch(order.endpoint, {
         method: "POST",
@@ -266,7 +288,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       let payload: PaymentResponse & { response?: { code?: string } } = {};
       try { payload = JSON.parse(raw); } catch {}
       if (!response.ok || payload.status !== "SUCCESS") {
-        throw new Error(payload.messages?.ar || payload.messages?.en || "الرقم ده مش مسجل على محفظة. جرّب رقم تاني.");
+        throw new Error(payload.messages?.en || payload.messages?.ar || "This number isn’t linked to a wallet. Try another one.");
       }
       setWalletWaiting(true);
       setBusy(false);
@@ -279,7 +301,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           stop();
           setWalletWaiting(false);
           setBusy(false);
-          setError("انتهى وقت الموافقة على الدفع. جرّب تاني.");
+          setError("The approval window expired. Please try again.");
           return;
         }
         try {
@@ -299,12 +321,12 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             stop();
             setWalletWaiting(false);
             setBusy(false);
-            setError("تم رفض الدفع من المحفظة أو انتهى وقته. جرّب تاني.");
+            setError("The wallet declined the payment or its window expired. Please try again.");
           }
         } catch {}
       }, 4000);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "حصلت مشكلة أثناء الدفع.");
+      setError(cause instanceof Error ? cause.message : "Something went wrong while paying.");
       setBusy(false);
     }
   };
@@ -323,7 +345,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       if (href && href.startsWith(window.location.origin)) {
         setHostedUrl(null);
         const status = new URL(href).searchParams.get("paymentStatus");
-        if (status && status !== "SUCCESS") setError("لم تكتمل عملية الدفع. جرّب تاني.");
+        if (status && status !== "SUCCESS") setError("The payment didn’t complete. Please try again.");
         else setResult("success");
       }
     } catch {}
@@ -356,86 +378,135 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     } else onClose();
   };
 
+  const view = hostedUrl ? "hosted" : threeDsUrl ? "verify" : result === "success" ? "done" : stage;
+
   return (
-    <section className="megsy-checkout fixed inset-0 z-[120] overflow-y-auto overscroll-contain" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+    <section className="megsy-checkout fixed inset-0 z-[120] overflow-y-auto overscroll-contain" dir="ltr" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
       <div aria-hidden="true" className="glass-texture pointer-events-none absolute inset-0" />
       <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
         <header className="flex items-center">
-          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy && !hostedUrl} aria-label="رجوع" title="رجوع" className="h-11 w-11 rounded-full border-0 bg-transparent p-0 hover:bg-transparent active:bg-transparent"><ArrowLeft className="rotate-180" /></Button>
+          <button type="button" onClick={back} disabled={busy && !hostedUrl} aria-label="Back" title="Back" className="megsy-back">
+            <ArrowLeft className="h-5 w-5" />
+          </button>
         </header>
 
-        <div className="glass-appear mt-10 flex flex-1 flex-col sm:mt-12">
-          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : hostedUrl ? `الدفع بـ ${tile.label}` : stage === "card" ? "بيانات البطاقة" : stage === "wallet" ? "فودافون كاش" : "اختار طريقة الدفع"}</h1>
+        <div key={view} className="glass-appear mt-10 flex flex-1 flex-col sm:mt-12">
+          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">
+            {result === "success"
+              ? "Payment complete"
+              : threeDsUrl
+                ? "Confirm your payment"
+                : hostedUrl
+                  ? `Pay with ${tile.label}`
+                  : stage === "card"
+                    ? "Card details"
+                    : stage === "wallet"
+                      ? "Vodafone Cash"
+                      : "Choose how to pay"}
+          </h1>
           {hostedUrl && result !== "success" ? (
             <div className="mt-6 flex-1">
-              <iframe title={`الدفع بـ ${tile.label}`} src={hostedUrl} onLoad={onHostedLoad} allow="payment *" className="h-[min(640px,72dvh)] w-full rounded-2xl border border-foreground/10 bg-card" />
+              <iframe title={`Pay with ${tile.label}`} src={hostedUrl} onLoad={onHostedLoad} allow="payment *" className="h-[min(640px,72dvh)] w-full rounded-2xl bg-card" />
             </div>
           ) : threeDsUrl ? (
             <div className="mt-6 flex-1 space-y-4">
-              <p className="text-sm leading-6 text-muted-foreground">أكمل التحقق من البنك لإتمام الدفع.</p>
-              <iframe title="تحقق البنك" src={threeDsUrl} className="h-[480px] w-full rounded-lg border border-border bg-card" />
+              <p className="text-sm leading-6 text-muted-foreground">Complete your bank’s verification to finish the payment.</p>
+              <iframe title="Bank verification" src={threeDsUrl} className="h-[480px] w-full rounded-2xl bg-card" />
             </div>
           ) : result === "success" ? (
             <div className="flex flex-1 flex-col">
               <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
                 <span className="flex h-20 w-20 items-center justify-center rounded-full bg-foreground text-background"><Check className="h-9 w-9" /></span>
-                <h2 className="mt-6 text-xl font-semibold">شكرًا لك</h2>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">بنأكد العملية ونفعّل اشتراكك خلال لحظات.</p>
+                <h2 className="mt-6 text-xl font-semibold">Thank you</h2>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">We’re confirming the payment and activating your subscription in a moment.</p>
                 {orderId && <p className="mt-2 max-w-full break-all font-mono text-xs text-muted-foreground">{orderId}</p>}
               </div>
-              <Button variant="ghost" className="glass-cta h-14 w-full rounded-full text-base" onClick={onClose}>متابعة</Button>
+              <button type="button" className="megsy-pay-cta" onClick={onClose}>Continue</button>
             </div>
           ) : stage === "card" ? (
             <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
               <CardPreview number={number} name={name} month={month} year={year} fallbackBrand={pick === "mastercard" ? "mastercard" : "visa"} />
               <div className="mt-8 space-y-5">
-
-                <label className="block text-sm font-medium">رقم البطاقة<input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className={INPUT} /></label>
-                <label className="block text-sm font-medium">الاسم على البطاقة<input dir="ltr" autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="الاسم كما يظهر على البطاقة" className={`${INPUT} text-start`} /></label>
-                <div className="grid grid-cols-3 gap-3"><Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" /><Field label="السنة" value={year} onChange={setYear} placeholder="YY" /><Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret /></div>
+                <label className="block text-sm font-medium">Card number<input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className={INPUT} /></label>
+                <label className="block text-sm font-medium">Name on card<input dir="ltr" autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Name as it appears on the card" className={`${INPUT} text-start`} /></label>
+                <div className="grid grid-cols-3 gap-3"><Field label="Month" value={month} onChange={setMonth} placeholder="MM" /><Field label="Year" value={year} onChange={setYear} placeholder="YY" /><Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret /></div>
               </div>
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
-              <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier</p>
-              <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-4 h-14 w-full rounded-full text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : "ادفع الآن"}</Button>
+              <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Secure payment via Kashier</p>
+              <button type="submit" disabled={busy} className="megsy-pay-cta mt-4">
+                {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</> : "Pay now"}
+              </button>
             </form>
           ) : stage === "wallet" ? (
             <form onSubmit={submitWallet} className="mt-6 flex flex-1 flex-col" autoComplete="off">
               {walletWaiting ? (
                 <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
                   <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                  <h2 className="mt-6 text-xl font-semibold">افتح موبايلك ووافق على الدفع</h2>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">بعتنا طلب دفع للرقم <span dir="ltr">{phone}</span>.</p>
+                  <h2 className="mt-6 text-xl font-semibold">Open your phone and approve the payment</h2>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground">We sent a payment request to <span dir="ltr">{phone}</span>.</p>
                   <ol className="glass-tile mt-6 w-full space-y-3 p-5 text-start text-sm leading-6">
-                    <li>١. افتح تطبيق «أنا فودافون» أو اطلب <span dir="ltr" className="font-semibold">*9#</span></li>
-                    <li>٢. ادخل على «طلبات الدفع» ووافق على الطلب</li>
-                    <li>٣. اكتب الرقم السري للمحفظة — والصفحة هتكمّل لوحدها</li>
+                    <li>1. Open the “Ana Vodafone” app or dial <span dir="ltr" className="font-semibold">*9#</span></li>
+                    <li>2. Go to “Payment requests” and approve it</li>
+                    <li>3. Enter your wallet PIN — this page continues on its own</li>
                   </ol>
-                  <Button variant="ghost" type="button" onClick={cancelWallet} className="mt-6 h-11 rounded-full px-6 text-sm text-foreground/70">تغيير الرقم أو الإلغاء</Button>
+                  <button type="button" onClick={cancelWallet} className="megsy-pay-quiet mt-6">Change number or cancel</button>
                 </div>
               ) : (
-                <label className="block text-sm font-medium">رقم محفظة فودافون كاش<input inputMode="tel" autoComplete="tel" dir="ltr" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="01xxxxxxxxx" className={`${INPUT} text-start`} /></label>
+                <label className="block text-sm font-medium">Vodafone Cash wallet number<input inputMode="tel" autoComplete="tel" dir="ltr" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="01xxxxxxxxx" className={`${INPUT} text-start`} /></label>
               )}
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
-              {!walletWaiting && <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-8 h-14 w-full rounded-full text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ الإرسال…</> : "ابعت طلب الدفع"}</Button>}
+              {!walletWaiting && (
+                <button type="submit" disabled={busy} className="megsy-pay-cta mt-8">
+                  {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Sending…</> : "Send payment request"}
+                </button>
+              )}
             </form>
           ) : (
             <div className="mt-7 flex flex-1 flex-col">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="megsy-pay-grid glass-appear" ref={gridRef} style={{ "--i": 0 } as React.CSSProperties}>
+                {flag && (
+                  <span
+                    aria-hidden
+                    className="megsy-pay-flag"
+                    style={{ transform: `translate(${flag.x}px, ${flag.y}px)`, width: flag.w, height: flag.h }}
+                  />
+                )}
                 {TILES.map((t, index) => {
                   const active = t.id === pick;
-                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} data-selected={active} style={{ "--i": index } as React.CSSProperties} className={`glass-tile glass-appear h-[142px] flex-col items-start justify-between p-5 text-start ${t.id === "vodafone" ? "col-span-2 h-[100px] flex-row items-center" : ""}`}>
-                    <span className={`checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center transition-opacity ${active ? "" : "opacity-50"}`} dir="ltr"><TileLogo id={t.id} /></span>
-                    <span className={`text-base font-medium transition-colors ${active ? "text-foreground" : "text-foreground/55"} ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
-
-                  </Button>;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      disabled={busy}
+                      onClick={() => setPick(t.id)}
+                      aria-pressed={active}
+                      data-selected={active}
+                      ref={(el) => { tileRefs.current[t.id] = el; }}
+                      className={`megsy-pay-tile glass-appear ${t.id === "vodafone" ? "megsy-pay-tile--wide" : ""}`}
+                      style={{ "--i": index } as React.CSSProperties}
+                    >
+                      <span className={`checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center ${active ? "" : "opacity-50"}`} dir="ltr">
+                        <TileLogo id={t.id} />
+                      </span>
+                      <span className="megsy-pay-name">{t.label}</span>
+                    </button>
+                  );
                 })}
               </div>
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
-              <Button variant="ghost" data-plain type="button" disabled={busy} onClick={continueWithPick} className="glass-cta mt-8 h-14 w-full gap-3 rounded-full px-5 text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : <><span className="checkout-mark flex h-5 w-12 shrink-0 items-center justify-center whitespace-nowrap" dir="ltr"><TileLogo id={pick} /></span><span className="whitespace-nowrap">تابع الدفع بـ {tile.label}</span></>}</Button>
-
+              <button type="button" disabled={busy} onClick={continueWithPick} className="megsy-pay-cta mt-8">
+                {busy ? (
+                  <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</>
+                ) : (
+                  <>
+                    <span className="checkout-mark flex h-5 shrink-0 items-center justify-center" dir="ltr"><TileLogo id={pick} /></span>
+                    <span>Continue with {tile.label}</span>
+                  </>
+                )}
+              </button>
             </div>
           )}
         </div>
@@ -458,7 +529,7 @@ const TILES: Array<{
   { id: "mastercard", label: "Mastercard", kind: "card", method: "card" },
   { id: "apple_pay", label: "Apple Pay", kind: "hosted", method: "card", instant: true },
   { id: "google_pay", label: "Google Pay", kind: "hosted", method: "card", instant: true },
-  { id: "vodafone", label: "فودافون كاش", kind: "wallet", method: "wallet" },
+  { id: "vodafone", label: "Vodafone Cash", kind: "wallet", method: "wallet" },
 ];
 
 function TileLogo({ id }: { id: TileId }) {
@@ -497,7 +568,7 @@ function ErrorBox({ text }: { text: string }) {
   return (
     <p
       role="alert"
-      className="mt-4 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive"
+      className="mt-4 rounded-lg bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive"
     >
       {text}
     </p>
