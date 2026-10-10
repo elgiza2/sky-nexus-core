@@ -146,17 +146,42 @@
   }
 }
 
-/* Phones: a flat surface reads better than the desktop wash under the glass. */
+/* Phones: a flat canvas gives the blur nothing to refract, so keep a soft
+   light source above and a faint one below — that is what makes the panels
+   read as glass instead of flat cards. */
 @media (max-width: 767px) {
   .megsy-checkout,
   .megsy-pricing {
     --glass-bg: oklch(0.15 0 0);
     --glass-dot: hsl(var(--foreground) / 0.08);
-    background: var(--glass-bg);
+    background:
+      radial-gradient(
+        130% 62% at 50% -12%,
+        hsl(var(--primary) / 0.16),
+        transparent 72%
+      ),
+      radial-gradient(
+        95% 52% at 50% 112%,
+        hsl(var(--foreground) / 0.07),
+        transparent 72%
+      ),
+      var(--glass-bg);
   }
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: oklch(0.961 0 0);
     --glass-dot: hsl(var(--foreground) / 0.1);
+    background:
+      radial-gradient(
+        130% 62% at 50% -12%,
+        hsl(var(--primary) / 0.12),
+        transparent 72%
+      ),
+      radial-gradient(
+        95% 52% at 50% 112%,
+        hsl(var(--foreground) / 0.06),
+        transparent 72%
+      ),
+      var(--glass-bg);
   }
 }
