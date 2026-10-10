@@ -308,9 +308,6 @@ html[data-theme="light"] .megsy-pricing {
   border: 0;
   border-radius: 24px;
   background: var(--glass-panel);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
   box-shadow: var(--glass-body), var(--glass-edge-light),
     inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
 
@@ -328,9 +325,6 @@ html[data-theme="light"] .megsy-pricing {
    by a clean rim around its edges and a soft lift — no colour fill anywhere. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
   background: var(--glass-fill-on);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
-  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
-    url(#megsy-glass-warp);
   box-shadow: var(--glass-body), inset 0 0 0 2px var(--megsy-ink),
     inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 18px 32px -22px hsl(var(--foreground) / 0.5);
   transform: translateY(-6px);
