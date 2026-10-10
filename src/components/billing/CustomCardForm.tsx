@@ -487,7 +487,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                       className={`megsy-pay-tile glass-appear ${t.id === "vodafone" ? "megsy-pay-tile--wide" : ""}`}
                       style={{ "--i": index } as React.CSSProperties}
                     >
-                      <span className={`checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center ${active ? "" : "opacity-50"}`} dir="ltr">
+                      <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center" dir="ltr">
                         <TileLogo id={t.id} />
                       </span>
                       <span className="megsy-pay-name">{t.label}</span>

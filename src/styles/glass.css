@@ -57,6 +57,11 @@
   --glass-panel: var(--glass-surface);
   --glass-panel-on: var(--glass-surface-on);
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.5);
+  --glass-marker: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
+  --glass-marker-edge: inset 0 1px 0 hsl(var(--card) / 0.85);
+  --glass-marker-shadow: 0 20px 40px -18px hsl(var(--foreground) / 0.4);
+  --glass-marker-foreground: hsl(var(--foreground));
+
   --glass-bg: hsl(var(--background));
 
   --glass-dot: transparent;
@@ -85,7 +90,14 @@ html[data-theme="light"] .megsy-pricing {
   --glass-panel: linear-gradient(165deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.1));
   --glass-panel-on: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.85);
+  /* The chosen square rides a smoked capsule in the same ink as the action
+     button, so the pick is unmistakable while every card keeps its own tint. */
+  --glass-marker: linear-gradient(165deg, hsl(var(--megsy-ink) / 0.94), hsl(var(--megsy-ink) / 0.8));
+  --glass-marker-edge: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  --glass-marker-shadow: 0 24px 46px -18px hsl(var(--megsy-ink) / 0.55);
+  --glass-marker-foreground: hsl(var(--megsy-ink-foreground));
   --glass-shadow: 0 14px 30px -18px hsl(var(--foreground) / 0.3);
+
   --glass-shadow-on: 0 18px 36px -16px hsl(var(--foreground) / 0.38);
 
 }
@@ -235,9 +247,10 @@ html[data-theme="light"] .megsy-pricing {
   inset-inline-start: 0;
   width: calc(50% - 6px);
   border-radius: 24px;
-  background: var(--glass-panel-on);
-  box-shadow: var(--glass-edge-light), 0 20px 40px -18px hsl(var(--foreground) / 0.4);
+  background: var(--glass-marker);
+  box-shadow: var(--glass-marker-edge), var(--glass-marker-shadow);
   backdrop-filter: blur(18px) saturate(160%);
+
 
 
   pointer-events: none;
@@ -276,7 +289,14 @@ html[data-theme="light"] .megsy-pricing {
   background: transparent;
   box-shadow: none;
   backdrop-filter: none;
+  color: var(--glass-marker-foreground);
 }
+.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-name,
+.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-unit,
+.megsy-pricing .megsy-plan-tile[data-selected="true"] .megsy-plan-strike {
+  color: color-mix(in oklab, var(--glass-marker-foreground) 68%, transparent);
+}
+
 
 .megsy-pricing .megsy-plan-tile:active {
   transform: scale(0.97);
