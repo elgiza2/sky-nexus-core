@@ -283,7 +283,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               <div className="grid grid-cols-2 gap-3">
                 {TILES.map((t, index) => {
                   const active = t.id === pick;
-                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} data-selected={active} style={{ "--i": index } as React.CSSProperties} className={`glass-tile glass-appear h-[142px] flex-col items-start justify-between p-5 text-start ${t.id === "vodafone" ? "col-span-2 h-[100px] flex-row items-center" : ""}`}>
+                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} data-selected={active} style={{ "--i": index } as React.CSSProperties} className={`glass-tile glass-appear h-[142px] flex-col items-start justify-between p-5 text-start ${t.id === "vodafone" ? "col-span-2 h-[100px] flex-row items-center" : ""}`}>
                     <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center" dir="ltr"><TileLogo id={t.id} /></span>
 
 
