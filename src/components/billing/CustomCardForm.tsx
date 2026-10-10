@@ -303,7 +303,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   );
 }
 
-const INPUT = "glass-input mt-2 h-14 w-full rounded-lg px-4 text-base outline-none transition placeholder:text-muted-foreground/60";
+const INPUT = "glass-input mt-2 h-14 w-full rounded-lg px-4 text-base outline-none transition placeholder:text-muted-foreground";
 
 type TileId = "visa" | "mastercard" | "apple_pay" | "google_pay" | "vodafone";
 const TILES: Array<{
