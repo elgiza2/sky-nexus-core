@@ -59,6 +59,21 @@
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.5);
   --glass-fill-on: linear-gradient(165deg, hsl(var(--card) / 0.6), hsl(var(--card) / 0.34));
 
+  /* Liquid glass. Every pane bends the canvas behind it through the
+     #megsy-glass-warp displacement filter (defined once in the HTML shell).
+     The plain frost below is the fallback for engines that cannot reference an
+     SVG filter from backdrop-filter — it is declared first, the liquid version
+     after it, so an unsupported line is dropped and the blur survives. */
+  --glass-refract: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
+  --glass-refract-liquid: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
+    url(#megsy-glass-warp);
+  /* Thickness: the light a real pane gathers along its inner face. */
+  --glass-body: inset 0 0 22px rgba(255, 255, 255, 0.55),
+    inset 0 0 4px rgba(255, 255, 255, 0.7);
+  --glass-sheen: radial-gradient(120% 85% at 16% 0%, rgba(255, 255, 255, 0.8), transparent 62%),
+    radial-gradient(95% 70% at 90% 100%, rgba(255, 255, 255, 0.4), transparent 58%);
+
+
 
   --glass-bg: hsl(var(--background));
 
@@ -287,8 +302,11 @@ html[data-theme="light"] .megsy-pricing {
   border: 0;
   border-radius: 24px;
   background: var(--glass-panel);
-  backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: var(--glass-edge-light), inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
+  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06);
+  backdrop-filter: blur(26px) saturate(210%) brightness(1.07) contrast(1.06)
+    url(#megsy-glass-warp);
+  box-shadow: var(--glass-body), var(--glass-edge-light),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5), var(--glass-shadow);
 
 
   color: hsl(var(--foreground));
