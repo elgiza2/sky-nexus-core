@@ -66,21 +66,21 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .megsy-checkout .megsy-pay-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .megsy-checkout .megsy-pay-row {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
-  height: 64px;
-  padding: 0 18px;
+  gap: 14px;
+  height: 58px;
+  padding: 0 16px;
   border: 0;
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--glass-panel);
   backdrop-filter: blur(16px) saturate(160%);
   box-shadow: var(--glass-body), var(--glass-edge-light),
-    0 14px 28px -20px hsl(var(--foreground) / 0.3);
+    0 10px 20px -16px hsl(var(--foreground) / 0.22);
   color: hsl(var(--foreground));
   text-align: start;
   cursor: pointer;
