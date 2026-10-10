@@ -283,8 +283,8 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
 }
 
 /* ── Mobile pricing: two squares and one black action ─────────────────────
- * The chosen square inverts to solid ink; the price replays its own entrance
- * so switching plans feels deliberate. */
+ * The chosen square lifts and rims itself in ink; the price replays its own
+ * entrance so switching plans feels deliberate. */
 .megsy-pricing .megsy-plan-tile {
   position: relative;
   display: flex;
@@ -308,14 +308,13 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
     box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* The chosen square inverts to solid ink — the same black the upgrade button
-   wears. Nothing else on the page is black, so the pick is unmistakable, and
-   every label inside it flips with the one colour below. */
+/* The chosen square keeps the same white glass as its neighbour and steps
+   forward instead: a crisp ink rim on the inside edge, a slight lift and a
+   deeper shadow. Only the button at the bottom is solid black, so it stays the
+   one thing on the screen worth pressing. */
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
-  background: var(--megsy-ink);
-  color: var(--megsy-ink-foreground);
-  backdrop-filter: none;
-  box-shadow: 0 20px 36px -20px var(--megsy-ink-shadow);
+  box-shadow: inset 0 0 0 2px var(--megsy-ink), var(--glass-body),
+    var(--glass-edge-light), 0 22px 38px -22px var(--megsy-ink-shadow);
   transform: translateY(-5px);
 }
 
@@ -462,9 +461,5 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
   mask-composite: exclude;
   transition: opacity 0.3s ease;
 }
-/* A solid ink pane has no glass left to bend: both wet layers fade away on the
-   chosen square rather than fogging over it. */
-.megsy-pricing .megsy-plan-tile[data-selected="true"]::before,
-.megsy-pricing .megsy-plan-tile[data-selected="true"]::after {
-  opacity: 0;
-}
+/* Both squares stay glass, so the wet band keeps working on the chosen one —
+   the ink rim is what marks it, not a flat fill. */
