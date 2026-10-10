@@ -39,6 +39,8 @@
 - [ ] Mobile pricing: both plan squares always read as clear glass — no dimming the unchosen one.
 - [ ] Checkout: every payment card reads as clear glass at all times, with the chosen one lifted.
 - [ ] Selection clarity: the chosen plan square and the chosen payment card must be obviously obvious (dark glass capsule, light text and logo) in both pricing and checkout.
+- [ ] Selection clarity, take two: keep every brand logo in its own colors (no monochrome flip) and make the chosen option read as a thick raised glass pane; the glass itself must be visibly frosted.
+
 
 
 
