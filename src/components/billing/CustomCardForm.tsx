@@ -1,18 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  ArrowLeft,
-  Banknote,
-  Check,
-  ChevronLeft,
-  CreditCard,
-  Loader2,
-  LockKeyhole,
-  QrCode,
-  ShieldCheck,
-  Smartphone,
-  Sparkles,
-  X,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, Check, CreditCard, Loader2, LockKeyhole, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import "@/styles/checkout.css";
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
 import { openCheckoutUrl } from "@/lib/openCheckout";
@@ -56,50 +45,7 @@ function sameOrigin(url: string) {
   }
 }
 
-const METHODS: Array<{
-  id: PaymentMethod;
-  title: string;
-  detail: string;
-  badge: string;
-  icon: typeof CreditCard;
-  tone: string;
-}> = [
-  {
-    id: "card",
-    title: "بطاقة بنكية",
-    detail: "Visa · Mastercard · Meeza · Apple Pay",
-    badge: "الأسرع",
-    icon: CreditCard,
-    tone: "blue",
-  },
-  {
-    id: "wallet",
-    title: "محفظة إلكترونية",
-    detail: "Vodafone Cash · Orange Cash وغيرها",
-    badge: "شائع",
-    icon: Smartphone,
-    tone: "red",
-  },
-  {
-    id: "bank_installments",
-    title: "تقسيط بنكي",
-    detail: "خطط تقسيط البنوك المشاركة",
-    badge: "مرن",
-    icon: Banknote,
-    tone: "violet",
-  },
-  {
-    id: "bnpl",
-    title: "اشترِ الآن وادفع لاحقًا",
-    detail: "valU · Contact · Souhoola · MOGO · Forsa",
-    badge: "جديد",
-    icon: Sparkles,
-    tone: "amber",
-  },
-];
-
 export default function CustomCardForm({ open, tier, interval, onClose }: Props) {
-  const [method, setMethod] = useState<PaymentMethod | null>("card");
   const [number, setNumber] = useState("");
   const [name, setName] = useState("");
   const [month, setMonth] = useState("");
@@ -111,8 +57,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [orderId, setOrderId] = useState<string | null>(null);
   const [result, setResult] = useState<"idle" | "processing" | "success">("idle");
   const [stage, setStage] = useState<"choose" | "card">("choose");
-  const [pick, setPick] = useState<TileId>("mastercard");
-  useMemo(() => METHODS.find((item) => item.id === method), [method]);
+  const [pick, setPick] = useState<TileId>("visa");
 
   useEffect(() => {
     if (!open) return;
@@ -130,7 +75,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   }, [open]);
   useEffect(() => {
     if (!open) {
-      setMethod(null);
       setNumber("");
       setName("");
       setMonth("");
@@ -274,15 +218,12 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     }
   };
 
-  const step = result === "success" ? 3 : 2;
   const tile = TILES.find((t) => t.id === pick) ?? TILES[0];
   const continueWithPick = () => {
     setError(null);
     if (tile.kind === "card") {
-      setMethod("card");
       setStage("card");
     } else {
-      setMethod(tile.method);
       void openHostedCheckout(tile.method);
     }
   };
@@ -295,200 +236,73 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   };
 
   return (
-    <div className="fixed inset-0 z-[120] overflow-y-auto bg-[#efefef] text-[#1c1c1e]" dir="rtl">
-      <div className="mx-auto flex min-h-dvh w-full max-w-[460px] flex-col px-5 pb-6 pt-5">
+    <section className="megsy-checkout fixed inset-0 z-[120] overflow-y-auto overscroll-contain" dir="rtl" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+      <div aria-hidden="true" className="checkout-texture pointer-events-none absolute inset-0" />
+      <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
         <header className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={back}
-            disabled={busy}
-            aria-label="رجوع"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-[#1c1c1e] transition hover:bg-white disabled:opacity-40"
-          >
-            <ArrowLeft className="h-4 w-4 rotate-180" />
-          </button>
-          <h1 className="text-[17px] font-semibold tracking-[-0.02em]">
-            {step === 3 ? "تم" : stage === "card" ? "بيانات البطاقة" : "الدفع"}
-          </h1>
-          <button
-            type="button"
-            onClick={onClose}
-            disabled={busy}
-            aria-label="إغلاق"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-[#8a8a8e] transition hover:bg-white disabled:opacity-40"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy} aria-label="رجوع" title="رجوع" className="rounded-full border border-border/60 bg-card/60"><ArrowLeft className="rotate-180" /></Button>
+          <span className="text-sm font-semibold" dir="ltr">Megsy</span>
+          <Button variant="ghost" size="icon" type="button" onClick={onClose} disabled={busy} aria-label="إغلاق" title="إغلاق" className="rounded-full border border-border/60 bg-card/60"><X /></Button>
         </header>
-
-
-        {threeDsUrl ? (
-          <div className="mt-6 flex-1 space-y-4">
-            <Notice text="أكمل خطوة التحقق داخل نافذة البنك لإتمام العملية بأمان." />
-            <iframe
-              title="تحقق البنك"
-              src={threeDsUrl}
-              className="h-[480px] w-full rounded-2xl border border-black/5 bg-white"
-            />
-          </div>
-        ) : result === "success" ? (
-          <div className="flex flex-1 flex-col">
-            <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
-              <div className="relative">
-                <span className="absolute -right-6 -top-5 h-2 w-3 rotate-12 rounded-sm bg-[#f25c1c]" />
-                <span className="absolute -left-7 top-1 h-1.5 w-3 -rotate-12 rounded-sm bg-[#34c759]" />
-                <span className="absolute -right-8 bottom-2 h-1.5 w-1.5 rounded-full bg-[#ffcc00]" />
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#34a853] text-white shadow-[0_10px_30px_rgba(52,168,83,.35)]">
-                  <Check className="h-10 w-10" strokeWidth={3} />
-                </div>
-              </div>
-              <h2 className="mt-7 text-[20px] font-semibold">مبروك!</h2>
-              <p className="mt-2 max-w-[280px] text-[13px] leading-6 text-[#8a8a8e]">
-                بنأكد العملية ونفعّل اشتراك Megsy {tier} خلال لحظات.
-                {orderId && (
-                  <span className="mt-1 block font-mono text-[12px] text-[#3a3a3c]">{orderId}</span>
-                )}
-              </p>
+        <div className="checkout-content mt-10 flex flex-1 flex-col sm:mt-12">
+          <h1 id="checkout-title" className="text-[28px] font-semibold leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : stage === "card" ? "بيانات البطاقة" : "طريقة الدفع"}</h1>
+          {threeDsUrl ? (
+            <div className="mt-6 flex-1 space-y-4">
+              <p className="text-sm leading-6 text-muted-foreground">أكمل التحقق من البنك لإتمام الدفع.</p>
+              <iframe title="تحقق البنك" src={threeDsUrl} className="h-[480px] w-full rounded-lg border border-border bg-card" />
             </div>
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-12 w-full rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12]"
-            >
-              متابعة
-            </button>
-            <button
-              type="button"
-              onClick={() => (window.location.href = "/")}
-              className="mt-3 h-12 w-full rounded-full border border-black/10 bg-white text-[14px] font-medium transition hover:bg-[#fafafa]"
-            >
-              الرجوع للرئيسية
-            </button>
-          </div>
-        ) : stage === "card" ? (
-          <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
-            <div className="relative overflow-hidden rounded-3xl bg-[#1c1c1e] p-5 text-white shadow-[0_20px_40px_rgba(0,0,0,.18)]">
-              <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#f25c1c]/40 blur-2xl" />
-              <div className="relative flex items-center justify-between" dir="ltr">
-                <span className="text-[13px] font-semibold opacity-80">{tile.label}</span>
-                <CreditCard className="h-5 w-5 opacity-70" />
+          ) : result === "success" ? (
+            <div className="flex flex-1 flex-col">
+              <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
+                <span className="flex h-20 w-20 items-center justify-center rounded-full bg-foreground text-background"><Check className="h-9 w-9" /></span>
+                <h2 className="mt-6 text-xl font-semibold">شكرًا لك</h2>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">بنأكد العملية ونفعّل اشتراكك خلال لحظات.</p>
+                {orderId && <p className="mt-2 max-w-full break-all font-mono text-xs text-muted-foreground">{orderId}</p>}
               </div>
-              <p className="relative mt-8 font-mono text-[19px] tracking-[0.12em]" dir="ltr">
-                {formatCardNumber(number) || "•••• •••• •••• ••••"}
-              </p>
-              <div className="relative mt-5 flex justify-between text-[11px] uppercase opacity-75" dir="ltr">
-                <span className="truncate">{name || "CARD HOLDER"}</span>
-                <span>
-                  {month || "MM"}/{year || "YY"}
-                </span>
+              <Button variant="ghost" className="checkout-cta h-14 w-full rounded-xl text-base" onClick={onClose}>متابعة</Button>
+            </div>
+          ) : stage === "card" ? (
+            <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
+              <div className="mb-7 flex items-center gap-3 border-b border-border/70 pb-5">
+                <span className="checkout-logo flex h-11 w-[72px] items-center justify-center rounded-lg" dir="ltr"><TileLogo id={pick} /></span>
+                <span className="text-sm font-medium" dir="ltr">{tile.label}</span>
+                <CreditCard className="ms-auto h-5 w-5 text-muted-foreground" />
               </div>
-            </div>
-
-            <div className="mt-6 space-y-4 rounded-3xl bg-white p-5">
-              <label className="block text-[12px] font-medium text-[#8a8a8e]">
-                رقم البطاقة
-                <input
-                  inputMode="numeric"
-                  autoComplete="cc-number"
-                  dir="ltr"
-                  value={formatCardNumber(number)}
-                  onChange={(e) => setNumber(e.target.value)}
-                  placeholder="0000 0000 0000 0000"
-                  className={INPUT}
-                />
-              </label>
-              <label className="block text-[12px] font-medium text-[#8a8a8e]">
-                الاسم على البطاقة
-                <input
-                  autoComplete="cc-name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="الاسم كما يظهر على البطاقة"
-                  className={INPUT}
-                />
-              </label>
-              <div className="grid grid-cols-3 gap-3">
-                <Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" />
-                <Field label="السنة" value={year} onChange={setYear} placeholder="YY" />
-                <Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret />
+              <div className="space-y-5">
+                <label className="block text-sm font-medium">رقم البطاقة<input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className={INPUT} /></label>
+                <label className="block text-sm font-medium">الاسم على البطاقة<input autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="الاسم كما يظهر على البطاقة" className={INPUT} /></label>
+                <div className="grid grid-cols-3 gap-3"><Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" /><Field label="السنة" value={year} onChange={setYear} placeholder="YY" /><Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret /></div>
               </div>
+              {error && <ErrorBox text={error} />}
+              <div className="min-h-8 flex-1" />
+              <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier</p>
+              <Button variant="ghost" data-plain type="submit" disabled={busy} className="checkout-cta mt-4 h-14 w-full rounded-xl text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : "ادفع الآن"}</Button>
+            </form>
+          ) : (
+            <div className="mt-7 flex flex-1 flex-col">
+              <div className="grid grid-cols-2 gap-3">
+                {TILES.map((t) => {
+                  const active = t.id === pick;
+                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} className={`checkout-choice relative h-[126px] flex-col items-start justify-between rounded-xl p-4 text-start ${t.id === "vodafone" ? "col-span-2 h-[88px] flex-row items-center" : ""}`}>
+                    <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center rounded-lg" dir="ltr"><TileLogo id={t.id} /></span>
+                    <span className={`text-sm font-medium ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
+                    <span className={`absolute end-4 top-4 flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-foreground text-background" : "border border-foreground/20"} ${t.id === "vodafone" ? "top-1/2 -translate-y-1/2" : ""}`}>{active && <Check className="h-3 w-3" strokeWidth={3} />}</span>
+                  </Button>;
+                })}
+              </div>
+              {error && <ErrorBox text={error} />}
+              <div className="min-h-8 flex-1" />
+              <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن ومشفّر</p>
+              <Button variant="ghost" type="button" disabled={busy} onClick={continueWithPick} className="checkout-cta mt-4 h-14 w-full rounded-xl text-base">{busy ? <Loader2 className="animate-spin" /> : <>متابعة <ArrowLeft /></>}</Button>
             </div>
-
-            {error && <ErrorBox text={error} />}
-
-            <p className="mt-5 flex items-center justify-center gap-1.5 text-[11px] text-[#8a8a8e]">
-              <LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier · لا نحتفظ ببيانات بطاقتك
-            </p>
-            <div className="flex-1" />
-            <button
-              type="submit"
-              disabled={busy}
-              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12] disabled:opacity-50"
-            >
-              {busy ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> جارِ المعالجة…
-                </>
-              ) : (
-                "ادفع الآن"
-              )}
-            </button>
-          </form>
-        ) : (
-          <div className="mt-8 flex flex-1 flex-col">
-            <p className="px-1 text-[13px] font-medium text-[#8e8e93]">طريقة الدفع</p>
-            <div className="mt-2 overflow-hidden rounded-[20px] bg-white">
-              {TILES.map((t, i) => {
-                const active = t.id === pick;
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    disabled={busy}
-                    onClick={() => setPick(t.id)}
-                    aria-pressed={active}
-                    className="relative flex h-[64px] w-full items-center gap-3.5 px-4 text-right transition active:bg-[#f5f5f7] disabled:opacity-50"
-                  >
-                    <span className="flex h-9 w-[52px] shrink-0 items-center justify-center rounded-[8px] border border-black/[0.07] bg-white">
-                      <TileLogo id={t.id} />
-                    </span>
-                    <span className="min-w-0 flex-1 text-[15px] font-medium text-[#1c1c1e]">{t.label}</span>
-                    <span
-                      className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full transition ${active ? "bg-[#f25c1c]" : "border-[1.5px] border-[#d1d1d6]"}`}
-                    >
-                      {active && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
-                    </span>
-                    {i < TILES.length - 1 && (
-                      <span className="absolute bottom-0 left-4 right-[84px] h-px bg-black/[0.06]" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            {error && <ErrorBox text={error} />}
-
-            <div className="flex-1" />
-            <p className="mt-8 flex items-center justify-center gap-1.5 text-[12px] text-[#8e8e93]">
-              <LockKeyhole className="h-3.5 w-3.5" /> دفع آمن ومشفّر
-            </p>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={continueWithPick}
-              className="mt-3 flex h-[54px] w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[16px] font-semibold text-white transition active:scale-[0.99] disabled:opacity-50"
-            >
-              {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : "متابعة"}
-            </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-const INPUT =
-  "mt-2 h-12 w-full rounded-xl border border-black/[0.06] bg-[#f6f6f7] px-3.5 text-[15px] text-[#1c1c1e] outline-none transition placeholder:text-[#b0b0b5] focus:border-[#f25c1c] focus:bg-white focus:ring-4 focus:ring-[#f25c1c]/10";
+const INPUT = "checkout-input mt-2 h-14 w-full rounded-lg px-4 text-base outline-none transition placeholder:text-muted-foreground/60";
 
 type TileId = "visa" | "mastercard" | "apple_pay" | "google_pay" | "vodafone";
 const TILES: Array<{
@@ -509,89 +323,46 @@ function TileLogo({ id }: { id: TileId }) {
   switch (id) {
     case "visa":
       return (
-        <svg viewBox="0 0 48 16" className="h-[13px] w-[40px]">
-          <text x="0" y="14" fontSize="17" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial, sans-serif" letterSpacing="-0.5">VISA</text>
-        </svg>
+        <span className="payment-visa" aria-hidden="true">VISA</span>
       );
     case "mastercard":
       return (
-        <svg viewBox="0 0 32 20" className="h-[20px] w-[32px]">
-          <circle cx="11" cy="10" r="9" fill="#EB001B" />
-          <circle cx="21" cy="10" r="9" fill="#F79E1B" />
-          <path d="M16 2.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" fill="#FF5F00" />
+        <svg viewBox="0 0 32 20" className="h-[22px] w-[36px]">
+          <circle cx="11" cy="10" r="9" className="payment-red" />
+          <circle cx="21" cy="10" r="9" className="payment-yellow" />
+          <path d="M16 2.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" className="payment-orange" />
         </svg>
       );
     case "apple_pay":
       return (
-        <svg viewBox="0 0 17 20" className="h-[17px] w-[15px]" fill="#000">
-          <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.300-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
+        <svg viewBox="0 0 17 20" className="h-[17px] w-[15px]" fill="currentColor">
+          <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
         </svg>
       );
     case "google_pay":
       return (
         <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]">
-          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
-          <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.200-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
-          <path fill="#FBBC05" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
-          <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
+          <path className="payment-blue" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
+          <path className="payment-green" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
+          <path className="payment-gold" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
+          <path className="payment-red" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
         </svg>
       );
     case "vodafone":
       return (
         <svg viewBox="0 0 24 24" className="h-[20px] w-[20px]">
-          <circle cx="12" cy="12" r="12" fill="#E60000" />
-          <path fill="#fff" d="M12.6 5.2c2.3-.6 4.4.2 5 .6-1.8.1-3.5 1.4-3.5 3.6 2 .5 3.4 2 3.4 4.2 0 2.700-2.300 4.900-5.200 4.900-3.300 0-5.700-2.700-5.700-6 0-3.600 2.500-6.500 6-7.300z" />
+          <circle cx="12" cy="12" r="12" className="payment-red" />
+          <path className="payment-white" d="M12.6 5.2c2.3-.6 4.4.2 5 .6-1.8.1-3.5 1.4-3.5 3.6 2 .5 3.4 2 3.4 4.2 0 2.700-2.300 4.900-5.200 4.900-3.300 0-5.700-2.700-5.700-6 0-3.600 2.500-6.500 6-7.300z" />
         </svg>
       );
   }
-}
-
-function Stepper({ step }: { step: number }) {
-  const labels = ["الباقة", "الدفع", "تم"];
-  return (
-    <div className="relative mt-6 flex justify-between px-2">
-      <div className="absolute left-8 right-8 top-[11px] h-[2px] bg-black/10" />
-      <div
-        className="absolute right-8 top-[11px] h-[2px] bg-[#f9b896] transition-all"
-        style={{ width: step === 3 ? "calc(100% - 4rem)" : "calc(50% - 2rem)" }}
-      />
-      {labels.map((label, i) => {
-        const n = i + 1;
-        const done = n < step || step === 3;
-        const current = n === step && step !== 3;
-        return (
-          <div key={label} className="relative flex w-12 flex-col items-center gap-1.5">
-            <span
-              className={`flex h-6 w-6 items-center justify-center rounded-full ${done ? "bg-[#f25c1c] text-white" : current ? "border-[3px] border-[#f25c1c] bg-white" : "border-2 border-black/15 bg-[#efefef]"}`}
-            >
-              {done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
-            </span>
-            <span className={`text-[11px] ${done || current ? "text-[#1c1c1e]" : "text-[#8a8a8e]"}`}>
-              {label}
-            </span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function Notice({ text }: { text: string }) {
-  return (
-    <div className="mt-4 flex items-start gap-3 rounded-2xl bg-white px-4 py-3">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fff1ea] text-[#f25c1c]">
-        <LockKeyhole className="h-4 w-4" />
-      </span>
-      <p className="text-[12px] leading-5 text-[#8a8a8e]">{text}</p>
-    </div>
-  );
 }
 
 function ErrorBox({ text }: { text: string }) {
   return (
     <p
       role="alert"
-      className="mt-4 rounded-2xl border border-[#f2caca] bg-[#fff7f7] px-4 py-3 text-[12px] leading-5 text-[#b42318]"
+      className="mt-4 rounded-lg border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm leading-6 text-destructive"
     >
       {text}
     </p>
@@ -612,7 +383,7 @@ function Field({
   secret?: boolean;
 }) {
   return (
-    <label className="block text-[12px] font-medium text-[#8a8a8e]">
+    <label className="block text-sm font-medium">
       {label}
       <input
         inputMode="numeric"

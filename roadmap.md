@@ -1,5 +1,8 @@
 # Megsy — roadmap
 
+## Current checkout request
+- [x] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity. Selection, formatted card entry, light/dark and phone/desktop verified without a charge; pricing unchanged. Hosted payment completion not exercised (external authentication and real charge required).
+
 ## Current request (October 6, 2026)
 - [x] Restrict the October announcement to authenticated sessions; Welcome and registration never show it.
 - [x] Replace October announcement with a clean bottom sheet using the uploaded artwork; hide Microsoft and guard Chat aliases. Verified guest /chat → Welcome → /auth, no Microsoft button, and phone/desktop layout.
