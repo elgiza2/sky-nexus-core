@@ -291,7 +291,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               </div>
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
-              <Button variant="ghost" data-plain type="button" disabled={busy} onClick={continueWithPick} className="glass-cta mt-8 h-14 w-full gap-3 rounded-full px-5 text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : <><span className="flex h-5 w-12 shrink-0 items-center justify-center whitespace-nowrap [&_svg]:h-5 [&_svg]:w-auto" dir="ltr"><TileLogo id={pick} /></span><span className="whitespace-nowrap">تابع الدفع بـ {tile.label}</span></>}</Button>
+              <Button variant="ghost" data-plain type="button" disabled={busy} onClick={continueWithPick} className="glass-cta mt-8 h-14 w-full gap-3 rounded-full px-5 text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : <><span className="checkout-mark flex h-5 w-12 shrink-0 items-center justify-center whitespace-nowrap" dir="ltr"><TileLogo id={pick} /></span><span className="whitespace-nowrap">تابع الدفع بـ {tile.label}</span></>}</Button>
 
             </div>
           )}
