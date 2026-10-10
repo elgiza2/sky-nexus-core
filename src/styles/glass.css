@@ -144,7 +144,13 @@
 
 
 
+/* Billing rows: a rectangle with lightly rounded corners, not a full pill. */
+.glass-tile--row {
+  border-radius: 14px;
+}
+
 /* Small segmented control: the same glass, flattened into a pill. */
+
 .glass-pill {
   border-radius: 9999px;
   border: 1px solid var(--glass-edge);

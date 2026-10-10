@@ -277,11 +277,6 @@ export default function MobilePricingScreen({
                     <span className="text-[12.5px] font-medium text-muted-foreground">
                       {opt.label}
                     </span>
-                    {opt.badge && (
-                      <span className="rounded-full bg-primary/10 px-2 py-[2.5px] text-[10px] font-medium leading-none text-primary">
-                        {opt.badge}
-                      </span>
-                    )}
                   </span>
                   <span
                     className={`flex items-baseline gap-2 tabular-nums ${isAr ? "flex-row-reverse" : ""} justify-start`}
@@ -318,13 +313,6 @@ export default function MobilePricingScreen({
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
           } as React.CSSProperties}
         >
-          <p
-            className={`text-center leading-[1.45] text-foreground/65 ${
-              compact ? "mb-2 min-h-[26px] text-[10px]" : "mb-2.5 min-h-[30px] text-[10.5px]"
-            }`}
-          >
-            {t.fine}
-          </p>
           <button
             type="button"
             onClick={() =>
