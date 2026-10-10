@@ -141,6 +141,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setThreeDsUrl(null);
       setOrderId(null);
       setResult("idle");
+      setStage("choose");
     }
   }, [open]);
   if (!open) return null;
