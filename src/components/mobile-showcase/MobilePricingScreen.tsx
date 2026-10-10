@@ -9,6 +9,8 @@ import {
   Clock,
   Bot,
   Search,
+  Coins,
+  Film,
   Infinity as InfinityIcon,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -19,9 +21,6 @@ import { useUserLang } from "@/lib/authI18n";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
 
-function MegsyFeatureIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
-  return <MegsyStar className={className ?? "h-5 w-5"} />;
-}
 
 function useLocalPrice() {
   return (_usd: number) => null;
@@ -85,7 +84,7 @@ export default function MobilePricingScreen({
         ];
 
     const head = {
-      icon: MegsyFeatureIcon,
+      icon: Coins,
       text: isYearly
         ? isAr
           ? "1000 رصيد Megsy كل شهر"
@@ -96,8 +95,8 @@ export default function MobilePricingScreen({
     };
 
     return [head, ...base, {
-      icon: MegsyFeatureIcon,
-      text: isAr ? "صور وفيديو Higgsfield للمشتركين فقط" : "Higgsfield images & video — subscribers only",
+      icon: Film,
+      text: isAr ? "صور وفيديو Higgsfield" : "Higgsfield images & video",
     }];
   }, [isAr, isYearly]);
 
