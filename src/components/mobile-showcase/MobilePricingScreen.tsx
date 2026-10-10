@@ -1,7 +1,7 @@
-/** @doc Mobile /pricing — glass upgrade sheet, same liquid-glass language as checkout.
+/** @doc Mobile /pricing — Manus-style minimal upgrade sheet (pixel-matched to reference).
  *  Single plan (Megsy Pro): dotted backdrop · Megsy star · big serif title ·
- *  frosted feature card · two glass billing cards with radios · fine print ·
- *  glass CTA · legal links.
+ *  clean single-column feature card · two rounded billing cards with radios · fine print ·
+ *  solid CTA · legal links.
  */
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -9,11 +9,9 @@ import {
   Clock,
   Bot,
   Search,
-  Coins,
-  Film,
   Infinity as InfinityIcon,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import MegsyStar from "@/components/branding/MegsyStar";
 import { MobileSidebarButton } from "@/components/shared/MobileSidebarButton";
@@ -21,10 +19,14 @@ import { useUserLang } from "@/lib/authI18n";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { getDisplayPrice, getPlan, type PlanTier } from "@/data/pricingData";
 
+function MegsyFeatureIcon({ className, style }: { className?: string; style?: React.CSSProperties }) {
+  return <MegsyStar className={className ?? "h-5 w-5"} />;
+}
 
 function useLocalPrice() {
   return (_usd: number) => null;
 }
+
 
 function useCompactHeight() {
   const [compact, setCompact] = useState(
@@ -37,6 +39,22 @@ function useCompactHeight() {
     return () => window.removeEventListener("resize", update);
   }, []);
   return compact;
+}
+
+function useIsLightTheme() {
+  const [light, setLight] = useState(
+    typeof document !== "undefined" &&
+      document.documentElement.getAttribute("data-theme") === "light",
+  );
+  useEffect(() => {
+    const el = document.documentElement;
+    const update = () => setLight(el.getAttribute("data-theme") === "light");
+    const obs = new MutationObserver(update);
+    obs.observe(el, { attributes: true, attributeFilter: ["data-theme"] });
+    update();
+    return () => obs.disconnect();
+  }, []);
+  return light;
 }
 
 interface Props {
@@ -56,6 +74,7 @@ export default function MobilePricingScreen({
 }: Props) {
   const lang = useUserLang();
   const isAr = lang === "ar-eg";
+  const isLight = useIsLightTheme();
   const compact = useCompactHeight();
   const localPrice = useLocalPrice();
   const isLoading = loadingTier === "pro";
@@ -84,7 +103,7 @@ export default function MobilePricingScreen({
         ];
 
     const head = {
-      icon: Coins,
+      icon: MegsyFeatureIcon,
       text: isYearly
         ? isAr
           ? "1000 رصيد Megsy كل شهر"
@@ -95,10 +114,11 @@ export default function MobilePricingScreen({
     };
 
     return [head, ...base, {
-      icon: Film,
-      text: isAr ? "صور وفيديو Higgsfield" : "Higgsfield images & video",
+      icon: MegsyFeatureIcon,
+      text: isAr ? "صور وفيديو Higgsfield للمشتركين فقط" : "Higgsfield images & video — subscribers only",
     }];
   }, [isAr, isYearly]);
+
 
   const pro = getPlan("pro")!;
   const monthly = getDisplayPrice(pro, false);
@@ -106,12 +126,15 @@ export default function MobilePricingScreen({
 
   const monthlyPrice = monthly.price;
   const yearlyPrice = yearly.price;
+  const monthlyOff = Math.round((1 - monthlyPrice / pro.monthlyPrice) * 100);
 
   const t = isAr
     ? {
         title: "قم بالترقية إلى Megsy Pro",
         monthly: "شهرياً",
         yearly: "سنوياً",
+        introBadge: `خصم ${monthlyOff}% على الشهر الأول`,
+        yearlyBadge: "4 أشهر مجاناً",
         perMonth: "/ الشهر الأول",
         perYear: "/ سنة",
         fine: `$${monthlyPrice}.00 للشهر الأول، ثم $${pro.monthlyPrice}.00/شهر. يمكنك الإلغاء في أي وقت.`,
@@ -124,6 +147,8 @@ export default function MobilePricingScreen({
         title: "Upgrade to Megsy Pro",
         monthly: "Monthly",
         yearly: "Yearly",
+        introBadge: `${monthlyOff}% off the first month`,
+        yearlyBadge: "4 months free",
         perMonth: "/first mo",
         perYear: "/year",
         fine: `$${monthlyPrice}.00 for the first month, then $${pro.monthlyPrice}.00/month. Cancel anytime.`,
@@ -142,11 +167,48 @@ export default function MobilePricingScreen({
       : "Your subscription is active. Change or cancel it anytime from subscription settings.";
   }
 
+  const c = isLight
+    ? {
+        bg: "#f2f2f2",
+        dot: "rgba(0,0,0,0.10)",
+        text: "#0a0a0a",
+        muted: "#6b7280",
+        faint: "#9ca3af",
+        card: "#ffffff",
+        cardBorder: "rgba(0,0,0,0.06)",
+        cardShadow: "0 1px 2px rgba(0,0,0,0.03), 0 12px 32px -16px rgba(0,0,0,0.10)",
+        selBorder: "#0a0a0a",
+        unselBorder: "rgba(0,0,0,0.10)",
+        badgeBg: "#e8f1ff",
+        badgeText: "#1d4ed8",
+        icon: "#1f2937",
+        ctaBg: "#0a0a0a",
+        ctaFg: "#ffffff",
+      }
+    : {
+        bg: "#0b0b0c",
+        dot: "rgba(255,255,255,0.08)",
+        text: "#f5f5f5",
+        muted: "#a3a3a3",
+        faint: "#737373",
+        card: "rgba(255,255,255,0.05)",
+        cardBorder: "rgba(255,255,255,0.09)",
+        cardShadow: "0 1px 2px rgba(0,0,0,0.25), 0 12px 32px -16px rgba(0,0,0,0.5)",
+        selBorder: "#f5f5f5",
+        unselBorder: "rgba(255,255,255,0.14)",
+        badgeBg: "rgba(96,165,250,0.16)",
+        badgeText: "#93c5fd",
+        icon: "#e4e4e7",
+        ctaBg: "#f5f5f5",
+        ctaFg: "#0a0a0a",
+      };
+
   const options = [
     {
       key: "monthly",
       yearly: false,
       label: t.monthly,
+      badge: t.introBadge,
       price: monthlyPrice,
       strike: monthly.strike,
       unit: t.perMonth,
@@ -155,6 +217,7 @@ export default function MobilePricingScreen({
       key: "yearly",
       yearly: true,
       label: t.yearly,
+      badge: t.yearlyBadge,
       price: yearlyPrice,
       strike: yearly.strike,
       unit: t.perYear,
@@ -164,10 +227,29 @@ export default function MobilePricingScreen({
   return (
     <div
       dir={isAr ? "rtl" : "ltr"}
-      className="megsy-pricing relative flex h-[100dvh] w-full flex-col overflow-hidden"
+      className="relative flex h-[100dvh] w-full flex-col overflow-hidden"
+      style={{
+        background: c.bg,
+        color: c.text,
+        fontFamily: 'Inter, -apple-system, "SF Pro Text", system-ui, sans-serif',
+      }}
     >
       {/* Dotted backdrop texture */}
-      <div aria-hidden className="glass-texture pointer-events-none absolute inset-0" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `radial-gradient(${c.dot} 1px, transparent 1px)`,
+          backgroundSize: "18px 18px",
+          maskImage: "radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%)",
+          WebkitMaskImage: "radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%)",
+        }}
+      />
+      <style>{`
+        @keyframes mps-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        .mps-rise { animation: mps-rise .5s cubic-bezier(.22,.61,.36,1) both; }
+        @media (prefers-reduced-motion: reduce) { .mps-rise { animation: none; } }
+      `}</style>
 
       {/* Header — same fixed bar + button spot as the chat mobile header */}
       <header
@@ -177,58 +259,59 @@ export default function MobilePricingScreen({
         <MobileSidebarButton
           onClick={() => onMenuClick?.()}
           ariaLabel="Menu"
-          className="h-11 w-11 rounded-full bg-card/70 shadow-sm backdrop-blur-md"
+          className="text-foreground"
         />
       </header>
       {/* Spacer so content clears the fixed header */}
       <div className="shrink-0" style={{ height: "calc(max(env(safe-area-inset-top), 0.25rem) + 44px)" }} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[88px]">
-        {/* Top flexible space — keeps the block clear of the header */}
-        <div className="flex-[0.7]" />
-
-
+      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
+        {/* Top flexible space — centers the whole block on tall screens */}
+        <div className="flex-[0.6]" />
         {/* Megsy star mark */}
         <div
-          className="glass-appear flex justify-center"
-          style={{ "--i": 0 } as React.CSSProperties}
+          className={`mps-rise flex justify-center ${compact ? "mt-[2%]" : "mt-[4%]"}`}
+          style={{ animationDelay: "10ms", color: c.text }}
         >
-
-          <MegsyStar className={`${compact ? "h-7 w-7" : "h-8 w-8"} text-foreground`} />
+          <MegsyStar className={compact ? "h-7 w-7" : "h-8 w-8"} />
         </div>
 
         {/* Title */}
         <h1
-          className={`glass-appear text-center font-semibold leading-[1.15] tracking-[-0.028em] text-foreground ${
-            compact ? "mt-2 text-[21px]" : "mt-2.5 text-[23px]"
+          className={`mps-rise text-center font-normal leading-[1.2] tracking-[-0.015em] ${
+            compact ? "mt-2 text-[22px]" : "mt-2.5 text-[25px]"
           }`}
-          style={{ "--i": 1 } as React.CSSProperties}
+          style={{ animationDelay: "60ms", fontFamily: '"Instrument Serif", Georgia, serif' }}
         >
           {t.title}
         </h1>
 
-        {/* Feature card — single column, airy rows on one frosted panel */}
+        {/* Feature card — single column, airy rows like the reference */}
         <div
-          className={`glass-tile glass-appear ${
-            compact ? "mt-3 px-4 py-3.5" : "mt-4 px-5 py-5"
+          className={`mps-rise rounded-[24px] ${
+            compact ? "mt-3.5 px-4 py-3.5" : "mt-5 px-5 py-4"
           }`}
-
-          style={{ "--i": 2 } as React.CSSProperties}
+          style={{
+            animationDelay: "120ms",
+            background: c.card,
+            border: `1px solid ${c.cardBorder}`,
+            boxShadow: c.cardShadow,
+          }}
         >
-          <ul className={`flex flex-col ${compact ? "gap-[12px]" : "gap-[18px]"}`}>
+          <ul className={`flex flex-col ${compact ? "gap-[11px]" : "gap-[14px]"}`}>
             {features.map(({ icon: Icon, text }) => (
               <li
                 key={text}
                 className={`flex items-center gap-3 ${isAr ? "flex-row-reverse text-right" : ""}`}
               >
                 <Icon
-                  className={`${compact ? "h-[18px] w-[18px]" : "h-[20px] w-[20px]"} shrink-0 text-muted-foreground`}
+                  className={`${compact ? "h-[18px] w-[18px]" : "h-[20px] w-[20px]"} shrink-0`}
                   strokeWidth={1.5}
+                  style={{ color: c.icon }}
                 />
                 <span
-                  className={`flex-1 leading-[1.4] font-normal text-foreground/80 ${
-                    compact ? "text-[13px]" : "text-[14px]"
-                  }`}
+                  className={`flex-1 leading-[1.35] ${compact ? "text-[13px]" : "text-[14px]"}`}
+                  style={{ color: c.text }}
                 >
                   {text}
                 </span>
@@ -237,10 +320,13 @@ export default function MobilePricingScreen({
           </ul>
         </div>
 
+        {/* Breathing room between the feature card and billing options */}
+        <div className="flex-[0.4] min-h-[12px] max-h-10" />
+
         {/* Billing options */}
         <div
-          className="glass-appear relative mt-4 grid grid-cols-2 gap-3"
-          style={{ "--i": 3 } as React.CSSProperties}
+          className={`mps-rise flex flex-col ${compact ? "gap-2" : "gap-2.5"}`}
+          style={{ animationDelay: "200ms" }}
         >
           {options.map((opt) => {
             const selected = isYearly === opt.yearly;
@@ -249,48 +335,118 @@ export default function MobilePricingScreen({
                 key={opt.key}
                 type="button"
                 onClick={() => onToggleYearly(opt.yearly)}
-                data-selected={selected}
-                aria-pressed={selected}
-                className={`megsy-plan-tile ${compact ? "p-3" : "p-4"}`}
+                className={`flex w-full items-center gap-3 rounded-[18px] px-4 text-start transition-all duration-200 ${
+                  compact ? "py-2" : "py-2.5"
+                } ${isAr ? "flex-row-reverse" : ""}`}
+                style={{
+                  background: c.card,
+                  border: `${selected ? "2px" : "1px"} solid ${selected ? c.selBorder : c.unselBorder}`,
+                  boxShadow: selected ? c.cardShadow : "none",
+                }}
               >
-                <span className="megsy-plan-name">{opt.label}</span>
-                {/* Re-keyed so the price replays its entrance on every switch. */}
-                <span className="megsy-plan-price" key={String(selected)}>
-                  {localPrice(opt.price) ?? `$${opt.price}`}
+                <span
+                  className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full transition-colors"
+                  style={{ border: `2px solid ${selected ? c.text : c.faint}` }}
+                >
+                  {selected && (
+                    <span className="h-[8px] w-[8px] rounded-full" style={{ background: c.text }} />
+                  )}
                 </span>
-                <span className="megsy-plan-unit">{opt.unit}</span>
-                <span className="megsy-plan-strike">
-                  {localPrice(opt.strike) ?? `$${opt.strike}`}
+                <span className="flex flex-1 flex-col gap-[3px]">
+                  <span
+                    className={`flex items-center gap-2 ${isAr ? "flex-row-reverse" : ""} justify-start`}
+                  >
+                    <span className="text-[12.5px] font-medium" style={{ color: c.muted }}>
+                      {opt.label}
+                    </span>
+                    {opt.badge && (
+                      <span
+                        className="rounded-full px-2 py-[2.5px] text-[10px] font-medium leading-none"
+                        style={{ background: c.badgeBg, color: c.badgeText }}
+                      >
+                        {opt.badge}
+                      </span>
+                    )}
+                  </span>
+                  <span
+                    className={`flex items-baseline gap-2 tabular-nums ${isAr ? "flex-row-reverse" : ""} justify-start`}
+                  >
+                    {/* The local currency is the price, not a footnote: the
+                        dollar amount moves to the small secondary line. */}
+                    <span className={`${compact ? "text-[15px]" : "text-[16px]"} font-semibold`} style={{ color: c.text }}>
+                      {localPrice(opt.price) ?? `$${opt.price}`}
+                    </span>
+                    <span className="text-[11px]" style={{ color: c.muted }}>
+                      {opt.unit}
+                    </span>
+                    <span className="text-[11.5px] line-through" style={{ color: c.faint }}>
+                      {localPrice(opt.strike) ?? `$${opt.strike}`}
+                    </span>
+                    {localPrice(opt.price) ? (
+                      <span className="text-[11px]" style={{ color: c.faint }}>
+                        ${opt.price}
+                      </span>
+                    ) : null}
+                  </span>
                 </span>
               </button>
             );
           })}
         </div>
 
+        {/* Fine print + CTA + legal, pinned to the very bottom */}
+        <div
+          className={`mps-rise shrink-0 ${compact ? "pt-2" : "pt-3"}`}
+          style={{
+            animationDelay: "300ms",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
+          }}
+        >
+          <p
+            className={`text-center leading-[1.45] ${compact ? "mb-2 min-h-[26px] text-[10px]" : "mb-2.5 min-h-[30px] text-[10.5px]"}`}
+            style={{ color: c.faint }}
+          >
+            {t.fine}
+          </p>
+          <button
+            type="button"
+            onClick={() =>
+              alreadySubscribed
+                ? navigate("/settings/billing")
+                : onSubscribe("pro", { trial: false })
+            }
+            disabled={isLoading}
+            className={`flex w-full items-center justify-center rounded-[16px] px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
+              compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"
+            }`}
+            style={{ background: c.ctaBg, color: c.ctaFg }}
+          >
+            {isLoading ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
+            ) : (
+              t.cta
+            )}
+          </button>
+          <nav
+            className={`flex items-center justify-center gap-6 leading-none ${compact ? "mt-2 text-[11px]" : "mt-3 text-[11.5px]"}`}
+            style={{ color: c.faint }}
+            aria-label="Legal"
+          >
+            <Link to="/terms" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
+              {t.terms}
+            </Link>
+            <Link to="/privacy" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
+              {t.privacy}
+            </Link>
+            <Link to="/restore" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
+              {t.restore}
+            </Link>
+          </nav>
+        </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.3]" />
+        <div className="flex-[0.6]" />
       </main>
 
-      {/* Upgrade action — black, pinned to the bottom of the screen. */}
-      <div className="megsy-plan-bar">
-        <button
-          type="button"
-          onClick={() =>
-            alreadySubscribed
-              ? navigate("/settings/billing")
-              : onSubscribe("pro", { trial: false })
-          }
-          disabled={isLoading}
-          className={`megsy-plan-cta ${compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"}`}
-        >
-          {isLoading ? (
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
-          ) : (
-            t.cta
-          )}
-        </button>
-      </div>
     </div>
-
   );
 }

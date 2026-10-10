@@ -254,5 +254,6 @@
 - [x] Payment methods: replaced the two-column tray and sliding marker with a quiet vertical list — one row per method, logo in a fixed slot, the chosen row turns solid ink. Verified five rows, both selection states, no console errors.
 - [x] Pricing squares: the chosen square inverts to solid ink (same signal as the payment list and the black action); dots behind the price are blurred into a soft wash; strikethrough and label contrast raised.
 - [x] Pricing screen: one typeface (serif headline removed), feature list set to one light weight with shorter copy, feature panel given a real pane of glass, block rebalanced toward the button.
-- [ ] Payment list polish: drop the duplicated wordmark on the Visa row, balance logo visual weights in the slot, and reduce the void above the bottom button.
 - [ ] Verify the real checkout end to end: blocked by external unmanaged authentication — the payment screen was viewed through a temporary flag that has since been removed.
+- [x] Restore from the repository: the stored pricing design is back and the app glass styles are gone from settings, chat and sign-up. Checkout is untouched. The sign-up fix was kept because the glass commit also carried it.
+- [ ] Decide what to do with the restored pricing screen's promotional strings ("53% off the first month", "4 months free", the first-month footnote) and its Terms/Privacy/Restore footer — the user had these deleted before the restore brought them back.

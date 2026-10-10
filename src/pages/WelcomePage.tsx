@@ -87,7 +87,7 @@ export default function WelcomePage() {
   );
 
   const controls = (
-    <div className="welcome-glass-controls flex items-center justify-between gap-3">
+    <div className="flex items-center justify-between">
       <div className="flex gap-1.5">
         {slides.map((_, k) => (
           <button
