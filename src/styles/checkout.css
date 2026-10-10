@@ -47,7 +47,7 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   width: 44px;
   height: 44px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 9999px;
   background: var(--glass-surface);
   color: hsl(var(--foreground));
   box-shadow: var(--glass-shadow);
@@ -59,26 +59,28 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .megsy-checkout .megsy-back:active { transform: scale(0.94); }
 .megsy-checkout .megsy-back:disabled { opacity: 0.45; }
 
-/* Payment methods: one glass tray, one marker that slides to the chosen card. */
+/* Payment methods: no tray, no frame. Every card is the same white and only the
+   chosen one sits higher — a white marker slides underneath it and casts a
+   deeper shadow, so the pick reads as a lift rather than a colour change. */
 .megsy-checkout .megsy-pay-grid {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 8px;
+  gap: 12px;
+  padding: 0;
   border: 0;
-  border-radius: 30px;
-  background: var(--glass-surface);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: blur(10px) saturate(140%);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
 }
 .megsy-checkout .megsy-pay-flag {
   position: absolute;
   top: 0;
   left: 0;
-  border-radius: 22px;
-  background: var(--glass-surface-on);
-  box-shadow: var(--glass-shadow-on);
+  border-radius: 24px;
+  background: hsl(var(--card));
+  box-shadow: 0 22px 42px -18px hsl(var(--foreground) / 0.42);
   pointer-events: none;
   transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
@@ -93,23 +95,29 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   height: 132px;
   padding: 18px;
   border: 0;
-  border-radius: 22px;
-  background: transparent;
+  border-radius: 24px;
+  background: hsl(var(--card));
   color: hsl(var(--foreground));
   text-align: start;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.32s ease;
+  box-shadow: 0 12px 28px -18px hsl(var(--foreground) / 0.22);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s ease;
 }
-.megsy-checkout .megsy-pay-tile[data-selected="false"] { opacity: 0.5; }
-.megsy-checkout .megsy-pay-tile:disabled { opacity: 0.4; }
+.megsy-checkout .megsy-pay-tile[data-selected="true"] {
+  transform: scale(1.025);
+  box-shadow: 0 16px 32px -20px hsl(var(--foreground) / 0.35);
+}
+.megsy-checkout .megsy-pay-tile:disabled { opacity: 0.5; }
 .megsy-checkout .megsy-pay-tile--wide {
   grid-column: span 2;
   height: 88px;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 14px;
 }
+
 .megsy-checkout .megsy-pay-tile .megsy-pay-name {
   font-size: 16px;
   font-weight: 500;
