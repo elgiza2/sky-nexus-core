@@ -291,14 +291,15 @@ export default function MobilePricingScreen({
                     <span className={`${compact ? "text-[15px]" : "text-[16px]"} font-semibold text-foreground`}>
                       {localPrice(opt.price) ?? `$${opt.price}`}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[11px] text-foreground/65">
                       {opt.unit}
                     </span>
-                    <span className="text-[11.5px] line-through text-muted-foreground">
+                    <span className="text-[11.5px] line-through text-foreground/65">
+
                       {localPrice(opt.strike) ?? `$${opt.strike}`}
                     </span>
                     {localPrice(opt.price) ? (
-                      <span className="text-[11px] text-muted-foreground">
+                      <span className="text-[11px] text-foreground/65">
                         ${opt.price}
                       </span>
                     ) : null}
@@ -318,7 +319,7 @@ export default function MobilePricingScreen({
           } as React.CSSProperties}
         >
           <p
-            className={`text-center leading-[1.45] text-muted-foreground ${
+            className={`text-center leading-[1.45] text-foreground/65 ${
               compact ? "mb-2 min-h-[26px] text-[10px]" : "mb-2.5 min-h-[30px] text-[10.5px]"
             }`}
           >
