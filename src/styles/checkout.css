@@ -37,6 +37,17 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .payment-green { fill: var(--payment-green); }
 .payment-gold { fill: var(--payment-gold); }
 .payment-white { fill: var(--payment-logo-surface); }
+/* The chosen method carries the same pink-gold accent as the action button. */
+.megsy-checkout .glass-tile[data-selected="true"] {
+  border-color: hsl(var(--sunset-pink) / 0.4);
+  box-shadow: var(--glass-shadow), inset 0 0 0 1px hsl(var(--sunset-gold) / 0.25);
+}
+.megsy-checkout .glass-tile[data-selected="true"] > span:last-child {
+  background: var(--gradient-pink-gold);
+  color: hsl(var(--sunset-foreground));
+  border-color: transparent;
+}
+
 /* The live card face: a lifted glass panel that prints the number and name. */
 .card-face {
   position: relative;
