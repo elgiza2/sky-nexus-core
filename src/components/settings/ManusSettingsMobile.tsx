@@ -62,7 +62,6 @@ const ManusSettingsMobile = () => {
   const isAr = lang === "ar-eg";
   const { plan, credits } = useCredits();
   const [userEmail, setUserEmail] = useState("");
-  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const userName = account.name || userEmail.split("@")[0] || "User";
 
@@ -259,7 +258,7 @@ const ManusSettingsMobile = () => {
           <section className="ms-card">{linkRows.map(renderRow)}</section>
 
           <section className="ms-card">
-            <button type="button" className="ms-row" onClick={() => setLogoutOpen(true)}>
+            <button type="button" className="ms-row" onClick={handleLogout}>
               <LogOut className="ms-row-icon" />
               <span className="ms-row-label">{"Log out"}</span>
             </button>
@@ -268,40 +267,7 @@ const ManusSettingsMobile = () => {
           <div className="ms-spacer" />
         </main>
 
-        {logoutOpen && (
-          <div
-            className="ms-confirm-scrim"
-            role="presentation"
-            onClick={() => setLogoutOpen(false)}
-          >
-            <div
-              className="ms-confirm"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Log out"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="ms-confirm-title">Log out?</h3>
-              <p className="ms-confirm-body">You'll need to sign in again to use Megsy.</p>
-              <div className="ms-confirm-actions">
-                <button
-                  type="button"
-                  className="ms-confirm-btn"
-                  onClick={() => setLogoutOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="ms-confirm-btn ms-confirm-btn-primary"
-                  onClick={handleLogout}
-                >
-                  Log out
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
     </div>
   );
@@ -421,26 +387,6 @@ button.ms-card { cursor: pointer; }
 .ms-menu-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
 .ms-menu-label { flex: 1; }
 .ms-menu-check { width: 16px; height: 16px; flex-shrink: 0; }
-@keyframes ms-fade { from { opacity: 0 } to { opacity: 1 } }
-.ms-confirm-scrim {
-  position: fixed; inset: 0; z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 24px; background: rgba(0,0,0,0.32);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  animation: ms-fade .18s ease-out;
-}
-.ms-confirm {
-  width: 100%; max-width: 300px; overflow: hidden;
-  border-radius: 22px; background: var(--mn-card, var(--mn-bg)); color: var(--mn-fg);
-  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.35);
-  text-align: center; animation: ms-rise .22s cubic-bezier(.22,1,.36,1);
-}
-.ms-confirm-title { margin: 0; padding: 22px 20px 4px; font-size: 17px; font-weight: 600; }
-.ms-confirm-body { margin: 0; padding: 0 20px 20px; font-size: 13px; line-height: 1.45; opacity: .6; }
-.ms-confirm-actions { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(127,127,127,.2); }
-.ms-confirm-btn { height: 48px; font-size: 16px; background: none; border: 0; color: inherit; cursor: pointer; }
-.ms-confirm-btn + .ms-confirm-btn { border-left: 1px solid rgba(127,127,127,.2); }
-.ms-confirm-btn-primary { color: #e5484d; font-weight: 600; }
 @keyframes ms-fade { from { opacity: 0 } to { opacity: 1 } }
 @keyframes ms-rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 
