@@ -1,6 +1,6 @@
 import { useEffect, useState, type FC, type SVGProps } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronRight, Sparkles, Globe, Brain, Info, Mail, KeyRound, Monitor, ListChecks } from "lucide-react";
+import { ChevronRight, Sparkles, Globe, Brain, Info, Mail, KeyRound, Monitor } from "lucide-react";
 import { getStoredTheme, setTheme, type ThemeMode } from "@/lib/theme";
 import { Moon as MoonIcon, Sun as SunIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -94,7 +94,6 @@ export function DesktopSettingsHome() {
         // Mail is hidden until its UI is reworked.
         // { icon: (p) => <Mail {...p} />, label: tx("Mail"), path: "/mail" },
         { icon: (p) => <Brain {...p} />, label: tx("Memory"), path: "/settings/memory" },
-        { icon: (p) => <ListChecks {...p} />, label: tx("Tasks"), path: "/tasks" },
         { icon: IntegrationsIcon, label: tx("Integrations"), path: "/integrations" },
         { icon: IntegrationsIcon, label: tx("MCP Servers"), path: "/settings/mcp" },
 

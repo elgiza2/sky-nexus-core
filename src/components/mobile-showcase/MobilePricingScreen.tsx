@@ -11,7 +11,7 @@ import {
   Search,
   Infinity as InfinityIcon,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import MegsyStar from "@/components/branding/MegsyStar";
 import { MobileSidebarButton } from "@/components/shared/MobileSidebarButton";
@@ -359,14 +359,6 @@ export default function MobilePricingScreen({
                     <span className="text-[12.5px] font-medium" style={{ color: c.muted }}>
                       {opt.label}
                     </span>
-                    {opt.badge && (
-                      <span
-                        className="rounded-full px-2 py-[2.5px] text-[10px] font-medium leading-none"
-                        style={{ background: c.badgeBg, color: c.badgeText }}
-                      >
-                        {opt.badge}
-                      </span>
-                    )}
                   </span>
                   <span
                     className={`flex items-baseline gap-2 tabular-nums ${isAr ? "flex-row-reverse" : ""} justify-start`}
@@ -394,20 +386,14 @@ export default function MobilePricingScreen({
           })}
         </div>
 
-        {/* Fine print + CTA + legal, pinned to the very bottom */}
+        {/* CTA pinned to the very bottom of the screen */}
+        <div className="h-[92px] shrink-0" />
         <div
-          className={`mps-rise shrink-0 ${compact ? "pt-2" : "pt-3"}`}
+          className="fixed inset-x-0 bottom-0 z-30 px-5 pt-3"
           style={{
-            animationDelay: "300ms",
-            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 14px)",
           }}
         >
-          <p
-            className={`text-center leading-[1.45] ${compact ? "mb-2 min-h-[26px] text-[10px]" : "mb-2.5 min-h-[30px] text-[10.5px]"}`}
-            style={{ color: c.faint }}
-          >
-            {t.fine}
-          </p>
           <button
             type="button"
             onClick={() =>
@@ -427,21 +413,6 @@ export default function MobilePricingScreen({
               t.cta
             )}
           </button>
-          <nav
-            className={`flex items-center justify-center gap-6 leading-none ${compact ? "mt-2 text-[11px]" : "mt-3 text-[11.5px]"}`}
-            style={{ color: c.faint }}
-            aria-label="Legal"
-          >
-            <Link to="/terms" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
-              {t.terms}
-            </Link>
-            <Link to="/privacy" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
-              {t.privacy}
-            </Link>
-            <Link to="/restore" className="inline-flex min-h-11 items-center px-2 transition-opacity hover:opacity-70" style={{ color: c.faint }}>
-              {t.restore}
-            </Link>
-          </nav>
         </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
         <div className="flex-[0.6]" />
