@@ -113,7 +113,17 @@
 }
 
 
+/* Small segmented control: the same glass, flattened into a pill. */
+.glass-pill {
+  border-radius: 9999px;
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(10px) saturate(140%);
+}
+
 /* Field surface inside the glass screens. */
+
 .glass-input {
   background: hsl(var(--card) / 0.72);
   border: 1px solid var(--glass-edge);
