@@ -35,6 +35,7 @@
 - [ ] Checkout: English only, black bottom button, clean transition between payment methods, tidy rounded back button in the card color.
 - [ ] Checkout: the page background must be the same dotted canvas the pricing screen uses.
 - [ ] Checkout: payment tray without its own background or rounded edges; every payment card a clean unified white.
+- [ ] Checkout: no brand logo inside the continue button (name only), and the back button round.
 
 
 
