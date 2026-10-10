@@ -1,7 +1,7 @@
 # Megsy — roadmap
 
 ## Current checkout request
-- [ ] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity; verify selection and card entry without a charge. Pricing remains unchanged.
+- [x] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity. Selection, formatted card entry, light/dark and phone/desktop verified without a charge; pricing unchanged. Hosted payment completion not exercised (external authentication and real charge required).
 
 ## Current request (October 6, 2026)
 - [x] Restrict the October announcement to authenticated sessions; Welcome and registration never show it.
