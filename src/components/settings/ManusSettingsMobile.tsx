@@ -23,7 +23,7 @@ import {
   Mail as MailIcon,
   Monitor,
 } from "lucide-react";
-import { KeyRound, ListChecks } from "lucide-react";
+import { KeyRound } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useConfirm } from "@/components/common/ConfirmDialog";
 import { useActiveAccount } from "@/hooks/useActiveAccount";
@@ -421,6 +421,26 @@ button.ms-card { cursor: pointer; }
 .ms-menu-icon { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.9; }
 .ms-menu-label { flex: 1; }
 .ms-menu-check { width: 16px; height: 16px; flex-shrink: 0; }
+@keyframes ms-fade { from { opacity: 0 } to { opacity: 1 } }
+.ms-confirm-scrim {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(0,0,0,0.32);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  animation: ms-fade .18s ease-out;
+}
+.ms-confirm {
+  width: 100%; max-width: 300px; overflow: hidden;
+  border-radius: 22px; background: var(--mn-card, var(--mn-bg)); color: var(--mn-fg);
+  box-shadow: 0 24px 60px -20px rgba(0,0,0,0.35);
+  text-align: center; animation: ms-rise .22s cubic-bezier(.22,1,.36,1);
+}
+.ms-confirm-title { margin: 0; padding: 22px 20px 4px; font-size: 17px; font-weight: 600; }
+.ms-confirm-body { margin: 0; padding: 0 20px 20px; font-size: 13px; line-height: 1.45; opacity: .6; }
+.ms-confirm-actions { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(127,127,127,.2); }
+.ms-confirm-btn { height: 48px; font-size: 16px; background: none; border: 0; color: inherit; cursor: pointer; }
+.ms-confirm-btn + .ms-confirm-btn { border-left: 1px solid rgba(127,127,127,.2); }
+.ms-confirm-btn-primary { color: #e5484d; font-weight: 600; }
 @keyframes ms-fade { from { opacity: 0 } to { opacity: 1 } }
 @keyframes ms-rise { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
 
