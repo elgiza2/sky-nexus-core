@@ -19,6 +19,8 @@
 - [ ] Fix the mobile pricing layout order and spacing.
 - [ ] Remove "53% off the first month", "4 months free" and the "$7.00 for the first month, then $15.00/month. Cancel anytime." line.
 - [ ] Make the two billing buttons rectangular with lightly rounded corners.
+- [ ] Main action button: pink, blue and red liquid with the grain inside, round (pill) and clean.
+
 
 
 
