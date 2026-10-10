@@ -261,7 +261,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                 <p className="mt-3 text-sm leading-6 text-muted-foreground">بنأكد العملية ونفعّل اشتراكك خلال لحظات.</p>
                 {orderId && <p className="mt-2 max-w-full break-all font-mono text-xs text-muted-foreground">{orderId}</p>}
               </div>
-              <Button variant="ghost" className="glass-cta h-14 w-full rounded-xl text-base" onClick={onClose}>متابعة</Button>
+              <Button variant="ghost" className="glass-cta h-14 w-full rounded-full text-base" onClick={onClose}>متابعة</Button>
             </div>
           ) : stage === "card" ? (
             <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
@@ -275,7 +275,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
               <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier</p>
-              <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-4 h-14 w-full rounded-xl text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : "ادفع الآن"}</Button>
+              <Button variant="ghost" data-plain type="submit" disabled={busy} className="glass-cta mt-4 h-14 w-full rounded-full text-base">{busy ? <><Loader2 className="animate-spin" /> جارِ المعالجة…</> : "ادفع الآن"}</Button>
             </form>
           ) : (
             <div className="mt-7 flex flex-1 flex-col">
@@ -283,11 +283,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                 {TILES.map((t, index) => {
                   const active = t.id === pick;
                   return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} data-selected={active} style={{ "--i": index } as React.CSSProperties} className={`glass-tile glass-appear h-[142px] flex-col items-start justify-between p-5 text-start ${t.id === "vodafone" ? "col-span-2 h-[100px] flex-row items-center" : ""}`}>
-                    <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center" dir="ltr"><TileLogo id={t.id} /></span>
+                    <span className={`checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center transition-opacity ${active ? "" : "opacity-50"}`} dir="ltr"><TileLogo id={t.id} /></span>
+                    <span className={`text-base font-medium transition-colors ${active ? "text-foreground" : "text-foreground/55"} ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
 
-
-                    <span className={`text-base font-medium ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
-                    <span className={`absolute end-4 top-4 flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-foreground text-background" : "border border-foreground/20"} ${t.id === "vodafone" ? "top-1/2 -translate-y-1/2" : ""}`}>{active && <Check className="h-3 w-3" strokeWidth={3} />}</span>
                   </Button>;
                 })}
               </div>
