@@ -1,0 +1,63 @@
+:root {
+  --pricing-sky: oklch(0.65 0.18 247);
+  --pricing-horizon: oklch(0.9 0.065 214);
+  --pricing-paper: oklch(1 0 0);
+  --pricing-ink: oklch(0.28 0.035 248);
+  --pricing-muted: oklch(0.53 0.025 248);
+  --pricing-line: oklch(0.92 0.015 235);
+  --pricing-pro: oklch(0.55 0.2 258);
+  --pricing-pro-surface: oklch(0.965 0.025 238);
+  --pricing-yellow: oklch(0.9 0.18 96);
+  --pricing-yellow-edge: oklch(0.75 0.16 85);
+  --pricing-free: oklch(0.67 0.16 155);
+  --pricing-shadow: 0 4px 0 var(--pricing-yellow-edge);
+}
+.pricing-sky { background: var(--pricing-paper); color: var(--pricing-ink); font-family: 'Geist', system-ui, sans-serif; letter-spacing: 0; min-height: 100dvh; }
+.pricing-sky button { font-family: inherit; letter-spacing: 0; }
+.pricing-sky-top { position: relative; background: linear-gradient(180deg,var(--pricing-sky) 0%,var(--pricing-sky) 55%,var(--pricing-horizon) 100%); height: 330px; overflow: hidden; }
+.pricing-sky-nav { position: relative; z-index: 3; display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; color: var(--pricing-paper); }
+.pricing-sky-nav .sky-icon { background: transparent; color: inherit; border: 0; }
+.sky-brand { display: flex; align-items: center; gap: 7px; font-weight: 800; font-size: 18px; }
+.sky-title { position: relative; z-index: 2; text-align: center; margin: 0 auto; max-width: 520px; padding: 0 24px; }
+.sky-title h1 { color: var(--pricing-ink); text-align: center !important; font-size: 30px; font-weight: 800; line-height: 1.2; margin: 17px 0 9px; }
+.sky-title p { text-align: center !important; font-size: 13px; margin: 0; color: var(--pricing-ink); }
+.sky-ribbon { display: inline-block; background: var(--pricing-yellow); color: var(--pricing-ink); padding: 8px 24px; font-size: 11px; font-weight: 800; clip-path: polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%); }
+.sky-clouds { position: absolute; inset: auto 0 0; height: 88px; background: var(--pricing-paper); }
+.sky-clouds::before,.sky-clouds::after { content: ''; position: absolute; background: var(--pricing-paper); border-radius: 50%; width: 160px; height: 130px; bottom: 0; }
+.sky-clouds::before { left: -65px; box-shadow: 145px 42px 0 20px var(--pricing-paper); }
+.sky-clouds::after { right: -60px; box-shadow: -140px 50px 0 20px var(--pricing-paper); }
+.sky-mascot { position: absolute; z-index: 2; width: 140px; height: 140px; bottom: 10px; left: calc(50% - 70px); object-fit: contain; }
+.sky-main { max-width: 690px; margin: -12px auto 0; position: relative; z-index: 3; padding: 0 28px 30px; }
+.sky-billing { display: flex; justify-content: center; margin: 0 auto 18px; gap: 4px; }
+.sky-billing button { color: var(--pricing-muted); background: transparent; border: 0; border-radius: 8px; font-weight: 700; font-size: 12px; height: 34px; padding: 0 16px; }
+.sky-billing button[aria-pressed=true] { color: var(--pricing-pro); background: var(--pricing-pro-surface); }
+.sky-compare { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.sky-compare th:first-child { width: 54%; }
+.sky-compare th { font-size: 12px; padding: 10px 4px 18px; font-weight: 800; }
+.sky-compare th:first-child { text-align: start; color: var(--pricing-muted); font-weight: 500; }
+.sky-compare th:last-child { color: var(--pricing-pro); background: var(--pricing-pro-surface); border-radius: 14px 14px 0 0; }
+.sky-compare td { height: 53px; border-bottom: 1px solid var(--pricing-line); font-size: 13px; font-weight: 600; text-align: center; padding: 8px 4px; }
+.sky-compare td:first-child { text-align: start; padding-inline-end: 10px; line-height: 1.45; }
+.sky-compare td:last-child { background: var(--pricing-pro-surface); color: var(--pricing-pro); }
+.sky-compare tr:last-child td { border-bottom: 0; }
+.sky-compare tr:last-child td:last-child { border-radius: 0 0 14px 14px; }
+.sky-check { width: 20px; height: 20px; display: inline-flex; color: var(--pricing-pro); vertical-align: middle; }
+.sky-check-free { color: var(--pricing-free); }
+.sky-unavailable { color: var(--pricing-muted); font-weight: 400; }
+.sky-purchase { margin: 22px 0 0; text-align: center; }
+.sky-price { font-weight: 800; font-size: 25px; display: flex; align-items: baseline; justify-content: center; gap: 7px; margin-bottom: 12px; }
+.sky-price small { font-size: 12px; font-weight: 500; color: var(--pricing-muted); }
+.pricing-sky .sky-cta { width: 100%; height: 50px; border-radius: 12px; background: var(--pricing-yellow); color: var(--pricing-ink); box-shadow: var(--pricing-shadow); border: 0; font-size: 14px; font-weight: 800; transition: transform .15s,box-shadow .15s; }
+.pricing-sky .sky-cta:hover { background: var(--pricing-yellow); transform: translateY(-1px); }
+.pricing-sky .sky-cta:active { transform: translateY(3px); box-shadow: none; }
+.sky-fine { text-align: center !important; color: var(--pricing-muted); font-size: 11px; line-height: 1.6; margin: 13px 0 0; }
+.sky-free-link { background: transparent; color: var(--pricing-muted); font-size: 12px; margin: 10px 0 0; }
+.sky-details { max-width: 690px; margin: auto; padding: 32px 28px 60px; border-top: 1px solid var(--pricing-line); }
+.sky-details h2 { font-size: 24px; margin: 0 0 20px; font-weight: 800; }
+.sky-faq { border-bottom: 1px solid var(--pricing-line); }
+.sky-faq button { color: var(--pricing-ink); background: transparent; justify-content: space-between; width: 100%; height: auto; min-height: 54px; text-align: start; padding: 14px 0; }
+.sky-faq p { color: var(--pricing-muted); font-size: 13px; line-height: 1.7; padding-bottom: 16px; }
+.sky-footer { display: flex; justify-content: center; gap: 20px; font-size: 12px; margin-top: 25px; color: var(--pricing-muted); }
+@media (min-width: 768px) { .pricing-sky-top { height: 370px; } .sky-title h1 { font-size: 40px; } .sky-mascot { width: 160px; height: 160px; left: calc(50% - 80px); } .sky-main { padding-bottom: 40px; } .sky-compare td { height: 60px; font-size: 15px; } .sky-compare th { font-size: 14px; } .sky-purchase { max-width: 440px; margin: 25px auto 0; } }
+@media (max-width: 360px) { .sky-main { padding-inline: 18px; } .sky-title h1 { font-size: 27px; } .sky-compare td { font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .pricing-sky *, .pricing-sky *::before, .pricing-sky *::after { animation: none !important; transition: none !important; } }
