@@ -439,3 +439,47 @@ html[data-theme="light"] .megsy-pricing {
     animation: none;
   }
 }
+
+/* ── The liquid rim ───────────────────────────────────────────────────────
+ * A pane of glass is only convincing where its edge bends what sits behind it.
+ * A narrow band at the rim samples the canvas through the displacement filter
+ * and drags the dotted backdrop with it, while the middle of the pane stays
+ * clear — that contrast is what reads as thickness rather than a flat card.
+ * The band is a masked ring (the padding box minus the content box), so it
+ * follows the rounded corners exactly and never draws an outline. */
+.megsy-pricing .megsy-plan-tile::before,
+.megsy-checkout .megsy-pay-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  padding: 15px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 255, 255, 0.18) 42%,
+    rgba(255, 255, 255, 0.1) 62%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+  backdrop-filter: blur(4px) saturate(190%) brightness(1.03);
+  backdrop-filter: blur(4px) saturate(190%) brightness(1.03) url(#megsy-glass-warp);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+/* The chosen pane is thicker: its rim bends a little harder and catches more
+   light, so the pick still reads first, before any rim colour is considered. */
+.megsy-pricing .megsy-plan-tile[data-selected="true"]::before,
+.megsy-checkout .megsy-pay-tile[data-selected="true"]::before {
+  padding: 19px;
+  backdrop-filter: blur(6px) saturate(200%) brightness(1.05);
+  backdrop-filter: blur(6px) saturate(200%) brightness(1.05) url(#megsy-glass-warp);
+  background: linear-gradient(
+    158deg,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(255, 255, 255, 0.3) 45%,
+    rgba(255, 255, 255, 0.2) 65%,
+    rgba(255, 255, 255, 0.65) 100%
+  );
+}
