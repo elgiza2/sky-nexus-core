@@ -20,8 +20,43 @@
     0 10px 30px hsl(var(--foreground) / 0.035);
   --glass-shadow-on: inset 0 1px 2px hsl(var(--card)),
     0 8px 24px hsl(var(--foreground) / 0.06);
-  --glass-cta-shadow: inset 0 1px 1px hsl(var(--card) / 0.95),
-    0 14px 34px hsl(var(--foreground) / 0.12);
+  --glass-cta-shadow: inset 0 1px 1px hsl(var(--card) / 0.35),
+    0 16px 34px -14px hsl(var(--cta-blue) / 0.45);
+
+  /* Liquid action: pink, blue and red drifting inside the glass. */
+  --cta-pink: var(--sunset-pink);
+  --cta-blue: 220 82% 65%; /* --megsy-blue #5b8def */
+  --cta-red: 356 88% 56%;
+  --gradient-cta: linear-gradient(
+    100deg,
+    hsl(var(--cta-pink)) 0%,
+    hsl(var(--cta-blue)) 52%,
+    hsl(var(--cta-red)) 100%
+  );
+  --gradient-cta-liquid: radial-gradient(
+      60% 120% at 12% 30%,
+      hsl(var(--cta-pink) / 0.95) 0%,
+      hsl(var(--cta-pink) / 0) 70%
+    ),
+    radial-gradient(
+      55% 130% at 42% 78%,
+      hsl(var(--cta-blue) / 0.92) 0%,
+      hsl(var(--cta-blue) / 0) 72%
+    ),
+    radial-gradient(
+      55% 120% at 78% 22%,
+      hsl(var(--cta-red) / 0.9) 0%,
+      hsl(var(--cta-red) / 0) 70%
+    ),
+    radial-gradient(
+      60% 130% at 96% 80%,
+      hsl(var(--cta-pink) / 0.95) 0%,
+      hsl(var(--cta-pink) / 0) 74%
+    ),
+    var(--gradient-cta);
+
+
+
   --glass-bg: hsl(var(--background));
   --glass-dot: transparent;
   background: radial-gradient(
@@ -73,18 +108,33 @@
   border-color: var(--glass-edge-on);
   box-shadow: var(--glass-shadow-on);
 }
+/* The chosen card is obvious on its own: a clear rim in the action colours. */
+.megsy-checkout .glass-tile[data-selected="true"],
+.megsy-pricing .glass-tile[data-selected="true"] {
+  border-color: hsl(var(--cta-pink) / 0.6);
+  box-shadow: var(--glass-shadow),
+    inset 0 0 0 1.5px hsl(var(--cta-blue) / 0.4),
+    0 14px 30px -16px hsl(var(--cta-pink) / 0.5);
+}
+
 
 /* Primary action: the same glass, lifted so it still reads as the main CTA. */
 .glass-cta {
   position: relative;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.92),
-    hsl(var(--card) / 0.58)
-  );
-  color: hsl(var(--foreground));
-  font-weight: 500;
-  border: 1px solid hsl(var(--foreground) / 0.14);
+  border-radius: 9999px;
+
+  background-color: hsl(var(--cta-pink) / 0.16);
+  background-image: var(--sunset-grain), var(--gradient-cta-liquid);
+  background-repeat: no-repeat;
+  background-size: 180px 100px, 180% 180%, 170% 170%, 175% 175%, 180% 180%, 200% 100%;
+  background-blend-mode: soft-light, normal, normal, normal, normal, normal;
+  animation: sunset-liquid-drift 14s ease-in-out infinite;
+  color: hsl(var(--sunset-foreground));
+  font-weight: 600;
+  border: 1px solid hsl(var(--sunset-foreground) / 0.22);
+
+
+
   box-shadow: var(--glass-cta-shadow);
   backdrop-filter: blur(14px) saturate(150%);
   transition: background 0.18s ease, box-shadow 0.18s ease,
@@ -102,15 +152,34 @@
   pointer-events: none;
 }
 .glass-cta:hover {
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 1),
-    hsl(var(--card) / 0.74)
-  );
-  border-color: hsl(var(--foreground) / 0.22);
+  filter: saturate(1.08) brightness(1.04);
+  border-color: hsl(var(--sunset-foreground) / 0.4);
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass-cta {
+    animation: none;
+  }
+}
+
+
+
+/* Billing rows: a rectangle with lightly rounded corners, not a full pill. */
+.glass-tile--row {
+  border-radius: 14px;
+}
+
+/* Small segmented control: the same glass, flattened into a pill. */
+
+.glass-pill {
+  border-radius: 9999px;
+  border: 1px solid var(--glass-edge);
+  background: var(--glass-surface);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(10px) saturate(140%);
 }
 
 /* Field surface inside the glass screens. */
+
 .glass-input {
   background: hsl(var(--card) / 0.72);
   border: 1px solid var(--glass-edge);
@@ -146,17 +215,42 @@
   }
 }
 
-/* Phones: a flat surface reads better than the desktop wash under the glass. */
+/* Phones: a flat canvas gives the blur nothing to refract, so keep a soft
+   light source above and a faint one below — that is what makes the panels
+   read as glass instead of flat cards. */
 @media (max-width: 767px) {
   .megsy-checkout,
   .megsy-pricing {
     --glass-bg: oklch(0.15 0 0);
     --glass-dot: hsl(var(--foreground) / 0.08);
-    background: var(--glass-bg);
+    background:
+      radial-gradient(
+        130% 62% at 50% -12%,
+        hsl(var(--primary) / 0.16),
+        transparent 72%
+      ),
+      radial-gradient(
+        95% 52% at 50% 112%,
+        hsl(var(--foreground) / 0.07),
+        transparent 72%
+      ),
+      var(--glass-bg);
   }
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: oklch(0.961 0 0);
     --glass-dot: hsl(var(--foreground) / 0.1);
+    background:
+      radial-gradient(
+        130% 62% at 50% -12%,
+        hsl(var(--primary) / 0.12),
+        transparent 72%
+      ),
+      radial-gradient(
+        95% 52% at 50% 112%,
+        hsl(var(--foreground) / 0.06),
+        transparent 72%
+      ),
+      var(--glass-bg);
   }
 }

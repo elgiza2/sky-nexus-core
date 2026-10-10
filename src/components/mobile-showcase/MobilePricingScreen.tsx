@@ -107,15 +107,12 @@ export default function MobilePricingScreen({
 
   const monthlyPrice = monthly.price;
   const yearlyPrice = yearly.price;
-  const monthlyOff = Math.round((1 - monthlyPrice / pro.monthlyPrice) * 100);
 
   const t = isAr
     ? {
         title: "قم بالترقية إلى Megsy Pro",
         monthly: "شهرياً",
         yearly: "سنوياً",
-        introBadge: `خصم ${monthlyOff}% على الشهر الأول`,
-        yearlyBadge: "4 أشهر مجاناً",
         perMonth: "/ الشهر الأول",
         perYear: "/ سنة",
         fine: `$${monthlyPrice}.00 للشهر الأول، ثم $${pro.monthlyPrice}.00/شهر. يمكنك الإلغاء في أي وقت.`,
@@ -128,8 +125,6 @@ export default function MobilePricingScreen({
         title: "Upgrade to Megsy Pro",
         monthly: "Monthly",
         yearly: "Yearly",
-        introBadge: `${monthlyOff}% off the first month`,
-        yearlyBadge: "4 months free",
         perMonth: "/first mo",
         perYear: "/year",
         fine: `$${monthlyPrice}.00 for the first month, then $${pro.monthlyPrice}.00/month. Cancel anytime.`,
@@ -153,7 +148,6 @@ export default function MobilePricingScreen({
       key: "monthly",
       yearly: false,
       label: t.monthly,
-      badge: t.introBadge,
       price: monthlyPrice,
       strike: monthly.strike,
       unit: t.perMonth,
@@ -162,7 +156,6 @@ export default function MobilePricingScreen({
       key: "yearly",
       yearly: true,
       label: t.yearly,
-      badge: t.yearlyBadge,
       price: yearlyPrice,
       strike: yearly.strike,
       unit: t.perYear,
@@ -193,12 +186,15 @@ export default function MobilePricingScreen({
 
       <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
         {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.6]" />
+        <div className="flex-[0.4]" />
+
+
         {/* Megsy star mark */}
         <div
-          className={`glass-appear flex justify-center ${compact ? "mt-[2%]" : "mt-[4%]"}`}
+          className="glass-appear flex justify-center"
           style={{ "--i": 0 } as React.CSSProperties}
         >
+
           <MegsyStar className={`${compact ? "h-7 w-7" : "h-8 w-8"} text-foreground`} />
         </div>
 
@@ -215,11 +211,12 @@ export default function MobilePricingScreen({
         {/* Feature card — single column, airy rows on one frosted panel */}
         <div
           className={`glass-tile glass-appear ${
-            compact ? "mt-3.5 px-4 py-3.5" : "mt-5 px-5 py-4"
+            compact ? "mt-3 px-4 py-3.5" : "mt-4 px-5 py-5"
           }`}
+
           style={{ "--i": 2 } as React.CSSProperties}
         >
-          <ul className={`flex flex-col ${compact ? "gap-[11px]" : "gap-[14px]"}`}>
+          <ul className={`flex flex-col ${compact ? "gap-[12px]" : "gap-[18px]"}`}>
             {features.map(({ icon: Icon, text }) => (
               <li
                 key={text}
@@ -239,14 +236,12 @@ export default function MobilePricingScreen({
           </ul>
         </div>
 
-        {/* Breathing room between the feature card and billing options */}
-        <div className="flex-[0.4] min-h-[12px] max-h-10" />
-
         {/* Billing options */}
         <div
-          className={`glass-appear flex flex-col ${compact ? "gap-2" : "gap-2.5"}`}
+          className={`glass-appear mt-4 flex flex-col ${compact ? "gap-2" : "gap-3"}`}
           style={{ "--i": 3 } as React.CSSProperties}
         >
+
           {options.map((opt, index) => {
             const selected = isYearly === opt.yearly;
             return (
@@ -256,14 +251,14 @@ export default function MobilePricingScreen({
                 onClick={() => onToggleYearly(opt.yearly)}
                 data-selected={selected}
                 aria-pressed={selected}
-                className={`glass-tile flex w-full items-center gap-3 px-4 text-start transition-all duration-200 ${
+                className={`glass-tile glass-tile--row flex w-full items-center gap-3 px-4 text-start transition-all duration-200 ${
                   compact ? "py-2" : "py-2.5"
                 } ${isAr ? "flex-row-reverse" : ""}`}
                 style={{ "--i": 4 + index } as React.CSSProperties}
               >
                 <span
                   className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                    selected ? "border-foreground" : "border-foreground/25"
+                    selected ? "border-foreground" : "border-foreground/40"
                   }`}
                 >
                   {selected && (
@@ -274,14 +269,9 @@ export default function MobilePricingScreen({
                   <span
                     className={`flex items-center gap-2 ${isAr ? "flex-row-reverse" : ""} justify-start`}
                   >
-                    <span className="text-[12.5px] font-medium text-muted-foreground">
+                    <span className={`text-[12.5px] font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}>
                       {opt.label}
                     </span>
-                    {opt.badge && (
-                      <span className="rounded-full bg-primary/10 px-2 py-[2.5px] text-[10px] font-medium leading-none text-primary">
-                        {opt.badge}
-                      </span>
-                    )}
                   </span>
                   <span
                     className={`flex items-baseline gap-2 tabular-nums ${isAr ? "flex-row-reverse" : ""} justify-start`}
@@ -291,14 +281,15 @@ export default function MobilePricingScreen({
                     <span className={`${compact ? "text-[15px]" : "text-[16px]"} font-semibold text-foreground`}>
                       {localPrice(opt.price) ?? `$${opt.price}`}
                     </span>
-                    <span className="text-[11px] text-muted-foreground">
+                    <span className="text-[11px] text-foreground/65">
                       {opt.unit}
                     </span>
-                    <span className="text-[11.5px] line-through text-muted-foreground/70">
+                    <span className="text-[11.5px] line-through text-foreground/65">
+
                       {localPrice(opt.strike) ?? `$${opt.strike}`}
                     </span>
                     {localPrice(opt.price) ? (
-                      <span className="text-[11px] text-muted-foreground/70">
+                      <span className="text-[11px] text-foreground/65">
                         ${opt.price}
                       </span>
                     ) : null}
@@ -311,19 +302,12 @@ export default function MobilePricingScreen({
 
         {/* Fine print + CTA + legal, pinned to the very bottom */}
         <div
-          className={`glass-appear shrink-0 ${compact ? "pt-2" : "pt-3"}`}
+          className={`glass-appear shrink-0 ${compact ? "pt-3" : "pt-4"}`}
           style={{
             "--i": 6,
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
           } as React.CSSProperties}
         >
-          <p
-            className={`text-center leading-[1.45] text-muted-foreground ${
-              compact ? "mb-2 min-h-[26px] text-[10px]" : "mb-2.5 min-h-[30px] text-[10.5px]"
-            }`}
-          >
-            {t.fine}
-          </p>
           <button
             type="button"
             onClick={() =>
@@ -332,7 +316,7 @@ export default function MobilePricingScreen({
                 : onSubscribe("pro", { trial: false })
             }
             disabled={isLoading}
-            className={`glass-cta flex w-full items-center justify-center rounded-xl px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
+            className={`glass-cta flex w-full items-center justify-center rounded-full px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
               compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"
             }`}
           >
