@@ -110,7 +110,9 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [threeDsUrl, setThreeDsUrl] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [result, setResult] = useState<"idle" | "processing" | "success">("idle");
-  const selected = useMemo(() => METHODS.find((item) => item.id === method), [method]);
+  const [stage, setStage] = useState<"choose" | "card">("choose");
+  const [pick, setPick] = useState<TileId>("mastercard");
+  useMemo(() => METHODS.find((item) => item.id === method), [method]);
 
   useEffect(() => {
     if (!open) return;
@@ -139,6 +141,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setThreeDsUrl(null);
       setOrderId(null);
       setResult("idle");
+      setStage("choose");
     }
   }, [open]);
   if (!open) return null;
@@ -271,253 +274,342 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
     }
   };
 
+  const step = result === "success" ? 3 : 2;
+  const tile = TILES.find((t) => t.id === pick) ?? TILES[0];
+  const continueWithPick = () => {
+    setError(null);
+    if (tile.kind === "card") {
+      setMethod("card");
+      setStage("card");
+    } else {
+      setMethod(tile.method);
+      void openHostedCheckout(tile.method);
+    }
+  };
+  const back = () => {
+    if (busy) return;
+    if (stage === "card" && !threeDsUrl && result !== "success") {
+      setStage("choose");
+      setError(null);
+    } else onClose();
+  };
+
   return (
-    <div className="fixed inset-0 z-[120] overflow-y-auto bg-[#f7f8fa] text-[#1f2328]" dir="rtl">
-      <div className="mx-auto min-h-dvh w-full max-w-[1120px] px-4 py-5 sm:px-8 sm:py-8">
-        <header className="mx-auto mb-7 flex max-w-[980px] items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#111315] text-white">
-              <span className="text-base font-bold">m</span>
-            </div>
-            <span className="text-[15px] font-semibold tracking-[-0.02em]">Megsy</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-[12px] text-[#69707a]">
-            <LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier
-          </div>
+    <div className="fixed inset-0 z-[120] overflow-y-auto bg-[#efefef] text-[#1c1c1e]" dir="rtl">
+      <div className="mx-auto flex min-h-dvh w-full max-w-[460px] flex-col px-5 pb-6 pt-5">
+        <header className="flex items-center justify-between">
+          <button
+            type="button"
+            onClick={back}
+            disabled={busy}
+            aria-label="رجوع"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-[#1c1c1e] transition hover:bg-white disabled:opacity-40"
+          >
+            <ArrowLeft className="h-4 w-4 rotate-180" />
+          </button>
+          <h1 className="text-[17px] font-semibold tracking-[-0.02em]">
+            {step === 3 ? "تم" : stage === "card" ? "بيانات البطاقة" : "الدفع"}
+          </h1>
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={busy}
+            aria-label="إغلاق"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-[#8a8a8e] transition hover:bg-white disabled:opacity-40"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </header>
-        <div
-          className="mx-auto grid max-w-[980px] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]"
-          dir="ltr"
-        >
-          <main
-            className="rounded-2xl border border-[#e4e7eb] bg-white shadow-[0_8px_30px_rgba(31,35,40,.05)]"
-            dir="rtl"
-          >
-            <div className="border-b border-[#eef0f2] px-5 py-5 sm:px-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[12px] font-medium text-[#69707a]">الخطوة الأخيرة</p>
-                  <h1 className="mt-1 text-[24px] font-semibold tracking-[-0.04em] text-[#17191c]">
-                    إتمام الدفع
-                  </h1>
-                </div>
-                <button
-                  type="button"
-                  onClick={onClose}
-                  disabled={busy}
-                  className="rounded-full p-2 text-[#8a919b] transition hover:bg-[#f2f3f5] hover:text-[#17191c] disabled:opacity-40"
-                  aria-label="إغلاق"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-            </div>
-            {threeDsUrl ? (
-              <div className="p-5 sm:p-8">
-                <div className="space-y-4">
-                  <StatusIcon type="pending" />
-                  <h2 className="text-center text-xl font-semibold">تحقق إضافي من البنك</h2>
-                  <p className="text-center text-sm leading-6 text-[#69707a]">
-                    أكمل الخطوة داخل نافذة البنك لإتمام العملية بأمان.
-                  </p>
-                  <iframe
-                    title="تحقق البنك"
-                    src={threeDsUrl}
-                    className="h-[480px] w-full rounded-xl border border-[#e4e7eb] bg-white"
-                  />
+
+        <Stepper step={step} />
+
+        {threeDsUrl ? (
+          <div className="mt-6 flex-1 space-y-4">
+            <Notice text="أكمل خطوة التحقق داخل نافذة البنك لإتمام العملية بأمان." />
+            <iframe
+              title="تحقق البنك"
+              src={threeDsUrl}
+              className="h-[480px] w-full rounded-2xl border border-black/5 bg-white"
+            />
+          </div>
+        ) : result === "success" ? (
+          <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col items-center justify-center py-10 text-center">
+              <div className="relative">
+                <span className="absolute -right-6 -top-5 h-2 w-3 rotate-12 rounded-sm bg-[#f25c1c]" />
+                <span className="absolute -left-7 top-1 h-1.5 w-3 -rotate-12 rounded-sm bg-[#34c759]" />
+                <span className="absolute -right-8 bottom-2 h-1.5 w-1.5 rounded-full bg-[#ffcc00]" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#34a853] text-white shadow-[0_10px_30px_rgba(52,168,83,.35)]">
+                  <Check className="h-10 w-10" strokeWidth={3} />
                 </div>
               </div>
-            ) : result === "success" ? (
-              <div className="p-8 sm:p-14">
-                <div className="space-y-4 text-center">
-                  <StatusIcon type="success" />
-                  <h2 className="text-2xl font-semibold">تم إرسال الدفع</h2>
-                  <p className="text-sm leading-6 text-[#69707a]">
-                    بنأكد العملية ونفعّل اشتراكك خلال لحظات.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={onClose}
-                    className="mt-3 h-12 w-full rounded-xl bg-[#111315] px-5 text-sm font-semibold text-white transition hover:bg-black"
-                  >
-                    متابعة
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="p-5 sm:p-8">
-                <div className="rounded-xl border border-[#e5e8ec] bg-[#fbfcfd] p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#111315] text-white">
-                      <ShieldCheck className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-[13px] font-semibold">بياناتك محمية</p>
-                      <p className="mt-0.5 text-[11px] text-[#69707a]">
-                        يتم تشفير الدفع ومعالجته بواسطة Kashier.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <section className="mt-7">
-                  <div className="mb-3 flex items-center justify-between">
-                    <h2 className="text-[15px] font-semibold">طريقة الدفع</h2>
-                    <span className="text-[11px] text-[#8a919b]">اختر واحدة للمتابعة</span>
-                  </div>
-                  <div className="overflow-hidden rounded-xl border border-[#dfe3e8] bg-white">
-                    <div className="border-b border-[#eef0f2] bg-[#fafbfc] px-4 py-3">
-                      <div className="flex items-center gap-2 text-[12px] font-medium text-[#343a40]">
-                        <CreditCard className="h-4 w-4 text-[#635bff]" /> بطاقة بنكية{" "}
-                        <span className="text-[11px] font-normal text-[#8a919b]">
-                          Visa · Mastercard · Meeza · Apple Pay
-                        </span>
-                      </div>
-                    </div>
-                    {method === "card" && (
-                      <form onSubmit={submitCard} className="space-y-4 p-4" autoComplete="off">
-                        <label className="block text-[13px] font-medium">
-                          رقم البطاقة
-                          <input
-                            inputMode="numeric"
-                            autoComplete="cc-number"
-                            value={formatCardNumber(number)}
-                            onChange={(e) => setNumber(e.target.value)}
-                            placeholder="0000 0000 0000 0000"
-                            className="mt-2 h-11 w-full rounded-lg border border-[#dfe3e8] bg-white px-3.5 text-[14px] outline-none transition placeholder:text-[#a5abb3] focus:border-[#635bff] focus:ring-4 focus:ring-[#635bff]/10"
-                          />
-                        </label>
-                        <label className="block text-[13px] font-medium">
-                          الاسم على البطاقة
-                          <input
-                            autoComplete="cc-name"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            placeholder="الاسم كما يظهر على البطاقة"
-                            className="mt-2 h-11 w-full rounded-lg border border-[#dfe3e8] bg-white px-3.5 text-[14px] outline-none transition placeholder:text-[#a5abb3] focus:border-[#635bff] focus:ring-4 focus:ring-[#635bff]/10"
-                          />
-                        </label>
-                        <div className="grid grid-cols-3 gap-3">
-                          <Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" />
-                          <Field label="السنة" value={year} onChange={setYear} placeholder="YY" />
-                          <Field
-                            label="CVV"
-                            value={cvv}
-                            onChange={setCvv}
-                            placeholder="•••"
-                            secret
-                          />
-                        </div>
-                        {error && (
-                          <p
-                            role="alert"
-                            className="rounded-lg border border-[#f2caca] bg-[#fff7f7] px-3 py-2.5 text-[12px] leading-5 text-[#b42318]"
-                          >
-                            {error}
-                          </p>
-                        )}
-                        <button
-                          type="submit"
-                          disabled={busy}
-                          className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-[#635bff] text-[14px] font-semibold text-white transition hover:bg-[#5148ed] disabled:opacity-50"
-                        >
-                          {busy ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin" /> جارِ المعالجة…
-                            </>
-                          ) : (
-                            "ادفع الآن"
-                          )}
-                        </button>
-                        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-[#8a919b]">
-                          <LockKeyhole className="h-3.5 w-3.5" /> لا نحتفظ ببيانات بطاقتك
-                        </p>
-                      </form>
-                    )}
-                  </div>
-                  <div className="mt-3 overflow-hidden rounded-xl border border-[#dfe3e8] bg-white">
-                    {METHODS.filter((item) => item.id !== "card").map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        disabled={busy}
-                        onClick={() => void openHostedCheckout(item.id)}
-                        className="flex min-h-[58px] w-full items-center gap-3 border-b border-[#eef0f2] px-4 text-right transition last:border-0 hover:bg-[#fafbfc] disabled:opacity-50"
-                      >
-                        <span
-                          className={`flex h-8 w-8 items-center justify-center rounded-lg ${item.tone === "red" ? "bg-red-50 text-red-600" : item.tone === "violet" ? "bg-violet-50 text-violet-600" : "bg-amber-50 text-amber-600"}`}
-                        >
-                          <item.icon className="h-4 w-4" />
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-[13px] font-medium">{item.title}</span>
-                          <span className="mt-0.5 block truncate text-[11px] text-[#8a919b]">
-                            {item.detail}
-                          </span>
-                        </span>
-                        <ChevronLeft className="h-4 w-4 text-[#a5abb3]" />
-                      </button>
-                    ))}
-                  </div>
-                  {error && !method && (
-                    <p
-                      role="alert"
-                      className="mt-3 rounded-lg border border-[#f2caca] bg-[#fff7f7] px-3 py-2.5 text-[12px] text-[#b42318]"
-                    >
-                      {error}
-                    </p>
-                  )}
-                </section>
-              </div>
-            )}
-          </main>
-          <aside
-            className="rounded-2xl border border-[#e4e7eb] bg-white p-5 shadow-[0_8px_30px_rgba(31,35,40,.04)]"
-            dir="rtl"
-          >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8a919b]">
-              ملخص الطلب
-            </p>
-            <div className="mt-4 flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[15px] font-semibold">اشتراك Megsy {tier}</p>
-                <p className="mt-1 text-[12px] text-[#69707a]">
-                  دفع {interval === "yearly" ? "سنوي" : "شهري"}
-                </p>
-              </div>
-              <span className="rounded-md bg-[#f2f3f5] px-2 py-1 text-[11px] font-medium text-[#69707a]">
-                EGP
-              </span>
-            </div>
-            <div className="my-5 h-px bg-[#eef0f2]" />
-            <div className="space-y-3 text-[12px]">
-              <div className="flex justify-between">
-                <span className="text-[#8a919b]">المعالج</span>
-                <span className="font-medium">Kashier</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#8a919b]">الوسيلة</span>
-                <span className="font-medium">{selected?.title || "بطاقة بنكية"}</span>
-              </div>
-            </div>
-            <div className="my-5 h-px bg-[#eef0f2]" />
-            <div className="flex items-start gap-2.5">
-              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#2e9b66]" />
-              <p className="text-[11px] leading-5 text-[#69707a]">
-                تشفير 3D Secure عند الحاجة، وبيانات البطاقة لا تمر على خوادم Megsy.
+              <h2 className="mt-7 text-[20px] font-semibold">مبروك!</h2>
+              <p className="mt-2 max-w-[280px] text-[13px] leading-6 text-[#8a8a8e]">
+                بنأكد العملية ونفعّل اشتراك Megsy {tier} خلال لحظات.
+                {orderId && (
+                  <span className="mt-1 block font-mono text-[12px] text-[#3a3a3c]">{orderId}</span>
+                )}
               </p>
             </div>
-            <div className="mt-5 flex flex-wrap gap-1.5 text-[10px] font-semibold text-[#8a919b]">
-              <span className="rounded border border-[#e4e7eb] px-1.5 py-1">VISA</span>
-              <span className="rounded border border-[#e4e7eb] px-1.5 py-1">Mastercard</span>
-              <span className="rounded border border-[#e4e7eb] px-1.5 py-1">MEEZA</span>
+            <button
+              type="button"
+              onClick={onClose}
+              className="h-12 w-full rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12]"
+            >
+              متابعة
+            </button>
+            <button
+              type="button"
+              onClick={() => (window.location.href = "/")}
+              className="mt-3 h-12 w-full rounded-full border border-black/10 bg-white text-[14px] font-medium transition hover:bg-[#fafafa]"
+            >
+              الرجوع للرئيسية
+            </button>
+          </div>
+        ) : stage === "card" ? (
+          <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
+            <div className="relative overflow-hidden rounded-3xl bg-[#1c1c1e] p-5 text-white shadow-[0_20px_40px_rgba(0,0,0,.18)]">
+              <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#f25c1c]/40 blur-2xl" />
+              <div className="relative flex items-center justify-between" dir="ltr">
+                <span className="text-[13px] font-semibold opacity-80">{tile.label}</span>
+                <CreditCard className="h-5 w-5 opacity-70" />
+              </div>
+              <p className="relative mt-8 font-mono text-[19px] tracking-[0.12em]" dir="ltr">
+                {formatCardNumber(number) || "•••• •••• •••• ••••"}
+              </p>
+              <div className="relative mt-5 flex justify-between text-[11px] uppercase opacity-75" dir="ltr">
+                <span className="truncate">{name || "CARD HOLDER"}</span>
+                <span>
+                  {month || "MM"}/{year || "YY"}
+                </span>
+              </div>
             </div>
-          </aside>
-        </div>
-        <p className="mx-auto mt-5 max-w-[980px] text-center text-[11px] text-[#8a919b]">
-          بالضغط على «ادفع الآن» أنت توافق على شروط الخدمة وسياسة الخصوصية.
-        </p>
+
+            <div className="mt-6 space-y-4 rounded-3xl bg-white p-5">
+              <label className="block text-[12px] font-medium text-[#8a8a8e]">
+                رقم البطاقة
+                <input
+                  inputMode="numeric"
+                  autoComplete="cc-number"
+                  dir="ltr"
+                  value={formatCardNumber(number)}
+                  onChange={(e) => setNumber(e.target.value)}
+                  placeholder="0000 0000 0000 0000"
+                  className={INPUT}
+                />
+              </label>
+              <label className="block text-[12px] font-medium text-[#8a8a8e]">
+                الاسم على البطاقة
+                <input
+                  autoComplete="cc-name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="الاسم كما يظهر على البطاقة"
+                  className={INPUT}
+                />
+              </label>
+              <div className="grid grid-cols-3 gap-3">
+                <Field label="الشهر" value={month} onChange={setMonth} placeholder="MM" />
+                <Field label="السنة" value={year} onChange={setYear} placeholder="YY" />
+                <Field label="CVV" value={cvv} onChange={setCvv} placeholder="•••" secret />
+              </div>
+            </div>
+
+            {error && <ErrorBox text={error} />}
+
+            <p className="mt-5 flex items-center justify-center gap-1.5 text-[11px] text-[#8a8a8e]">
+              <LockKeyhole className="h-3.5 w-3.5" /> دفع آمن عبر Kashier · لا نحتفظ ببيانات بطاقتك
+            </p>
+            <div className="flex-1" />
+            <button
+              type="submit"
+              disabled={busy}
+              className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12] disabled:opacity-50"
+            >
+              {busy ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> جارِ المعالجة…
+                </>
+              ) : (
+                "ادفع الآن"
+              )}
+            </button>
+          </form>
+        ) : (
+          <div className="mt-6 flex flex-1 flex-col">
+            <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5">
+              <div>
+                <p className="text-[14px] font-semibold">اشتراك Megsy {tier}</p>
+                <p className="mt-0.5 text-[12px] text-[#8a8a8e]">
+                  دفع {interval === "yearly" ? "سنوي" : "شهري"} · EGP
+                </p>
+              </div>
+              <ShieldCheck className="h-5 w-5 text-[#34a853]" />
+            </div>
+
+            <Notice text="اختار طريقة الدفع. Apple Pay و Google Pay بيتم الدفع بيهم فورًا بلمسة واحدة." />
+
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              {TILES.map((t) => {
+                const active = t.id === pick;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => setPick(t.id)}
+                    aria-pressed={active}
+                    className={`relative flex aspect-square flex-col items-center justify-center gap-1.5 rounded-2xl bg-white p-2 transition disabled:opacity-50 ${active ? "ring-[1.5px] ring-[#f25c1c] shadow-[0_6px_18px_rgba(242,92,28,.15)]" : "hover:shadow-[0_4px_14px_rgba(0,0,0,.06)]"}`}
+                  >
+                    {t.instant && (
+                      <span className="absolute left-1.5 top-1.5 rounded-full bg-[#fff1ea] px-1.5 py-0.5 text-[9px] font-semibold text-[#f25c1c]">
+                        فوري
+                      </span>
+                    )}
+                    <TileLogo id={t.id} />
+                    <span className="text-[10px] font-medium text-[#8a8a8e]">{t.caption}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {error && <ErrorBox text={error} />}
+
+            <div className="flex-1" />
+            <p className="mt-8 text-center text-[11px] leading-5 text-[#8a8a8e]">
+              بالضغط على <span className="font-semibold text-[#1c1c1e]">متابعة</span> أنت توافق على
+              شروط الخدمة وسياسة الخصوصية.
+            </p>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={continueWithPick}
+              className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12] disabled:opacity-50"
+            >
+              {busy ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : tile.instant ? (
+                `ادفع بـ ${tile.label}`
+              ) : (
+                "متابعة"
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
+  );
+}
+
+const INPUT =
+  "mt-2 h-12 w-full rounded-xl border border-black/[0.06] bg-[#f6f6f7] px-3.5 text-[15px] text-[#1c1c1e] outline-none transition placeholder:text-[#b0b0b5] focus:border-[#f25c1c] focus:bg-white focus:ring-4 focus:ring-[#f25c1c]/10";
+
+type TileId =
+  | "mastercard"
+  | "visa"
+  | "meeza"
+  | "apple_pay"
+  | "google_pay"
+  | "wallet"
+  | "bank_installments"
+  | "bnpl";
+const TILES: Array<{
+  id: TileId;
+  label: string;
+  caption: string;
+  kind: "card" | "hosted";
+  method: PaymentMethod;
+  instant?: boolean;
+}> = [
+  { id: "mastercard", label: "Mastercard", caption: "بطاقة", kind: "card", method: "card" },
+  { id: "visa", label: "Visa", caption: "بطاقة", kind: "card", method: "card" },
+  { id: "meeza", label: "Meeza", caption: "بطاقة", kind: "card", method: "card" },
+  { id: "apple_pay", label: "Apple Pay", caption: "Apple Pay", kind: "hosted", method: "card", instant: true },
+  { id: "google_pay", label: "Google Pay", caption: "Google Pay", kind: "hosted", method: "card", instant: true },
+  { id: "wallet", label: "المحفظة", caption: "محفظة", kind: "hosted", method: "wallet" },
+  { id: "bank_installments", label: "التقسيط", caption: "تقسيط بنكي", kind: "hosted", method: "bank_installments" },
+  { id: "bnpl", label: "valU", caption: "ادفع لاحقًا", kind: "hosted", method: "bnpl" },
+];
+
+function TileLogo({ id }: { id: TileId }) {
+  switch (id) {
+    case "mastercard":
+      return (
+        <span className="flex items-center" dir="ltr">
+          <span className="h-7 w-7 rounded-full bg-[#eb001b]" />
+          <span className="-ml-3 h-7 w-7 rounded-full bg-[#f79e1b] mix-blend-multiply" />
+        </span>
+      );
+    case "visa":
+      return <span className="text-[22px] font-black italic tracking-tight text-[#1a1f71]">VISA</span>;
+    case "meeza":
+      return <span className="text-[17px] font-extrabold text-[#0b7a3e]">meeza</span>;
+    case "apple_pay":
+      return <span className="text-[19px] font-semibold tracking-tight" dir="ltr"> Pay</span>;
+    case "google_pay":
+      return (
+        <span className="text-[17px] font-semibold" dir="ltr">
+          <span className="text-[#4285f4]">G</span> Pay
+        </span>
+      );
+    case "wallet":
+      return <Smartphone className="h-7 w-7 text-[#e60000]" />;
+    case "bank_installments":
+      return <Banknote className="h-7 w-7 text-[#5856d6]" />;
+    case "bnpl":
+      return <span className="text-[19px] font-extrabold text-[#00a19a]">valU</span>;
+  }
+}
+
+function Stepper({ step }: { step: number }) {
+  const labels = ["الباقة", "الدفع", "تم"];
+  return (
+    <div className="relative mt-6 flex justify-between px-2">
+      <div className="absolute left-8 right-8 top-[11px] h-[2px] bg-black/10" />
+      <div
+        className="absolute right-8 top-[11px] h-[2px] bg-[#f9b896] transition-all"
+        style={{ width: step === 3 ? "calc(100% - 4rem)" : "calc(50% - 2rem)" }}
+      />
+      {labels.map((label, i) => {
+        const n = i + 1;
+        const done = n < step || step === 3;
+        const current = n === step && step !== 3;
+        return (
+          <div key={label} className="relative flex w-12 flex-col items-center gap-1.5">
+            <span
+              className={`flex h-6 w-6 items-center justify-center rounded-full ${done ? "bg-[#f25c1c] text-white" : current ? "border-[3px] border-[#f25c1c] bg-white" : "border-2 border-black/15 bg-[#efefef]"}`}
+            >
+              {done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+            </span>
+            <span className={`text-[11px] ${done || current ? "text-[#1c1c1e]" : "text-[#8a8a8e]"}`}>
+              {label}
+            </span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Notice({ text }: { text: string }) {
+  return (
+    <div className="mt-4 flex items-start gap-3 rounded-2xl bg-white px-4 py-3">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#fff1ea] text-[#f25c1c]">
+        <LockKeyhole className="h-4 w-4" />
+      </span>
+      <p className="text-[12px] leading-5 text-[#8a8a8e]">{text}</p>
+    </div>
+  );
+}
+
+function ErrorBox({ text }: { text: string }) {
+  return (
+    <p
+      role="alert"
+      className="mt-4 rounded-2xl border border-[#f2caca] bg-[#fff7f7] px-4 py-3 text-[12px] leading-5 text-[#b42318]"
+    >
+      {text}
+    </p>
   );
 }
 
@@ -535,26 +627,18 @@ function Field({
   secret?: boolean;
 }) {
   return (
-    <label className="text-sm font-medium">
+    <label className="block text-[12px] font-medium text-[#8a8a8e]">
       {label}
       <input
         inputMode="numeric"
+        dir="ltr"
         type={secret ? "password" : "text"}
         maxLength={secret ? 4 : 2}
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/\D/g, "").slice(0, secret ? 4 : 2))}
         placeholder={placeholder}
-        className="mt-2 h-12 w-full rounded-xl border border-black/10 bg-white px-3 text-center outline-none transition focus:border-[#635bff] focus:ring-4 focus:ring-[#635bff]/10"
+        className={`${INPUT} text-center`}
       />
     </label>
-  );
-}
-function StatusIcon({ type }: { type: "success" | "pending" }) {
-  return (
-    <div
-      className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${type === "success" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
-    >
-      {type === "success" ? <Check className="h-8 w-8" /> : <LockKeyhole className="h-7 w-7" />}
-    </div>
   );
 }
