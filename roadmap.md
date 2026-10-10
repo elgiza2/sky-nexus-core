@@ -1,5 +1,10 @@
 # Megsy — roadmap
 
+## Glass app and registration (October 10, 2026)
+- [ ] Apply shared glass surfaces to settings, chat, sidebar, authentication and Welcome without billing changes.
+- [ ] Separate explicit signup/sign-in intent; never assume an account exists after a failed lookup.
+- [ ] Verify guest auth flows and glass rendering across screen sizes; live account completion requires email verification.
+
 ## Checkout tidy-up (October 10, 2026)
 - [x] Replace slide-to-continue with a plain "متابعة" button.
 - [x] Remove the "دفع آمن ومشفّر" line, the 01–05 tile numbers and the header close (X) button.

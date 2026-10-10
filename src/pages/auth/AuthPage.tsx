@@ -60,6 +60,7 @@ const AuthPage = () => {
   // so the first authenticated navigation is instant.
   usePrefetchOnIdle(["/chat", "/library"], 2000);
   const [email, setEmail] = useState("");
+  const [authMode, setAuthMode] = useState<"signup" | "signin">("signup");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -190,11 +191,9 @@ const AuthPage = () => {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await invokeAuth({ action: "check-email", email: normalizedEmail });
-      if (error) throw error;
-      if (data.exists) {
-        setUserExists(true);
-        setHas2FA(data.two_factor_enabled);
+      if (authMode === "signin") {
+        setUserExists(false);
+        setHas2FA(false);
         setStep("password");
       } else {
         setUserExists(false);
@@ -202,32 +201,7 @@ const AuthPage = () => {
         setStep("otp-signup");
       }
     } catch (e: any) {
-      const msg = String(e?.message || "");
-      const isNetwork =
-        /failed to (send|fetch)|network|load failed|networkerror|internal_error|non-2xx|status code 5\d\d|edge function returned 5\d\d/i.test(
-          msg,
-        );
-      if (isNetwork) {
-        // Preview proxy can block account lookup. Try sending the OTP — if it
-        // succeeds we treat this as a new-account flow. If it also fails, fall
-        // back to the password screen so existing users can still sign in.
-        try {
-          await sendOTP(normalizedEmail, true);
-          setUserExists(false);
-          setHas2FA(false);
-          setStep("otp-signup");
-        } catch {
-          setUserExists(true);
-          setHas2FA(false);
-          setStep("password");
-          toast.message(authT("continueWithPassword"), {
-            description:
-              "Preview proxy blocked account lookup. Existing users can sign in here; works fully on the published site.",
-          });
-        }
-      } else {
-        notifyMobileIntroError(translateAuthError(e, "couldNotCheckEmail"));
-      }
+      notifyMobileIntroError(translateAuthError(e, "couldNotSendCode"));
     } finally {
       setIsSubmitting(false);
     }
@@ -298,7 +272,7 @@ const AuthPage = () => {
           });
         }
       } else if (/invalid login|invalid credentials|user not found/i.test(msg)) {
-        if (userExists) {
+        if (authMode === "signin" || userExists) {
           notifyMobileIntroError(authT("wrongPassword"));
         } else {
           const noAccountMsg = authT("noAccountFound");
@@ -767,6 +741,17 @@ const AuthPage = () => {
       <>
         <SEOHead title={authT("seoTitle")} description={authT("seoDesc")} path="/auth" noindex />
         <MobileAuthIntro
+          authMode={authMode}
+          onAuthModeChange={(mode) => {
+            if (isSubmitting) return;
+            setAuthMode(mode);
+            setUserExists(false);
+            setPassword("");
+            setNewPassword("");
+            setOtpValues(["", "", "", "", "", ""]);
+            clearMobileError();
+            if (step !== "intro1") setStep("email");
+          }}
           onGoogle={handleGoogleLogin}
           onBack={() => setStep(step === "password" ? "email" : "intro1")}
           onEmail={() => setStep("email")}
