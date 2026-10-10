@@ -12494,7 +12494,28 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_revenue_daily: {
+        Row: {
+          day: string | null
+          dodo_attempts: number | null
+          dodo_paid: number | null
+          kashier_attempts: number | null
+          kashier_paid: number | null
+          revenue_egp: number | null
+          revenue_usd: number | null
+        }
+        Relationships: []
+      }
+      v_traffic_human_daily: {
+        Row: {
+          day: string | null
+          human_views: number | null
+          logged_in_views: number | null
+          sessions: number | null
+          visitors: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       accept_conversation_invite: { Args: { p_token: string }; Returns: Json }
@@ -12724,6 +12745,24 @@ export type Database = {
         Returns: boolean
       }
       ensure_credit_wallet: { Args: { p_user_id: string }; Returns: undefined }
+      ensure_mailbox: {
+        Args: { _hint?: string; _user_id: string }
+        Returns: {
+          address: string
+          created_at: string
+          display_name: string | null
+          external_enabled: boolean | null
+          id: string
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "mailboxes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       ensure_my_mailbox: {
         Args: never
         Returns: {
