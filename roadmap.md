@@ -5,8 +5,16 @@
 - [x] Remove the "دفع آمن ومشفّر" line, the 01–05 tile numbers and the header close (X) button.
 - [x] Remove the Megsy header badge and make the back button borderless with no background.
 - [x] Make the "متابعة" button glass-styled to match the tiles.
-- [ ] Give the pricing page the same glass language as checkout (shared stylesheet, mobile + desktop).
-- [ ] Redesign the card-details screen: clean iOS-style layout with a live Visa/Mastercard card above the fields showing the typed number and name.
+- [x] Give the pricing page the same glass language as checkout (shared stylesheet, mobile + desktop).
+- [x] Redesign the card-details screen: clean iOS-style layout with a live Visa/Mastercard card above the fields showing the typed number and name.
+
+## Kashier payment flows (October 10, 2026)
+- [ ] Pay button reads "تابع الدفع بـ" with the chosen method's name and icon.
+- [ ] Payment tiles use a clean pink-and-gold gradient like the login page's unified button.
+- [ ] Vodafone Cash: separate wallet-number page, order written for Kashier, on-screen confirmation check plus instructions to call *55# or a branch.
+- [ ] Apple Pay and Google Pay: create the Kashier order on pay and open the native sheet, no redirect to Kashier pages.
+- [ ] Visa and Mastercard: charge in the backend with no redirect; open 3-D Secure verification in a separate page when the bank asks for it.
+
 
 
 
