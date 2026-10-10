@@ -281,17 +281,20 @@ html[data-theme="light"] .megsy-pricing {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 6px;
   aspect-ratio: 1 / 1;
   border: 0;
   border-radius: 22px;
   background: var(--glass-panel);
+  /* The canvas stays visible through the pane, but its dots are bent into a
+     soft wash instead of sitting sharp behind the price. */
+  backdrop-filter: blur(16px) saturate(160%);
   box-shadow: var(--glass-body), var(--glass-edge-light), var(--glass-shadow);
   color: hsl(var(--foreground));
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.38s ease, color 0.38s ease,
+  transition: background 0.38s ease, color 0.38s ease, backdrop-filter 0.38s ease,
     box-shadow 0.38s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -301,6 +304,7 @@ html[data-theme="light"] .megsy-pricing {
 .megsy-pricing .megsy-plan-tile[data-selected="true"] {
   background: var(--megsy-ink);
   color: var(--megsy-ink-foreground);
+  backdrop-filter: none;
   box-shadow: 0 20px 36px -20px var(--megsy-ink-shadow);
   transform: translateY(-5px);
 }
@@ -316,7 +320,7 @@ html[data-theme="light"] .megsy-pricing {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in oklab, currentColor 55%, transparent);
+  color: color-mix(in oklab, currentColor 68%, transparent);
 }
 .megsy-pricing .megsy-plan-price {
   font-size: 26px;
@@ -328,9 +332,10 @@ html[data-theme="light"] .megsy-pricing {
 .megsy-pricing .megsy-plan-unit,
 .megsy-pricing .megsy-plan-strike {
   font-size: 11px;
-  color: color-mix(in oklab, currentColor 45%, transparent);
+  color: color-mix(in oklab, currentColor 62%, transparent);
 }
 .megsy-pricing .megsy-plan-strike {
+  margin-top: 3px;
   text-decoration: line-through;
 }
 @keyframes megsy-plan-pop {
