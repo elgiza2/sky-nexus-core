@@ -402,7 +402,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           ) : stage === "card" ? (
             <form onSubmit={submitCard} className="mt-6 flex flex-1 flex-col" autoComplete="off">
               <CardPreview number={number} name={name} month={month} year={year} fallbackBrand={pick === "mastercard" ? "mastercard" : "visa"} />
-              <div className="mt-8 overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_hsl(var(--foreground)/0.04),0_12px_32px_-18px_hsl(var(--foreground)/0.18)]">
+              <div className="mt-8 overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-18px_rgba(0,0,0,0.18)]">
                 <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Card number</span><input inputMode="numeric" autoComplete="cc-number" dir="ltr" value={formatCardNumber(number)} onChange={(e) => setNumber(e.target.value)} placeholder="0000 0000 0000 0000" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60 tabular-nums tracking-wide" /></label>
                 <div className="mx-4 h-px bg-border/70" />
                 <label className="block"><span className="block px-4 pt-3 text-[11px] font-medium uppercase tracking-[0.08em] text-muted-foreground">Name on card</span><input dir="ltr" autoComplete="cc-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" className="h-[54px] w-full bg-transparent px-4 text-[16px] outline-none placeholder:text-muted-foreground/60" /></label>
@@ -437,7 +437,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               ) : (
                 <div>
                   <p className="text-[15px] leading-6 text-muted-foreground">Enter the number linked to your wallet. We’ll send a payment request to approve on your phone.</p>
-                  <label className="mt-6 flex items-center overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_hsl(var(--foreground)/0.04),0_12px_32px_-18px_hsl(var(--foreground)/0.18)]">
+                  <label className="mt-6 flex items-center overflow-hidden rounded-[22px] bg-card shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-18px_rgba(0,0,0,0.18)]">
                     <span className="flex h-[60px] items-center gap-2 border-e border-border/70 px-4 text-[16px] font-medium" dir="ltr">🇪🇬 +20</span>
                     <input inputMode="tel" autoComplete="tel" dir="ltr" aria-label="Vodafone Cash wallet number" value={phone} onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 11))} placeholder="010 0000 0000" className="h-[60px] w-full bg-transparent px-4 text-[17px] tabular-nums tracking-wide outline-none placeholder:text-muted-foreground/60" />
                   </label>
