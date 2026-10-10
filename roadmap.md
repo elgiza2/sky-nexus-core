@@ -30,6 +30,8 @@
 - [x] Payment tiles: no tick circle; the chosen card is obviously marked.
 - [ ] Remove the Terms / Privacy / Restore links from the bottom of the mobile pricing screen.
 - [ ] App glass: drop every panel border and put the pages on a pure white canvas.
+- [ ] Mobile pricing: the main upgrade button is black and pinned to the bottom of the screen.
+
 
 
 
