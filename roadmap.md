@@ -15,6 +15,12 @@
 - [ ] Apple Pay and Google Pay: create the Kashier order on pay and open the native sheet, no redirect to Kashier pages.
 - [ ] Visa and Mastercard: charge in the backend with no redirect; open 3-D Secure verification in a separate page when the bank asks for it.
 
+## Pricing screen cleanup (October 10, 2026)
+- [ ] Fix the mobile pricing layout order and spacing.
+- [ ] Remove "53% off the first month", "4 months free" and the "$7.00 for the first month, then $15.00/month. Cancel anytime." line.
+- [ ] Make the two billing buttons rectangular with lightly rounded corners.
+
+
 
 
 
