@@ -11,8 +11,8 @@
 ## Kashier payment flows (October 10, 2026)
 - [x] Pay button reads "تابع الدفع بـ" with the chosen method's name and icon.
 - [x] Action button uses the login page's liquid gradient, in pink, blue and red with the grain inside, as a pill.
-- [ ] Vodafone Cash: separate wallet-number page, order written for Kashier, on-screen confirmation check plus instructions to call *55# or a branch.
-- [ ] Apple Pay and Google Pay: create the Kashier order on pay and open the native sheet, no redirect to Kashier pages.
+- [x] Vodafone Cash: separate wallet-number page, order written for Kashier, on-screen confirmation check plus instructions to call *55# or a branch.
+- [x] Apple Pay and Google Pay: Kashier page now opens inside the checkout screen (no leaving the site). Native sheet still needs Kashier's Apple Pay merchant setup.
 - [ ] Visa and Mastercard: charge in the backend with no redirect; open 3-D Secure verification in a separate page when the bank asks for it.
 
 ## Pricing screen cleanup (October 10, 2026)
