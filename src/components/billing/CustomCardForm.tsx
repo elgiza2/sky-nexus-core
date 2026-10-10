@@ -321,7 +321,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           </button>
         </header>
 
-        <Stepper step={step} />
 
         {threeDsUrl ? (
           <div className="mt-6 flex-1 space-y-4">
@@ -436,21 +435,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </button>
           </form>
         ) : (
-          <div className="mt-7 flex flex-1 flex-col">
-            <div className="flex items-center gap-3 rounded-[18px] bg-white px-3.5 py-3">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fde8dd]">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#f25c1c] text-[11px] font-bold text-[#f25c1c]">
-                  !
-                </span>
-              </span>
-              <p className="text-[12px] leading-[18px] text-[#8e8e93]">
-                اشتراك Megsy {tier} {interval === "yearly" ? "سنوي" : "شهري"}. Apple Pay و Google
-                Pay بيتم الدفع بيهم فورًا.
-              </p>
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-2.5">
-              {TILES.map((t) => {
+          <div className="mt-8 flex flex-1 flex-col">
+            <p className="px-1 text-[13px] font-medium text-[#8e8e93]">طريقة الدفع</p>
+            <div className="mt-2 overflow-hidden rounded-[20px] bg-white">
+              {TILES.map((t, i) => {
                 const active = t.id === pick;
                 return (
                   <button
@@ -459,10 +447,20 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     disabled={busy}
                     onClick={() => setPick(t.id)}
                     aria-pressed={active}
-                    aria-label={t.label}
-                    className={`flex aspect-square items-center justify-center rounded-[18px] bg-white transition active:scale-[0.97] disabled:opacity-50 ${active ? "border-[1.5px] border-[#f25c1c]" : "border-[1.5px] border-transparent"}`}
+                    className="relative flex h-[64px] w-full items-center gap-3.5 px-4 text-right transition active:bg-[#f5f5f7] disabled:opacity-50"
                   >
-                    <TileLogo id={t.id} />
+                    <span className="flex h-9 w-[52px] shrink-0 items-center justify-center rounded-[8px] border border-black/[0.07] bg-white">
+                      <TileLogo id={t.id} />
+                    </span>
+                    <span className="min-w-0 flex-1 text-[15px] font-medium text-[#1c1c1e]">{t.label}</span>
+                    <span
+                      className={`flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full transition ${active ? "bg-[#f25c1c]" : "border-[1.5px] border-[#d1d1d6]"}`}
+                    >
+                      {active && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
+                    </span>
+                    {i < TILES.length - 1 && (
+                      <span className="absolute bottom-0 left-4 right-[84px] h-px bg-black/[0.06]" />
+                    )}
                   </button>
                 );
               })}
@@ -471,23 +469,16 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             {error && <ErrorBox text={error} />}
 
             <div className="flex-1" />
-            <p className="mt-8 text-center text-[11px] leading-5 text-[#8a8a8e]">
-              بالضغط على <span className="font-semibold text-[#1c1c1e]">متابعة</span> أنت توافق على
-              شروط الخدمة وسياسة الخصوصية.
+            <p className="mt-8 flex items-center justify-center gap-1.5 text-[12px] text-[#8e8e93]">
+              <LockKeyhole className="h-3.5 w-3.5" /> دفع آمن ومشفّر
             </p>
             <button
               type="button"
               disabled={busy}
               onClick={continueWithPick}
-              className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[14px] font-semibold text-white transition hover:bg-[#e04f12] disabled:opacity-50"
+              className="mt-3 flex h-[54px] w-full items-center justify-center gap-2 rounded-full bg-[#f25c1c] text-[16px] font-semibold text-white transition active:scale-[0.99] disabled:opacity-50"
             >
-              {busy ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : tile.instant ? (
-                `ادفع بـ ${tile.label}`
-              ) : (
-                "متابعة"
-              )}
+              {busy ? <Loader2 className="h-5 w-5 animate-spin" /> : "متابعة"}
             </button>
           </div>
         )}
@@ -499,92 +490,59 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
 const INPUT =
   "mt-2 h-12 w-full rounded-xl border border-black/[0.06] bg-[#f6f6f7] px-3.5 text-[15px] text-[#1c1c1e] outline-none transition placeholder:text-[#b0b0b5] focus:border-[#f25c1c] focus:bg-white focus:ring-4 focus:ring-[#f25c1c]/10";
 
-type TileId =
-  | "mastercard"
-  | "visa"
-  | "meeza"
-  | "apple_pay"
-  | "google_pay"
-  | "wallet"
-  | "bank_installments"
-  | "bnpl";
+type TileId = "visa" | "mastercard" | "apple_pay" | "google_pay" | "vodafone";
 const TILES: Array<{
   id: TileId;
   label: string;
-  caption: string;
   kind: "card" | "hosted";
   method: PaymentMethod;
   instant?: boolean;
 }> = [
-  { id: "mastercard", label: "Mastercard", caption: "بطاقة", kind: "card", method: "card" },
-  { id: "visa", label: "Visa", caption: "بطاقة", kind: "card", method: "card" },
-  { id: "meeza", label: "Meeza", caption: "بطاقة", kind: "card", method: "card" },
-  { id: "apple_pay", label: "Apple Pay", caption: "Apple Pay", kind: "hosted", method: "card", instant: true },
-  { id: "google_pay", label: "Google Pay", caption: "Google Pay", kind: "hosted", method: "card", instant: true },
-  { id: "wallet", label: "المحفظة", caption: "محفظة", kind: "hosted", method: "wallet" },
-  { id: "bank_installments", label: "التقسيط", caption: "تقسيط بنكي", kind: "hosted", method: "bank_installments" },
-  { id: "bnpl", label: "valU", caption: "ادفع لاحقًا", kind: "hosted", method: "bnpl" },
+  { id: "visa", label: "Visa", kind: "card", method: "card" },
+  { id: "mastercard", label: "Mastercard", kind: "card", method: "card" },
+  { id: "apple_pay", label: "Apple Pay", kind: "hosted", method: "card", instant: true },
+  { id: "google_pay", label: "Google Pay", kind: "hosted", method: "card", instant: true },
+  { id: "vodafone", label: "فودافون كاش", kind: "hosted", method: "wallet" },
 ];
 
 function TileLogo({ id }: { id: TileId }) {
   switch (id) {
-    case "mastercard":
-      return (
-        <span className="flex flex-col items-center gap-0.5" dir="ltr">
-          <svg viewBox="0 0 48 30" className="h-8 w-[52px]">
-            <circle cx="17" cy="15" r="14" fill="#EB001B" />
-            <circle cx="31" cy="15" r="14" fill="#F79E1B" />
-            <path d="M24 3.1a14 14 0 0 1 0 23.8 14 14 0 0 1 0-23.8z" fill="#FF5F00" />
-          </svg>
-          <span className="text-[9px] font-semibold tracking-tight text-[#1c1c1e]">mastercard</span>
-        </span>
-      );
     case "visa":
       return (
-        <svg viewBox="0 0 64 22" className="h-6 w-[64px]">
-          <text x="0" y="19" fontSize="23" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial Black, Arial, sans-serif" letterSpacing="-0.5">VISA</text>
-          <path d="M1 4 l6 0 l-1.4 3 z" fill="#F7B600" />
+        <svg viewBox="0 0 48 16" className="h-[13px] w-[40px]">
+          <text x="0" y="14" fontSize="17" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial, sans-serif" letterSpacing="-0.5">VISA</text>
         </svg>
       );
-    case "meeza":
-      return <span className="text-[19px] font-extrabold tracking-tight text-[#0b7a3e]" dir="ltr">meeza</span>;
+    case "mastercard":
+      return (
+        <svg viewBox="0 0 32 20" className="h-[20px] w-[32px]">
+          <circle cx="11" cy="10" r="9" fill="#EB001B" />
+          <circle cx="21" cy="10" r="9" fill="#F79E1B" />
+          <path d="M16 2.5a9 9 0 0 1 0 15 9 9 0 0 1 0-15z" fill="#FF5F00" />
+        </svg>
+      );
     case "apple_pay":
       return (
-        <span className="flex items-center gap-0.5" dir="ltr">
-          <svg viewBox="0 0 17 20" className="h-[22px] w-[19px]" fill="#000">
-            <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
-          </svg>
-          <span className="text-[22px] font-medium tracking-[-0.03em] text-black">Pay</span>
-        </span>
+        <svg viewBox="0 0 17 20" className="h-[17px] w-[15px]" fill="#000">
+          <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.300-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
+        </svg>
       );
     case "google_pay":
       return (
-        <span className="flex items-center gap-1" dir="ltr">
-          <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]">
-            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
-            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
-            <path fill="#FBBC05" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
-            <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
-          </svg>
-          <span className="text-[21px] font-medium tracking-[-0.02em] text-[#5f6368]">Pay</span>
-        </span>
+        <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]">
+          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
+          <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.200-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
+          <path fill="#FBBC05" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
+          <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
+        </svg>
       );
-    case "wallet":
+    case "vodafone":
       return (
-        <span className="flex flex-col items-center gap-1">
-          <Smartphone className="h-7 w-7 text-[#e60000]" strokeWidth={1.8} />
-          <span className="text-[10px] font-semibold text-[#1c1c1e]">Wallet</span>
-        </span>
+        <svg viewBox="0 0 24 24" className="h-[20px] w-[20px]">
+          <circle cx="12" cy="12" r="12" fill="#E60000" />
+          <path fill="#fff" d="M12.6 5.2c2.3-.6 4.4.2 5 .6-1.8.1-3.5 1.4-3.5 3.6 2 .5 3.4 2 3.4 4.2 0 2.700-2.300 4.900-5.200 4.900-3.300 0-5.700-2.700-5.700-6 0-3.600 2.500-6.500 6-7.300z" />
+        </svg>
       );
-    case "bank_installments":
-      return (
-        <span className="flex flex-col items-center gap-1">
-          <Banknote className="h-7 w-7 text-[#5856d6]" strokeWidth={1.8} />
-          <span className="text-[10px] font-semibold text-[#1c1c1e]">تقسيط</span>
-        </span>
-      );
-    case "bnpl":
-      return <span className="text-[22px] font-extrabold tracking-tight text-[#00a19a]" dir="ltr">valU</span>;
   }
 }
 
