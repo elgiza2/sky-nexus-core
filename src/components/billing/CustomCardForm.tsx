@@ -436,20 +436,20 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
             </button>
           </form>
         ) : (
-          <div className="mt-6 flex flex-1 flex-col">
-            <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5">
-              <div>
-                <p className="text-[14px] font-semibold">اشتراك Megsy {tier}</p>
-                <p className="mt-0.5 text-[12px] text-[#8a8a8e]">
-                  دفع {interval === "yearly" ? "سنوي" : "شهري"} · EGP
-                </p>
-              </div>
-              <ShieldCheck className="h-5 w-5 text-[#34a853]" />
+          <div className="mt-7 flex flex-1 flex-col">
+            <div className="flex items-center gap-3 rounded-[18px] bg-white px-3.5 py-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#fde8dd]">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full border-[1.5px] border-[#f25c1c] text-[11px] font-bold text-[#f25c1c]">
+                  !
+                </span>
+              </span>
+              <p className="text-[12px] leading-[18px] text-[#8e8e93]">
+                اشتراك Megsy {tier} {interval === "yearly" ? "سنوي" : "شهري"}. Apple Pay و Google
+                Pay بيتم الدفع بيهم فورًا.
+              </p>
             </div>
 
-            <Notice text="اختار طريقة الدفع. Apple Pay و Google Pay بيتم الدفع بيهم فورًا بلمسة واحدة." />
-
-            <div className="mt-5 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-3 gap-2.5">
               {TILES.map((t) => {
                 const active = t.id === pick;
                 return (
@@ -459,15 +459,10 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                     disabled={busy}
                     onClick={() => setPick(t.id)}
                     aria-pressed={active}
-                    className={`relative flex aspect-square flex-col items-center justify-center gap-1.5 rounded-2xl bg-white p-2 transition disabled:opacity-50 ${active ? "ring-[1.5px] ring-[#f25c1c] shadow-[0_6px_18px_rgba(242,92,28,.15)]" : "hover:shadow-[0_4px_14px_rgba(0,0,0,.06)]"}`}
+                    aria-label={t.label}
+                    className={`flex aspect-square items-center justify-center rounded-[18px] bg-white transition active:scale-[0.97] disabled:opacity-50 ${active ? "border-[1.5px] border-[#f25c1c]" : "border-[1.5px] border-transparent"}`}
                   >
-                    {t.instant && (
-                      <span className="absolute left-1.5 top-1.5 rounded-full bg-[#fff1ea] px-1.5 py-0.5 text-[9px] font-semibold text-[#f25c1c]">
-                        فوري
-                      </span>
-                    )}
                     <TileLogo id={t.id} />
-                    <span className="text-[10px] font-medium text-[#8a8a8e]">{t.caption}</span>
                   </button>
                 );
               })}
@@ -535,29 +530,61 @@ function TileLogo({ id }: { id: TileId }) {
   switch (id) {
     case "mastercard":
       return (
-        <span className="flex items-center" dir="ltr">
-          <span className="h-7 w-7 rounded-full bg-[#eb001b]" />
-          <span className="-ml-3 h-7 w-7 rounded-full bg-[#f79e1b] mix-blend-multiply" />
+        <span className="flex flex-col items-center gap-0.5" dir="ltr">
+          <svg viewBox="0 0 48 30" className="h-8 w-[52px]">
+            <circle cx="17" cy="15" r="14" fill="#EB001B" />
+            <circle cx="31" cy="15" r="14" fill="#F79E1B" />
+            <path d="M24 3.1a14 14 0 0 1 0 23.8 14 14 0 0 1 0-23.8z" fill="#FF5F00" />
+          </svg>
+          <span className="text-[9px] font-semibold tracking-tight text-[#1c1c1e]">mastercard</span>
         </span>
       );
     case "visa":
-      return <span className="text-[22px] font-black italic tracking-tight text-[#1a1f71]">VISA</span>;
+      return (
+        <svg viewBox="0 0 64 22" className="h-6 w-[64px]">
+          <text x="0" y="19" fontSize="23" fontStyle="italic" fontWeight="900" fill="#1A1F71" fontFamily="Arial Black, Arial, sans-serif" letterSpacing="-0.5">VISA</text>
+          <path d="M1 4 l6 0 l-1.4 3 z" fill="#F7B600" />
+        </svg>
+      );
     case "meeza":
-      return <span className="text-[17px] font-extrabold text-[#0b7a3e]">meeza</span>;
+      return <span className="text-[19px] font-extrabold tracking-tight text-[#0b7a3e]" dir="ltr">meeza</span>;
     case "apple_pay":
-      return <span className="text-[19px] font-semibold tracking-tight" dir="ltr"> Pay</span>;
+      return (
+        <span className="flex items-center gap-0.5" dir="ltr">
+          <svg viewBox="0 0 17 20" className="h-[22px] w-[19px]" fill="#000">
+            <path d="M14.1 10.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.4.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM11.5 3c.7-.9 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z" />
+          </svg>
+          <span className="text-[22px] font-medium tracking-[-0.03em] text-black">Pay</span>
+        </span>
+      );
     case "google_pay":
       return (
-        <span className="text-[17px] font-semibold" dir="ltr">
-          <span className="text-[#4285f4]">G</span> Pay
+        <span className="flex items-center gap-1" dir="ltr">
+          <svg viewBox="0 0 24 24" className="h-[22px] w-[22px]">
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5a5.6 5.6 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.8z" />
+            <path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.9-3c-1.1.7-2.4 1.2-4 1.2-3.1 0-5.7-2.1-6.7-4.9H1.3v3.1A12 12 0 0 0 12 24z" />
+            <path fill="#FBBC05" d="M5.3 14.4a7.2 7.2 0 0 1 0-4.7V6.6H1.3a12 12 0 0 0 0 10.9z" />
+            <path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4A12 12 0 0 0 1.3 6.6l4 3.1C6.3 6.9 8.9 4.8 12 4.8z" />
+          </svg>
+          <span className="text-[21px] font-medium tracking-[-0.02em] text-[#5f6368]">Pay</span>
         </span>
       );
     case "wallet":
-      return <Smartphone className="h-7 w-7 text-[#e60000]" />;
+      return (
+        <span className="flex flex-col items-center gap-1">
+          <Smartphone className="h-7 w-7 text-[#e60000]" strokeWidth={1.8} />
+          <span className="text-[10px] font-semibold text-[#1c1c1e]">Wallet</span>
+        </span>
+      );
     case "bank_installments":
-      return <Banknote className="h-7 w-7 text-[#5856d6]" />;
+      return (
+        <span className="flex flex-col items-center gap-1">
+          <Banknote className="h-7 w-7 text-[#5856d6]" strokeWidth={1.8} />
+          <span className="text-[10px] font-semibold text-[#1c1c1e]">تقسيط</span>
+        </span>
+      );
     case "bnpl":
-      return <span className="text-[19px] font-extrabold text-[#00a19a]">valU</span>;
+      return <span className="text-[22px] font-extrabold tracking-tight text-[#00a19a]" dir="ltr">valU</span>;
   }
 }
 
