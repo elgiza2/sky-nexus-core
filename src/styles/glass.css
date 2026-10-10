@@ -107,6 +107,13 @@ html[data-theme="light"] .megsy-pricing {
   background-size: 18px 18px;
   mask-image: radial-gradient(140% 120% at 50% 8%, black 46%, transparent 100%);
 }
+/* Pricing and checkout already paint their own graded dots on the canvas, so
+   the extra layer is switched off there — two grids on top of each other read
+   as clutter. */
+.megsy-checkout .glass-texture,
+.megsy-pricing .glass-texture {
+  background-image: none;
+}
 
 /* Frosted tile. Selected state: data-selected="true". */
 .glass-tile {
