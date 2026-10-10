@@ -39,10 +39,11 @@
 - [ ] Mobile pricing: both plan squares always read as clear glass — no dimming the unchosen one.
 - [ ] Checkout: every payment card reads as clear glass at all times, with the chosen one lifted.
 - [ ] Selection clarity: the chosen plan square and the chosen payment card must be obviously obvious (dark glass capsule, light text and logo) in both pricing and checkout.
-- [ ] Selection clarity, take two: keep every brand logo in its own colors (no monochrome flip) and make the chosen option read as a thick raised glass pane; the glass itself must be visibly frosted.
-- [ ] Selection marking: no colored fill at all — mark the chosen plan square and payment card with a distinct rim around its edges, keeping every card neutral frosted glass.
-- [ ] Add a soft transition (0.42s ease-out) when moving the selection between plan squares and payment cards.
-- [ ] Dotted canvas: lighter, wider-spaced dots that fade out on a gradient instead of continuing to the bottom of the page.
+- [x] Selection marking: no colored fill — the chosen plan square and payment card are marked by a clean dark rim around their edges, every card stays neutral frosted glass. Verified light theme at phone width.
+- [x] Soft transition (0.42s ease-out) when moving the selection between plan squares and payment cards.
+- [x] Dotted canvas: lighter, wider-spaced dots that fade out on a gradient instead of continuing to the bottom of the page.
+- [x] Glass: blur raised to 20px with a stronger saturate so the frost reads on the white canvas.
+
 
 
 
