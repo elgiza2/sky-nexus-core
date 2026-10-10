@@ -67,8 +67,7 @@ used, `FOR UPDATE SKIP LOCKED`).
 - Light chat follows `loving-bonds-app`; empty desktop chat is cinematic and isolated from mobile.
 - Localize English and Egyptian Arabic (`ar-eg`) through `useUserLang()`.
 - Public landing and time-bound promotion rules: see src/pages/marketing/AGENTS.md. Why: consistent safe public entry.
-- Snapshots use `#snapshot-preview`; never write into `#root` before hydration.
-- Lazy-load browser-only libraries; read `localStorage` only in effects.
+- Snapshots use `#snapshot-preview` (never `#root` pre-hydration); lazy-load browser-only libs; read `localStorage` in effects.
 
 ## 5. Checks before shipping
 
@@ -77,8 +76,7 @@ bunx tsgo --noEmit     # types
 bun run build          # production build
 ```
 
-Then smoke the routes (`/`, `/pricing`, `/chat`, `/settings`, `/usage`,
-`/referrals`) signed in, on mobile width and desktop width.
+Then smoke key routes signed in, mobile and desktop.
 
 ## 6. Known open items
 
@@ -89,3 +87,4 @@ See `roadmap.md`.
 - Do not redeploy `anything-api` from this repo: its deployed version has modules missing here. Why: redeploying would break live features.
 - Agent creates tasks/goals by ending replies with [[TASK|ALARM|GOAL: title | local time]]; ComputerTaskCard saves them via src/lib/life/agentActions.ts. Why: the agent runs on Browser Use and cannot write to our DB.
 - Phone alarms/reminders go through the `MegsyAndroid` WebView bridge (src/lib/native/bridge.ts, docs/android-bridge.md); background push + morning plan via pg_cron → /api/public/reminders-tick (FCM connector, key in public.cron_secrets). Why: the Android app wraps the site, so web push doesn't work inside it.
+- Kashier calls go through src/lib/payments/kashier.ts; edge functions price and sign orders. Why: one client, no browser-trusted prices.
