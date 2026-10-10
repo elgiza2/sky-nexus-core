@@ -1,10 +1,10 @@
 # Megsy — roadmap
 
 ## Payment and logout polish (October 10, 2026)
-- [ ] Replace invented Visa mark with original vector artwork in selection and live card.
-- [ ] Redesign card and wallet fields; enlarge method selection without changing payments or pricing.
-- [ ] Redesign logout confirmation, preserving its existing action.
-- [ ] Visually verify isolated checkout and logout states on phone and desktop without charging.
+- [x] Replace invented Visa mark with original vector artwork in selection and live card.
+- [x] Redesign card and wallet fields; enlarge method selection without changing payments or pricing.
+- [x] Redesign logout confirmation and remove the duplicate mobile confirmation, preserving sign-out.
+- [x] Verify isolated checkout on phone/desktop and logout focus, Escape and single-dialog state; no charge, no runtime errors, preview build OK. Real authenticated settings remain unverified (external unmanaged auth).
 
 ## Glass app and registration (October 10, 2026)
 - [x] Apply shared glass surfaces to settings, chat, sidebar, authentication and Welcome without billing changes.
