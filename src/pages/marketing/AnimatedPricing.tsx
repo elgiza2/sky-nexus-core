@@ -66,8 +66,7 @@ export default function AnimatedPricing({ plans, faqs, isYearly, setIsYearly, lo
         <table className="sky-compare" aria-label={text('Free and Pro comparison', 'مقارنة المجاني وPro')}>
           <thead><tr><th scope="col">{text('Your benefits', 'المزايا')}</th><th scope="col">{text('FREE', 'مجاني')}</th><th scope="col">MEGSY PRO</th></tr></thead>
           <tbody>{rows.map((row, i) => <motion.tr key={row.label} initial={reduced ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={appear(1.2 + i * .14)}>
-            <th scope="row" className="sr-only">{row.label}</th>
-            <td>{row.label}</td>
+            <th scope="row">{row.label}</th>
             <td>{row.free ? <motion.span className="sky-check sky-check-free" initial={reduced ? false : { scale: 0 }} animate={{ scale: 1 }} transition={appear(1.5)}><Check aria-label={text('Included', 'متاح')} strokeWidth={3} /></motion.span> : <span className="sky-unavailable" aria-label={text('Not included', 'غير متاح')}>—</span>}</td>
             <td>{row.value ? <motion.span initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={appear(2 + i * .16)}>{row.value}</motion.span> : <motion.span className="sky-check" initial={reduced ? false : { scale: 0, rotate: -25 }} animate={{ scale: 1, rotate: 0 }} transition={reduced ? { duration: 0 } : { delay: 2 + i * .16, type: 'spring', stiffness: 430, damping: 12 }}><Check aria-label={text('Included', 'متاح')} strokeWidth={3} /></motion.span>}</td>
           </motion.tr>)}</tbody>

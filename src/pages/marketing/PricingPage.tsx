@@ -335,7 +335,7 @@ const PricingPage = () => {
               isYearly={isYearly}
               setIsYearly={setIsYearly}
               loadingTier={loadingTier}
-              onSubscribe={(tier, opts) =>
+              onSubscribe={(tier) =>
                 handleSubscribe(tier, {
                   interval: isYearly ? "yearly" : "monthly",
                   trial: false,
