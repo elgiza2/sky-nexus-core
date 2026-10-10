@@ -1,5 +1,8 @@
 # Megsy — roadmap
 
+## Pricing animation reference (October 10, 2026)
+- [ ] Rebuild pricing with the supplied blue-sky animated comparison reference, Megsy identity, existing prices and subscription handlers; verify phone/desktop, toggles and reduced motion without a charge.
+
 ## Current checkout request
 - [x] Follow the uploaded prompt with liquid-glass edge highlights, large rounded numbered tiles, staggered entrance and slide-to-continue. Verified incomplete/full drag, keyboard continuation and card entry; no charge performed.
 - [x] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity. Selection, formatted card entry, light/dark and phone/desktop verified without a charge; pricing unchanged. Hosted payment completion not exercised (external authentication and real charge required).
