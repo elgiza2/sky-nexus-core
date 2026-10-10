@@ -72,12 +72,12 @@
     inset 0 0 4px rgba(255, 255, 255, 0.7);
   --glass-sheen: linear-gradient(
       168deg,
-      rgba(255, 255, 255, 0.85) 0%,
-      rgba(255, 255, 255, 0.2) 36%,
+      rgba(255, 255, 255, 0.42) 0%,
+      rgba(255, 255, 255, 0.12) 36%,
       rgba(255, 255, 255, 0) 56%,
       rgba(10, 10, 10, 0.06) 100%
     ),
-    radial-gradient(90% 60% at 18% 4%, rgba(255, 255, 255, 0.7), transparent 62%);
+    radial-gradient(90% 60% at 18% 4%, rgba(255, 255, 255, 0.32), transparent 62%);
 
 
 
@@ -104,7 +104,7 @@
 html[data-theme="light"] .megsy-checkout,
 html[data-theme="light"] .megsy-pricing {
   --glass-bg: #ffffff;
-  --glass-dot: hsl(var(--foreground) / 0.16);
+  --glass-dot: hsl(var(--foreground) / 0.22);
   --glass-surface: hsl(var(--foreground) / 0.05);
   --glass-surface-hover: hsl(var(--foreground) / 0.08);
   --glass-surface-on: hsl(var(--card));
@@ -114,7 +114,7 @@ html[data-theme="light"] .megsy-pricing {
   --glass-panel: linear-gradient(165deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.1));
   --glass-panel-on: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.85);
-  --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.55));
+  --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.42));
 
   --glass-shadow: 0 14px 30px -18px hsl(var(--foreground) / 0.3);
 
@@ -257,7 +257,7 @@ html[data-theme="light"] .megsy-pricing {
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
-    --glass-dot: hsl(var(--foreground) / 0.16);
+    --glass-dot: hsl(var(--foreground) / 0.22);
     background-color: #ffffff !important;
     background-image: linear-gradient(to bottom, transparent 0%, #ffffff 72%),
       radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
