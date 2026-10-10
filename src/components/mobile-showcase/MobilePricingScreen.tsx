@@ -186,7 +186,7 @@ export default function MobilePricingScreen({
 
       <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
         {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.45]" />
+        <div className="flex-[0.5]" />
 
         {/* Megsy star mark */}
         <div
@@ -210,12 +210,12 @@ export default function MobilePricingScreen({
         {/* Feature card — single column, airy rows on one frosted panel */}
         <div
           className={`glass-tile glass-appear ${
-            compact ? "mt-3 px-4 py-3.5" : "mt-4 px-5 py-4"
+            compact ? "mt-3 px-4 py-3.5" : "mt-4 px-5 py-5"
           }`}
 
           style={{ "--i": 2 } as React.CSSProperties}
         >
-          <ul className={`flex flex-col ${compact ? "gap-[11px]" : "gap-[14px]"}`}>
+          <ul className={`flex flex-col ${compact ? "gap-[12px]" : "gap-[18px]"}`}>
             {features.map(({ icon: Icon, text }) => (
               <li
                 key={text}
@@ -343,7 +343,7 @@ export default function MobilePricingScreen({
           </nav>
         </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.55]" />
+        <div className="flex-[0.5]" />
       </main>
     </div>
   );
