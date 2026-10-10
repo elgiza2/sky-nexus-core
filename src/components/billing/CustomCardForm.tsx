@@ -4,46 +4,25 @@ import "@/styles/checkout.css";
 import { Button } from "@/components/ui/button";
 import { BrandMark, CardPreview } from "./CardPreview";
 
-import { supabase } from "@/integrations/supabase/client";
-import { invokeFunction } from "@/lib/supabaseFunction";
+import {
+  type HostedMethod,
+  type KashierOrder,
+  isKashierUrl,
+  onlyDigits,
+  openHostedSession,
+  payWithCard,
+  requestWalletPayment,
+  watchWalletPayment,
+} from "@/lib/payments/kashier";
 import type { PlanTier } from "@/data/pricingData";
 
 type Props = { open: boolean; tier: PlanTier; interval: "monthly" | "yearly"; onClose: () => void };
-type PaymentMethod = "card" | "wallet" | "bank_installments" | "bnpl";
-type DirectOrder = {
-  order_id: string;
-  merchant_id: string;
-  amount: number;
-  currency: string;
-  hash: string;
-  endpoint: string;
-  webhook_url: string;
-  merchant_redirect?: string;
-};
-type PaymentResponse = {
-  status?: string;
-  response?: { status?: string; result?: string; authentication?: { redirectUrl?: string } };
-  messages?: { en?: string; ar?: string };
-};
+type PaymentMethod = HostedMethod;
 
-function sanitizeCardNumber(value: string) {
-  return value.replace(/\D/g, "").slice(0, 19);
-}
 function formatCardNumber(value: string) {
-  return sanitizeCardNumber(value)
+  return onlyDigits(value)
     .replace(/(.{4})/g, "$1 ")
     .trim();
-}
-function sameOrigin(url: string) {
-  try {
-    const parsed = new URL(url);
-    return (
-      parsed.protocol === "https:" &&
-      (parsed.hostname === "checkout.kashier.io" || parsed.hostname.endsWith(".kashier.io"))
-    );
-  } catch {
-    return false;
-  }
 }
 
 export default function CustomCardForm({ open, tier, interval, onClose }: Props) {
@@ -61,13 +40,13 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const [hostedUrl, setHostedUrl] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [walletWaiting, setWalletWaiting] = useState(false);
-  const pollRef = useRef<number | null>(null);
+  const stopWatchRef = useRef<(() => void) | null>(null);
   const [pick, setPick] = useState<TileId>("visa");
 
   useEffect(() => {
     if (!open) return;
     const listener = (event: MessageEvent) => {
-      if (!sameOrigin(event.origin)) return;
+      if (!isKashierUrl(event.origin)) return;
       const data = event.data as { message?: string; params?: { status?: string } } | null;
       if (data?.message !== "merchantStoreRedirect") return;
       setThreeDsUrl(null);
@@ -95,130 +74,39 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       setPhone("");
       setWalletWaiting(false);
     }
-    if (!open && pollRef.current) window.clearInterval(pollRef.current);
+    if (!open) { stopWatchRef.current?.(); stopWatchRef.current = null; }
   }, [open]);
-  useEffect(() => () => { if (pollRef.current) window.clearInterval(pollRef.current); }, []);
+  useEffect(() => () => stopWatchRef.current?.(), []);
   if (!open) return null;
+
+  const fail = (cause: unknown, fallback: string) => {
+    setError(cause instanceof Error ? cause.message : fallback);
+    setBusy(false);
+  };
 
   const openHostedCheckout = async (selectedMethod: PaymentMethod) => {
     setBusy(true);
     setError(null);
     try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
-      const { data, error: checkoutError } = await invokeFunction("kashier-checkout", {
-        body: {
-          kind: "checkout",
-          tier,
-          interval,
-          provider: "kashier",
-          method: selectedMethod,
-          display: "en",
-        },
-        headers: { Authorization: `Bearer ${session.session.access_token}` },
-      });
-      if (checkoutError) throw checkoutError;
-      const url = data?.url || data?.checkout_url;
-      if (!url) throw new Error(data?.error || "Couldn’t open the payment page.");
-      setHostedUrl(url);
+      setHostedUrl(await openHostedSession(tier, interval, selectedMethod));
       setBusy(false);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Something went wrong while opening the payment page.");
-      setBusy(false);
+      fail(cause, "Something went wrong while opening the payment page.");
     }
   };
 
   const submitCard = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    const cardNumber = sanitizeCardNumber(number);
-    if (
-      cardNumber.length < 12 ||
-      !name.trim() ||
-      !/^\d{2}$/.test(month) ||
-      !/^\d{2}$/.test(year) ||
-      !/^\d{3,4}$/.test(cvv)
-    ) {
-      setError("Check the card details and make sure they’re complete.");
-      return;
-    }
     setBusy(true);
     setResult("processing");
     try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
-      const { data: order, error: orderError } = await invokeFunction<DirectOrder>(
-        "kashier-direct-order",
-        {
-          body: { tier, interval },
-          headers: { Authorization: `Bearer ${session.session.access_token}` },
-        },
-      );
-      if (orderError || !order) throw orderError || new Error("Couldn’t start the payment.");
-      setOrderId(order.order_id);
-      const redirect = `${window.location.origin}/billing/success?provider=kashier&order=${encodeURIComponent(order.order_id)}`;
-      const response = await fetch(order.endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Kashier-Hash": order.hash },
-        body: JSON.stringify({
-          apiOperation: "PAY",
-          paymentMethod: {
-            type: "CARD",
-            card: {
-              expiry: { month, year },
-              number: cardNumber,
-              nameOnCard: name.trim(),
-              securityCode: cvv,
-              enable3DS: true,
-            },
-          },
-          order: {
-            reference: order.order_id,
-            amount: String(order.amount),
-            currency: order.currency,
-            description: `${tier} ${interval}`,
-          },
-          merchantRedirect: encodeURI(order.merchant_redirect ?? redirect),
-          serverWebhook: order.webhook_url,
-          interactionSource: "ECOMMERCE",
-          reconciliation: {
-            webhookUrl: order.webhook_url,
-            merchantRedirect: redirect,
-            redirect: false,
-          },
-          customer: { reference: session.session.user.id, email: session.session.user.email ?? "" },
-          merchantId: order.merchant_id,
-          newPaymentUI: true,
-        }),
-      });
-      const rawResponse = await response.text();
-      let payload: PaymentResponse = {};
-      try {
-        payload = JSON.parse(rawResponse) as PaymentResponse;
-      } catch {}
-      if (!response.ok)
-        throw new Error(
-          payload.messages?.en ||
-            payload.messages?.ar ||
-            rawResponse ||
-            `The payment provider rejected the request (${response.status}).`,
-        );
-      const auth = payload.response?.authentication;
-      if (auth?.redirectUrl && sameOrigin(auth.redirectUrl)) {
-        setThreeDsUrl(auth.redirectUrl);
-        return;
-      }
-      if (
-        payload.status === "SUCCESS" &&
-        (payload.response?.result === "SUCCESS" || payload.response?.status === "CAPTURED")
-      ) {
-        setResult("success");
-        return;
-      }
-      throw new Error(payload.messages?.en || payload.messages?.ar || "The payment was declined.");
+      const outcome = await payWithCard(tier, interval, { number, name, month, year, cvv });
+      setOrderId(outcome.orderId);
+      if (outcome.kind === "3ds") setThreeDsUrl(outcome.url);
+      else setResult("success");
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Something went wrong while paying.");
-      setBusy(false);
+      fail(cause, "Something went wrong while paying.");
       setResult("idle");
     } finally {
       setNumber("");
@@ -232,85 +120,29 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
   const submitWallet = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null);
-    const mobile = phone.replace(/\D/g, "");
-    if (!/^01[0125]\d{8}$/.test(mobile)) {
-      setError("Enter a valid Vodafone Cash wallet number (11 digits starting with 01).");
-      return;
-    }
     setBusy(true);
     try {
-      const { data: session } = await supabase.auth.getSession();
-      if (!session.session?.access_token) throw new Error("Your session expired. Please sign in again.");
-      const { data: order, error: orderError } = await invokeFunction<DirectOrder>("kashier-direct-order", {
-        body: { tier, interval },
-        headers: { Authorization: `Bearer ${session.session.access_token}` },
-      });
-      if (orderError || !order) throw orderError || new Error("Couldn’t start the payment.");
+      const order: KashierOrder = await requestWalletPayment(tier, interval, phone);
       setOrderId(order.order_id);
-      const response = await fetch(order.endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Kashier-Hash": order.hash },
-        body: JSON.stringify({
-          apiOperation: "INITIATE_R2P",
-          paymentMethod: { type: "wallet" },
-          order: { reference: order.order_id, amount: order.amount, currency: order.currency },
-          customer: { mobilePhone: mobile, reference: session.session.user.id, email: session.session.user.email ?? "" },
-          interactionSource: "ECOMMERCE",
-          reconciliation: { webhookUrl: order.webhook_url },
-          serverWebhook: order.webhook_url,
-          merchantId: order.merchant_id,
-        }),
-      });
-      const raw = await response.text();
-      let payload: PaymentResponse & { response?: { code?: string } } = {};
-      try { payload = JSON.parse(raw); } catch {}
-      if (!response.ok || payload.status !== "SUCCESS") {
-        throw new Error(payload.messages?.en || payload.messages?.ar || "This number isn’t linked to a wallet. Try another one.");
-      }
       setWalletWaiting(true);
       setBusy(false);
-      const reconcileUrl = `${order.endpoint.replace(/\/?$/, "/")}${encodeURIComponent(order.order_id)}`;
-      const started = Date.now();
-      if (pollRef.current) window.clearInterval(pollRef.current);
-      pollRef.current = window.setInterval(async () => {
-        const stop = () => { if (pollRef.current) window.clearInterval(pollRef.current); pollRef.current = null; };
-        if (Date.now() - started > 5 * 60_000) {
-          stop();
-          setWalletWaiting(false);
-          setBusy(false);
-          setError("The approval window expired. Please try again.");
-          return;
-        }
-        try {
-          const res = await fetch(reconcileUrl, {
-            method: "PUT",
-            headers: { Accept: "application/json", "Content-Type": "application/json" },
-            body: JSON.stringify({ apiOperation: "RECONCILE_WALLET", paymentMethod: { type: "wallet" }, merchantId: order.merchant_id }),
-          });
-          const body = (await res.json().catch(() => ({}))) as PaymentResponse;
-          const st = body.response?.status || body.status;
-          if (st === "SUCCESS" || body.response?.status === "CAPTURED") {
-            stop();
-            setWalletWaiting(false);
-            setBusy(false);
-            setResult("success");
-          } else if (st === "FAILURE" || st === "FAILED") {
-            stop();
-            setWalletWaiting(false);
-            setBusy(false);
-            setError("The wallet declined the payment or its window expired. Please try again.");
-          }
-        } catch {}
-      }, 4000);
+      stopWatchRef.current?.();
+      stopWatchRef.current = watchWalletPayment(order, (status) => {
+        stopWatchRef.current = null;
+        setWalletWaiting(false);
+        setBusy(false);
+        if (status === "success") setResult("success");
+        else if (status === "expired") setError("The approval window expired. Please try again.");
+        else setError("The wallet declined the payment or its window expired. Please try again.");
+      });
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Something went wrong while paying.");
-      setBusy(false);
+      fail(cause, "Something went wrong while paying.");
     }
   };
 
   const cancelWallet = () => {
-    if (pollRef.current) window.clearInterval(pollRef.current);
-    pollRef.current = null;
+    stopWatchRef.current?.();
+    stopWatchRef.current = null;
     setWalletWaiting(false);
     setBusy(false);
     setError(null);
