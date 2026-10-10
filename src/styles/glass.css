@@ -1,21 +1,13 @@
 /* Shared liquid-glass language: one recipe, used by checkout and pricing.
- * Keep every rule scoped so a screen that opts out stays untouched. */
+ * Keep every rule scoped so a screen that opts out stays untouched.
+ * No drawn outlines: a panel reads from its fill, its blur and its shadow. */
 .megsy-checkout,
 .megsy-pricing {
   --glass-surface: hsl(var(--card) / 0.22);
   --glass-surface-hover: hsl(var(--card) / 0.4);
   --glass-surface-on: hsl(var(--card) / 0.7);
-  --glass-edge: hsl(var(--foreground) / 0.08);
-  --glass-edge-on: hsl(var(--foreground) / 0.18);
-  --glass-rim: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.95),
-    hsl(var(--foreground) / 0.09) 22%,
-    transparent 45%,
-    transparent 60%,
-    hsl(var(--foreground) / 0.06) 80%,
-    hsl(var(--card) / 0.9)
-  );
+  --glass-edge: transparent;
+  --glass-edge-on: transparent;
   --glass-shadow: inset 0 1px 2px hsl(var(--card) / 0.9),
     0 10px 30px hsl(var(--foreground) / 0.035);
   --glass-shadow-on: inset 0 1px 2px hsl(var(--card)),
@@ -55,19 +47,25 @@
     ),
     var(--gradient-cta);
 
-
-
   --glass-bg: hsl(var(--background));
   --glass-dot: transparent;
-  background: radial-gradient(
-      900px 460px at 60% -10%,
-      hsl(var(--primary) / 0.08),
-      transparent 70%
-    ),
-    var(--glass-bg);
+  background: var(--glass-bg);
   color: hsl(var(--foreground));
   font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
   letter-spacing: 0;
+}
+
+/* A flat, pure white page is where the glass reads strongest: no tint, no
+   texture, nothing for the panels to compete with. Dark mode keeps its own
+   canvas so the ink stays readable. */
+html[data-theme="light"] .megsy-checkout,
+html[data-theme="light"] .megsy-pricing {
+  --glass-bg: #ffffff;
+  --glass-surface: hsl(var(--foreground) / 0.045);
+  --glass-surface-hover: hsl(var(--foreground) / 0.07);
+  --glass-surface-on: hsl(var(--card));
+  --glass-shadow: 0 12px 28px -18px hsl(var(--foreground) / 0.28);
+  --glass-shadow-on: 0 16px 34px -16px hsl(var(--foreground) / 0.34);
 }
 
 /* Dotted backdrop layer; sits above the surface, below the content. */
@@ -77,52 +75,29 @@
   mask-image: radial-gradient(120% 90% at 50% 0%, black 30%, transparent 100%);
 }
 
-/* Frosted tile with a luminous rim. Selected state: data-selected="true". */
+/* Frosted tile. Selected state: data-selected="true". */
 .glass-tile {
   position: relative;
   background: var(--glass-surface);
-  border: 1px solid var(--glass-edge);
+  border: 0;
   border-radius: 32px;
   box-shadow: var(--glass-shadow);
   backdrop-filter: blur(8px) saturate(125%);
   color: hsl(var(--foreground));
-  transition: border-color 0.18s ease, background 0.18s ease,
-    box-shadow 0.18s ease;
-}
-.glass-tile::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1.4px;
-  border-radius: inherit;
-  background: var(--glass-rim);
-  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 .glass-tile:hover {
   background: var(--glass-surface-hover);
 }
 .glass-tile[data-selected="true"] {
   background: var(--glass-surface-on);
-  border-color: var(--glass-edge-on);
   box-shadow: var(--glass-shadow-on);
 }
-/* The chosen card is obvious on its own: a clear rim in the action colours. */
-.megsy-checkout .glass-tile[data-selected="true"],
-.megsy-pricing .glass-tile[data-selected="true"] {
-  border-color: hsl(var(--cta-pink) / 0.6);
-  box-shadow: var(--glass-shadow),
-    inset 0 0 0 1.5px hsl(var(--cta-blue) / 0.4),
-    0 14px 30px -16px hsl(var(--cta-pink) / 0.5);
-}
-
 
 /* Primary action: the same glass, lifted so it still reads as the main CTA. */
 .glass-cta {
   position: relative;
   border-radius: 9999px;
-
   background-color: hsl(var(--cta-pink) / 0.16);
   background-image: var(--sunset-grain), var(--gradient-cta-liquid);
   background-repeat: no-repeat;
@@ -131,29 +106,13 @@
   animation: sunset-liquid-drift 14s ease-in-out infinite;
   color: hsl(var(--sunset-foreground));
   font-weight: 600;
-  border: 1px solid hsl(var(--sunset-foreground) / 0.22);
-
-
-
+  border: 0;
   box-shadow: var(--glass-cta-shadow);
   backdrop-filter: blur(14px) saturate(150%);
-  transition: background 0.18s ease, box-shadow 0.18s ease,
-    border-color 0.18s ease;
-}
-.glass-cta::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  padding: 1.4px;
-  border-radius: inherit;
-  background: var(--glass-rim);
-  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
+  transition: background 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 .glass-cta:hover {
   filter: saturate(1.08) brightness(1.04);
-  border-color: hsl(var(--sunset-foreground) / 0.4);
 }
 @media (prefers-reduced-motion: reduce) {
   .glass-cta {
@@ -161,33 +120,29 @@
   }
 }
 
-
-
 /* Billing rows: a rectangle with lightly rounded corners, not a full pill. */
 .glass-tile--row {
   border-radius: 14px;
 }
 
 /* Small segmented control: the same glass, flattened into a pill. */
-
 .glass-pill {
   border-radius: 9999px;
-  border: 1px solid var(--glass-edge);
+  border: 0;
   background: var(--glass-surface);
   box-shadow: var(--glass-shadow);
   backdrop-filter: blur(10px) saturate(140%);
 }
 
 /* Field surface inside the glass screens. */
-
 .glass-input {
-  background: hsl(var(--card) / 0.72);
-  border: 1px solid var(--glass-edge);
+  background: var(--glass-surface);
+  border: 0;
   color: hsl(var(--foreground));
+  box-shadow: var(--glass-shadow);
 }
 .glass-input:focus {
-  border-color: hsl(var(--foreground) / 0.5);
-  box-shadow: 0 0 0 3px hsl(var(--foreground) / 0.06);
+  box-shadow: var(--glass-shadow), 0 0 0 3px hsl(var(--foreground) / 0.08);
 }
 
 /* Staggered entrance; set --i on each element (0, 1, 2 …). */
@@ -215,9 +170,9 @@
   }
 }
 
-/* Phones: a flat canvas gives the blur nothing to refract, so keep a soft
-   light source above and a faint one below — that is what makes the panels
-   read as glass instead of flat cards. */
+/* Phones: a flat canvas gives the blur nothing to refract, so dark mode keeps a
+   soft light source above and a faint one below — that is what makes the panels
+   read as glass instead of flat cards. Light mode stays a clean white page. */
 @media (max-width: 767px) {
   .megsy-checkout,
   .megsy-pricing {
@@ -238,19 +193,118 @@
   }
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
-    --glass-bg: oklch(0.961 0 0);
-    --glass-dot: hsl(var(--foreground) / 0.1);
-    background:
-      radial-gradient(
-        130% 62% at 50% -12%,
-        hsl(var(--primary) / 0.12),
-        transparent 72%
-      ),
-      radial-gradient(
-        95% 52% at 50% 112%,
-        hsl(var(--foreground) / 0.06),
-        transparent 72%
-      ),
-      var(--glass-bg);
+    --glass-bg: #ffffff;
+    --glass-dot: transparent;
+    background: #ffffff;
   }
+}
+
+/* ── Mobile pricing: two squares, one sliding marker, one black action ──
+ * The marker is a plain surface that slides between the two squares; the
+ * price replays its own entrance so switching plans feels deliberate. */
+.megsy-pricing .megsy-plan-flag {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  inset-inline-start: 0;
+  width: calc(50% - 6px);
+  border-radius: 24px;
+  background: var(--glass-surface-on);
+  box-shadow: var(--glass-shadow-on);
+  pointer-events: none;
+  transform: translateX(0);
+  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.megsy-pricing .megsy-plan-flag[data-side="b"] {
+  transform: translateX(calc(100% + 12px));
+}
+.megsy-pricing[dir="rtl"] .megsy-plan-flag[data-side="b"] {
+  transform: translateX(calc(-100% - 12px));
+}
+.megsy-pricing .megsy-plan-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  aspect-ratio: 1 / 1;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  color: hsl(var(--foreground));
+  text-align: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.megsy-pricing .megsy-plan-tile[data-selected="false"] {
+  opacity: 0.5;
+}
+.megsy-pricing .megsy-plan-tile:active {
+  transform: scale(0.97);
+}
+.megsy-pricing .megsy-plan-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+}
+.megsy-pricing .megsy-plan-price {
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  animation: megsy-plan-pop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.megsy-pricing .megsy-plan-unit,
+.megsy-pricing .megsy-plan-strike {
+  font-size: 11px;
+  color: hsl(var(--muted-foreground));
+}
+.megsy-pricing .megsy-plan-strike {
+  text-decoration: line-through;
+}
+@keyframes megsy-plan-pop {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The upgrade action sits on the bottom of the screen and stays black. */
+.megsy-pricing .megsy-plan-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
+  padding: 12px 20px calc(env(safe-area-inset-bottom, 0px) + 12px);
+  background: linear-gradient(to bottom, transparent, var(--glass-bg) 45%);
+}
+.megsy-pricing .megsy-plan-cta {
+  display: flex;
+  width: 100%;
+  max-width: 400px;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 9999px;
+  background: hsl(var(--brand-ink));
+  color: var(--overlay-white-100);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 16px 30px -16px hsl(var(--brand-ink) / 0.55);
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+.megsy-pricing .megsy-plan-cta:active {
+  transform: scale(0.985);
+}
+.megsy-pricing .megsy-plan-cta:disabled {
+  opacity: 0.6;
 }
