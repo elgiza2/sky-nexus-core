@@ -76,8 +76,7 @@ bunx tsgo --noEmit     # types
 bun run build          # production build
 ```
 
-Then smoke the routes (`/`, `/pricing`, `/chat`, `/settings`, `/usage`,
-`/referrals`) signed in, on mobile width and desktop width.
+Then smoke key routes signed in, mobile and desktop.
 
 ## 6. Known open items
 
