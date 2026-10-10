@@ -90,7 +90,7 @@
   background-color: var(--glass-bg) !important;
   /* Dots sit on top of the canvas and are washed away by a soft gradient, so
      they thin out and vanish on their own instead of running to the bottom. */
-  background-image: linear-gradient(to bottom, transparent 0%, var(--glass-bg) 72%),
+  background-image: linear-gradient(to bottom, transparent 0%, transparent 58%, var(--glass-bg) 94%),
     radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
   background-size: 100% 100%, 22px 22px !important;
 
@@ -108,17 +108,17 @@ html[data-theme="light"] .megsy-pricing {
   --glass-surface: hsl(var(--foreground) / 0.05);
   --glass-surface-hover: hsl(var(--foreground) / 0.08);
   --glass-surface-on: hsl(var(--card));
-  /* Frost on white: a sheen that deepens downward, a blur strong enough to wipe
-     the dotted canvas clean behind the panel, and a lit top edge — the three
-     cues that make a pane read as glass instead of a flat card. */
-  --glass-panel: linear-gradient(165deg, hsl(var(--foreground) / 0.03), hsl(var(--foreground) / 0.1));
+  /* Glass on white: the pane stays a thin white veil so the dotted canvas keeps
+     showing through it — that is what tells the eye the panel is see-through.
+     The bend lives at the rim (see the liquid rim below), not in a heavy frost. */
+  --glass-panel: linear-gradient(165deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
   --glass-panel-on: linear-gradient(165deg, hsl(var(--card) / 0.95), hsl(var(--card) / 0.72));
   --glass-edge-light: inset 0 1px 0 hsl(var(--card) / 0.85);
   --glass-fill-on: linear-gradient(165deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.42));
 
-  --glass-shadow: 0 14px 30px -18px hsl(var(--foreground) / 0.3);
+  --glass-shadow: 0 12px 26px -20px hsl(var(--foreground) / 0.22);
 
-  --glass-shadow-on: 0 18px 36px -16px hsl(var(--foreground) / 0.38);
+  --glass-shadow-on: 0 20px 40px -26px hsl(var(--foreground) / 0.3);
 
 }
 
@@ -259,7 +259,7 @@ html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
     --glass-dot: hsl(var(--foreground) / 0.22);
     background-color: #ffffff !important;
-    background-image: linear-gradient(to bottom, transparent 0%, #ffffff 72%),
+    background-image: linear-gradient(to bottom, transparent 0%, transparent 58%, #ffffff 94%),
       radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
     background-size: 100% 100%, 22px 22px !important;
 
