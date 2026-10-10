@@ -83,7 +83,7 @@ export function CardPreview({
       </p>
       <div className="mt-7 flex items-end justify-between gap-4">
         <span className={`min-w-0 flex-1 truncate text-[13px] font-medium uppercase tracking-[0.08em] ${holder ? "text-foreground" : "text-muted-foreground"}`}>
-          {holder || "اسم holder"}
+          {holder || "اسمك على البطاقة"}
         </span>
         <span className="shrink-0 text-[13px] font-medium tabular-nums text-muted-foreground" dir="ltr">
           {month || "MM"}

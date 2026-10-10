@@ -37,3 +37,41 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .payment-green { fill: var(--payment-green); }
 .payment-gold { fill: var(--payment-gold); }
 .payment-white { fill: var(--payment-logo-surface); }
+/* The live card face: a lifted glass panel that prints the number and name. */
+.card-face {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: linear-gradient(155deg, hsl(var(--card) / .96), hsl(var(--card) / .6));
+  border: 1px solid hsl(var(--foreground) / .1);
+  box-shadow: inset 0 1px 1px hsl(var(--card)), 0 18px 40px -18px hsl(var(--foreground) / .3);
+  backdrop-filter: blur(16px) saturate(150%);
+}
+.card-face::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.4px;
+  border-radius: inherit;
+  background: var(--glass-rim);
+  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.card-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 12% 0%, hsl(var(--primary) / .14), transparent 62%);
+  pointer-events: none;
+}
+.card-face > * { position: relative; z-index: 1; }
+.card-chip {
+  display: block;
+  width: 42px;
+  height: 30px;
+  border-radius: 8px;
+  background: linear-gradient(140deg, var(--payment-gold), color-mix(in oklab, var(--payment-gold) 55%, transparent));
+  box-shadow: inset 0 0 0 1px hsl(var(--foreground) / .12);
+}
+
