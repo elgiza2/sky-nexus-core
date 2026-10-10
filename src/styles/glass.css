@@ -284,7 +284,8 @@ html[data-theme="light"] .megsy-pricing {
   text-align: center;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background 0.42s ease, box-shadow 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.42s ease;
 }
 /* The chosen square hands its own surface to the marker sliding underneath,
    so both squares stay fully visible — nothing is dimmed. */
