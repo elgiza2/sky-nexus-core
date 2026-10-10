@@ -66,7 +66,9 @@
 
   /* !important: a global [role="dialog"] rule otherwise paints every modal
      with the app background, and this screen owns its own canvas. */
-  background: var(--glass-bg) !important;
+  background-color: var(--glass-bg) !important;
+  background-image: radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
+  background-size: 18px 18px !important;
 
   color: hsl(var(--foreground));
   font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
@@ -225,7 +227,9 @@ html[data-theme="light"] .megsy-pricing {
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
     --glass-dot: hsl(var(--foreground) / 0.18);
-    background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: radial-gradient(var(--glass-dot) 1px, transparent 1px) !important;
+    background-size: 18px 18px !important;
 
 
   }
