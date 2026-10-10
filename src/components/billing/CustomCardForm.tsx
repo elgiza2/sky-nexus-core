@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowLeft, Check, CreditCard, Loader2, LockKeyhole, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CheckoutSlide } from "./CheckoutSlide";
 import "@/styles/checkout.css";
 import { supabase } from "@/integrations/supabase/client";
 import { invokeFunction } from "@/lib/supabaseFunction";
@@ -241,11 +242,11 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
       <div className="relative mx-auto flex min-h-dvh w-full max-w-[520px] flex-col px-6 pb-7 pt-[max(20px,env(safe-area-inset-top))] sm:px-8 sm:pt-8">
         <header className="flex items-center justify-between">
           <Button variant="ghost" size="icon" type="button" onClick={back} disabled={busy} aria-label="رجوع" title="رجوع" className="rounded-full border border-border/60 bg-card/60"><ArrowLeft className="rotate-180" /></Button>
-          <span className="text-sm font-semibold" dir="ltr">Megsy</span>
+          <span className="checkout-brand flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium" dir="ltr"><LockKeyhole className="h-3 w-3" /> Megsy</span>
           <Button variant="ghost" size="icon" type="button" onClick={onClose} disabled={busy} aria-label="إغلاق" title="إغلاق" className="rounded-full border border-border/60 bg-card/60"><X /></Button>
         </header>
         <div className="checkout-content mt-10 flex flex-1 flex-col sm:mt-12">
-          <h1 id="checkout-title" className="text-[28px] font-semibold leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : stage === "card" ? "بيانات البطاقة" : "طريقة الدفع"}</h1>
+          <h1 id="checkout-title" className="text-[28px] font-normal leading-tight">{result === "success" ? "تم الدفع" : threeDsUrl ? "تأكيد الدفع" : stage === "card" ? "بيانات البطاقة" : "اختار طريقة الدفع"}</h1>
           {threeDsUrl ? (
             <div className="mt-6 flex-1 space-y-4">
               <p className="text-sm leading-6 text-muted-foreground">أكمل التحقق من البنك لإتمام الدفع.</p>
@@ -281,11 +282,12 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
           ) : (
             <div className="mt-7 flex flex-1 flex-col">
               <div className="grid grid-cols-2 gap-3">
-                {TILES.map((t) => {
+                {TILES.map((t, index) => {
                   const active = t.id === pick;
-                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} className={`checkout-choice relative h-[126px] flex-col items-start justify-between rounded-xl p-4 text-start ${t.id === "vodafone" ? "col-span-2 h-[88px] flex-row items-center" : ""}`}>
-                    <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center rounded-lg" dir="ltr"><TileLogo id={t.id} /></span>
-                    <span className={`text-sm font-medium ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
+                  return <Button key={t.id} variant="ghost" type="button" disabled={busy} onClick={() => setPick(t.id)} aria-pressed={active} aria-label={t.label} className={`checkout-choice relative h-[142px] flex-col items-start justify-between p-5 text-start ${t.id === "vodafone" ? "col-span-2 h-[100px] flex-row items-center" : ""}`}>
+                    <span className="checkout-number absolute end-5 top-5 text-[11px] text-muted-foreground" dir="ltr">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="checkout-logo flex h-10 w-[68px] shrink-0 items-center justify-center" dir="ltr"><TileLogo id={t.id} /></span>
+                    <span className={`text-base font-medium ${t.id === "vodafone" ? "me-auto" : ""}`} dir={t.id === "vodafone" ? "rtl" : "ltr"}>{t.label}</span>
                     <span className={`absolute end-4 top-4 flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-foreground text-background" : "border border-foreground/20"} ${t.id === "vodafone" ? "top-1/2 -translate-y-1/2" : ""}`}>{active && <Check className="h-3 w-3" strokeWidth={3} />}</span>
                   </Button>;
                 })}
@@ -293,7 +295,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
               <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> دفع آمن ومشفّر</p>
-              <Button variant="ghost" type="button" disabled={busy} onClick={continueWithPick} className="checkout-cta mt-4 h-14 w-full rounded-xl text-base">{busy ? <Loader2 className="animate-spin" /> : <>متابعة <ArrowLeft /></>}</Button>
+              <CheckoutSlide busy={busy} onConfirm={continueWithPick} />
             </div>
           )}
         </div>
