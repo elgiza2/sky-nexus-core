@@ -66,7 +66,7 @@ html.dark .megsy-checkout {
 .megsy-checkout .megsy-back { width: 44px; height: 44px; padding: 0; border-radius: 50%; background: var(--checkout-surface); color: var(--checkout-text); box-shadow: var(--checkout-shadow); }
 .checkout-methods { margin-top: 28px; display: flex; flex-direction: column; flex: 1; gap: 24px; }
 .megsy-pay-list { display: grid; grid-template-rows: repeat(4, minmax(94px, 1fr)); gap: 14px; flex: 1; max-height: 560px; }
-.megsy-checkout .megsy-pay-row { width: 100%; height: auto; min-height: 94px; display: flex; justify-content: flex-start; gap: 16px; padding: 20px; border-radius: 18px; border: 1px solid transparent; background: var(--checkout-surface); color: var(--checkout-text); text-align: start; box-shadow: var(--checkout-shadow); transition: border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.22,1,.36,1); }
+.megsy-checkout .megsy-pay-row { width: 100%; height: auto; min-height: 94px; display: flex; justify-content: flex-start; gap: 16px; padding: 20px; border-radius: 18px; border: 1px solid oklch(.2 0 0 / .1); background: var(--checkout-surface); color: var(--checkout-text); text-align: start; box-shadow: var(--checkout-shadow); transition: border-color .35s ease, box-shadow .35s ease, transform .35s cubic-bezier(.22,1,.36,1); }
 .megsy-checkout .megsy-pay-row[data-selected="true"] { border-color: var(--checkout-text); box-shadow: inset 0 0 0 1px var(--checkout-text), var(--checkout-shadow); transform: translateY(-2px); }
 .megsy-pay-mark { width: 68px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .megsy-pay-copy { flex: 1; display: flex; flex-direction: column; gap: 6px; }
