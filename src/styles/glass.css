@@ -112,6 +112,8 @@
 /* Primary action: the same glass, lifted so it still reads as the main CTA. */
 .glass-cta {
   position: relative;
+  border-radius: 9999px;
+
   background-color: hsl(var(--cta-pink) / 0.16);
   background-image: var(--sunset-grain), var(--gradient-cta-liquid);
   background-repeat: no-repeat;
