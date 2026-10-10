@@ -216,7 +216,7 @@ export default function MobilePricingScreen({
           style={{ "--i": 2 } as React.CSSProperties}
         >
           <ul className={`flex flex-col ${compact ? "gap-[12px]" : "gap-[18px]"}`}>
-            {features.map(({ icon: Icon, text }, i) => (
+            {features.map(({ icon: Icon, text }) => (
               <li
                 key={text}
                 className={`flex items-center gap-3 ${isAr ? "flex-row-reverse text-right" : ""}`}
