@@ -83,10 +83,27 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 }
 .checkout-input:focus { border-color: hsl(var(--foreground) / .5); box-shadow: 0 0 0 3px hsl(var(--foreground) / .06); }
 .checkout-cta {
-  background: hsl(var(--foreground));
-  color: hsl(var(--background));
+  position: relative;
+  background: hsl(var(--card) / .45);
+  color: hsl(var(--foreground));
+  border: 1px solid var(--checkout-edge);
+  box-shadow: var(--checkout-shadow);
+  backdrop-filter: blur(10px) saturate(130%);
+  transition: background .18s ease, box-shadow .18s ease;
 }
-.checkout-cta:hover { background: hsl(var(--foreground) / .9); }
+.checkout-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1.4px;
+  border-radius: inherit;
+  background: var(--checkout-glass-edge);
+  mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.checkout-cta:hover { background: hsl(var(--card) / .7); }
+
 @media (max-width: 767px) {
   .megsy-checkout { --checkout-bg: oklch(.15 0 .0); --checkout-dot: hsl(var(--foreground) / .08); background: var(--checkout-bg); }
   html[data-theme="light"] .megsy-checkout { --checkout-bg: oklch(.961 0 0); --checkout-dot: hsl(var(--foreground) / .10); }
