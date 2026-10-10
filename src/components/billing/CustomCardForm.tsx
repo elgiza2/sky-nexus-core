@@ -434,7 +434,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
               <p className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="h-3.5 w-3.5" /> Secure payment via Kashier</p>
-              <button type="submit" disabled={busy} className="megsy-pay-cta mt-4">
+              <button type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-4">
                 {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</> : "Pay now"}
               </button>
             </form>
@@ -458,7 +458,7 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
               {error && <ErrorBox text={error} />}
               <div className="min-h-8 flex-1" />
               {!walletWaiting && (
-                <button type="submit" disabled={busy} className="megsy-pay-cta mt-8">
+                <button type="submit" data-plain disabled={busy} className="megsy-pay-cta mt-8">
                   {busy ? <><Loader2 className="h-5 w-5 animate-spin" /> Sending…</> : "Send payment request"}
                 </button>
               )}
@@ -502,7 +502,6 @@ export default function CustomCardForm({ open, tier, interval, onClose }: Props)
                   <><Loader2 className="h-5 w-5 animate-spin" /> Processing…</>
                 ) : (
                   <>
-                    <span className="checkout-mark flex h-5 shrink-0 items-center justify-center" dir="ltr"><TileLogo id={pick} /></span>
                     <span>Continue with {tile.label}</span>
                   </>
                 )}
