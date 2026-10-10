@@ -272,36 +272,9 @@ html[data-theme="light"] .megsy-pricing {
   }
 }
 
-/* ── Mobile pricing: two squares, one sliding marker, one black action ──
- * The marker is a plain surface that slides between the two squares; the
- * price replays its own entrance so switching plans feels deliberate. */
-.megsy-pricing .megsy-plan-flag {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  inset-inline-start: 0;
-  width: calc(50% - 6px);
-  border-radius: 24px;
-  /* The marker stays out of the way: the chosen square is marked by its own
-     rim, not by any colour poured into it. */
-  background: transparent;
-  box-shadow: none;
-  backdrop-filter: none;
-
-
-
-
-
-  pointer-events: none;
-  transform: translateX(0);
-  transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.megsy-pricing .megsy-plan-flag[data-side="b"] {
-  transform: translateX(calc(100% + 12px));
-}
-.megsy-pricing[dir="rtl"] .megsy-plan-flag[data-side="b"] {
-  transform: translateX(calc(-100% - 12px));
-}
+/* ── Mobile pricing: two squares and one black action ─────────────────────
+ * The chosen square inverts to solid ink; the price replays its own entrance
+ * so switching plans feels deliberate. */
 .megsy-pricing .megsy-plan-tile {
   position: relative;
   display: flex;
