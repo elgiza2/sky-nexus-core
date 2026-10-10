@@ -89,3 +89,4 @@ See `roadmap.md`.
 - Do not redeploy `anything-api` from this repo: its deployed version has modules missing here. Why: redeploying would break live features.
 - Agent creates tasks/goals by ending replies with [[TASK|ALARM|GOAL: title | local time]]; ComputerTaskCard saves them via src/lib/life/agentActions.ts. Why: the agent runs on Browser Use and cannot write to our DB.
 - Phone alarms/reminders go through the `MegsyAndroid` WebView bridge (src/lib/native/bridge.ts, docs/android-bridge.md); background push + morning plan via pg_cron → /api/public/reminders-tick (FCM connector, key in public.cron_secrets). Why: the Android app wraps the site, so web push doesn't work inside it.
+- All Kashier payment calls (card, wallet, Apple/Google Pay) go through src/lib/payments/kashier.ts; orders are priced and signed only by edge functions. Why: one tidy client and no prices or keys trusted from the browser.
