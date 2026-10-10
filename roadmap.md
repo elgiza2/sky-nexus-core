@@ -32,6 +32,8 @@
 - [ ] App glass: drop every panel border and put the pages on a pure white canvas.
 - [ ] Mobile pricing: the main upgrade button is black and pinned to the bottom of the screen.
 - [ ] Mobile pricing: monthly and yearly as two squares side by side, with a clean transition when switching.
+- [ ] Checkout: English only, black bottom button, clean transition between payment methods, tidy rounded back button in the card color.
+
 
 
 
