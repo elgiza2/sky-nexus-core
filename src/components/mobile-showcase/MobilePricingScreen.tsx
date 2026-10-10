@@ -184,7 +184,7 @@ export default function MobilePricingScreen({
       {/* Spacer so content clears the fixed header */}
       <div className="shrink-0" style={{ height: "calc(max(env(safe-area-inset-top), 0.25rem) + 44px)" }} />
 
-      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
+      <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5 pb-[104px]">
         {/* Top flexible space — centers the whole block on tall screens */}
         <div className="flex-[0.4]" />
 
@@ -300,36 +300,30 @@ export default function MobilePricingScreen({
           })}
         </div>
 
-        {/* Fine print + CTA + legal, pinned to the very bottom */}
-        <div
-          className={`glass-appear shrink-0 ${compact ? "pt-3" : "pt-4"}`}
-          style={{
-            "--i": 6,
-            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 8px)",
-          } as React.CSSProperties}
-        >
-          <button
-            type="button"
-            onClick={() =>
-              alreadySubscribed
-                ? navigate("/settings/billing")
-                : onSubscribe("pro", { trial: false })
-            }
-            disabled={isLoading}
-            className={`glass-cta flex w-full items-center justify-center rounded-full px-6 font-semibold leading-none transition active:scale-[0.99] disabled:opacity-60 ${
-              compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"
-            }`}
-          >
-            {isLoading ? (
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
-            ) : (
-              t.cta
-            )}
-          </button>
-        </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
         <div className="flex-[0.6]" />
       </main>
+
+      {/* Upgrade action — black, pinned to the bottom of the screen. */}
+      <div className="megsy-plan-bar">
+        <button
+          type="button"
+          onClick={() =>
+            alreadySubscribed
+              ? navigate("/settings/billing")
+              : onSubscribe("pro", { trial: false })
+          }
+          disabled={isLoading}
+          className={`megsy-plan-cta ${compact ? "h-[46px] text-[14px]" : "h-[50px] text-[15px]"}`}
+        >
+          {isLoading ? (
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
+          ) : (
+            t.cta
+          )}
+        </button>
+      </div>
     </div>
+
   );
 }
