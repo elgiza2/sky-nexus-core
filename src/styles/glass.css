@@ -55,12 +55,12 @@
   letter-spacing: 0;
 }
 
-/* A flat, pure white page is where the glass reads strongest: no tint, no
-   texture, nothing for the panels to compete with. Dark mode keeps its own
-   canvas so the ink stays readable. */
+/* A flat white page with the same dot texture the pricing screen shows: the
+   glass reads strongest there, and checkout matches pricing exactly. */
 html[data-theme="light"] .megsy-checkout,
 html[data-theme="light"] .megsy-pricing {
   --glass-bg: #ffffff;
+  --glass-dot: hsl(var(--foreground) / 0.08);
   --glass-surface: hsl(var(--foreground) / 0.045);
   --glass-surface-hover: hsl(var(--foreground) / 0.07);
   --glass-surface-on: hsl(var(--card));
@@ -194,7 +194,7 @@ html[data-theme="light"] .megsy-pricing {
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
-    --glass-dot: transparent;
+    --glass-dot: hsl(var(--foreground) / 0.08);
     background: #ffffff;
   }
 }

@@ -33,6 +33,7 @@
 - [ ] Mobile pricing: the main upgrade button is black and pinned to the bottom of the screen.
 - [ ] Mobile pricing: monthly and yearly as two squares side by side, with a clean transition when switching.
 - [ ] Checkout: English only, black bottom button, clean transition between payment methods, tidy rounded back button in the card color.
+- [ ] Checkout: the page background must be the same dotted canvas the pricing screen uses.
 
 
 
