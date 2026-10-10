@@ -256,3 +256,4 @@
 - [x] Pricing screen: one typeface (serif headline removed), feature list set to one light weight with shorter copy, feature panel given a real pane of glass, block rebalanced toward the button.
 - [ ] Payment list polish: drop the duplicated wordmark on the Visa row, balance logo visual weights in the slot, and reduce the void above the bottom button.
 - [ ] Verify the real checkout end to end: blocked by external unmanaged authentication — the payment screen was viewed through a temporary flag that has since been removed.
+- [ ] Pricing screen still rejected by the user: make the card faces opaque so dots never bleed through, raise the muted square's contrast to a readable level, and unify the credits copy between the two states.
