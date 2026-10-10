@@ -5,6 +5,9 @@
 - [x] Remove the "دفع آمن ومشفّر" line, the 01–05 tile numbers and the header close (X) button.
 - [x] Remove the Megsy header badge and make the back button borderless with no background.
 - [x] Make the "متابعة" button glass-styled to match the tiles.
+- [ ] Give the pricing page the same glass language as checkout (shared stylesheet, mobile + desktop).
+- [ ] Redesign the card-details screen: clean iOS-style layout with a live Visa/Mastercard card above the fields showing the typed number and name.
+
 
 
 
