@@ -186,7 +186,8 @@ export default function MobilePricingScreen({
 
       <main className="relative z-10 mx-auto flex w-full max-w-[400px] flex-1 flex-col px-5">
         {/* Top flexible space — centers the whole block on tall screens */}
-        <div className="flex-[0.5]" />
+        <div className="flex-[0.44]" />
+
 
         {/* Megsy star mark */}
         <div
@@ -343,7 +344,7 @@ export default function MobilePricingScreen({
           </nav>
         </div>
         {/* Bottom flexible space — keeps the block centered on tall screens */}
-        <div className="flex-[0.5]" />
+        <div className="flex-[0.56]" />
       </main>
     </div>
   );
