@@ -57,7 +57,10 @@
   --glass-bg: hsl(var(--background));
   --glass-dot: transparent;
 
-  background: var(--glass-bg);
+  /* !important: a global [role="dialog"] rule otherwise paints every modal
+     with the app background, and this screen owns its own canvas. */
+  background: var(--glass-bg) !important;
+
   color: hsl(var(--foreground));
   font-family: Inter, -apple-system, "SF Pro Text", system-ui, sans-serif;
   letter-spacing: 0;
@@ -144,8 +147,9 @@ html[data-theme="light"] .megsy-pricing {
 
 /* Field surface inside the glass screens. */
 .glass-input {
-  background: var(--glass-surface);
+  background: var(--glass-surface) !important;
   border: 0;
+
   color: hsl(var(--foreground));
   box-shadow: var(--glass-shadow);
 }
@@ -197,13 +201,15 @@ html[data-theme="light"] .megsy-pricing {
         hsl(var(--foreground) / 0.07),
         transparent 72%
       ),
-      var(--glass-bg);
+      var(--glass-bg) !important;
   }
+
   html[data-theme="light"] .megsy-checkout,
   html[data-theme="light"] .megsy-pricing {
     --glass-bg: #ffffff;
     --glass-dot: hsl(var(--foreground) / 0.08);
-    background: #ffffff;
+    background: #ffffff !important;
+
   }
 }
 
