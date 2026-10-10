@@ -1,7 +1,7 @@
 # Megsy — roadmap
 
 ## Pricing animation reference (October 10, 2026)
-- [ ] Rebuild pricing with the supplied blue-sky animated comparison reference, Megsy identity, existing prices and subscription handlers; verify phone/desktop, toggles and reduced motion without a charge.
+- [x] Rebuild pricing with the supplied blue-sky animated comparison reference and Megsy mascot, preserving catalog prices and subscription handlers. Verified phone/desktop, Arabic RTL, yearly $120 toggle, FAQ, reduced motion and guest subscribe → sign-in; build OK, no charge performed.
 
 ## Current checkout request
 - [x] Follow the uploaded prompt with liquid-glass edge highlights, large rounded numbered tiles, staggered entrance and slide-to-continue. Verified incomplete/full drag, keyboard continuation and card entry; no charge performed.
