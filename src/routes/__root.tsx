@@ -421,6 +421,31 @@ function RootShell({ children }: { children: ReactNode }) {
                 yChannelSelector="G"
               />
             </filter>
+            {/* A tighter wavelength for small panes: at 0.045 the noise varies on
+                roughly the same pitch as the dotted canvas, so a pane's rim really
+                drags the dots with it instead of shifting the whole grid evenly. */}
+            <filter
+              id="megsy-glass-warp-tight"
+              x="-20%"
+              y="-20%"
+              width="140%"
+              height="140%"
+            >
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.045 0.05"
+                numOctaves="2"
+                seed="9"
+                result="noise"
+              />
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="16"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
           </defs>
         </svg>
         <div id="root">{children}</div>

@@ -69,7 +69,7 @@
     url(#megsy-glass-warp);
   /* Thickness: the light a real pane gathers along its inner face. */
   --glass-body: inset 0 1px 1px rgba(255, 255, 255, 0.95),
-    inset 0 -1px 1px rgba(15, 23, 42, 0.07), inset 0 0 26px rgba(255, 255, 255, 0.6);
+    inset 0 0 26px rgba(255, 255, 255, 0.6);
   --glass-sheen: linear-gradient(
       112deg,
       rgba(255, 255, 255, 0) 14%,
@@ -468,8 +468,8 @@ html[data-theme="light"] .megsy-pricing {
     rgba(255, 255, 255, 0.1) 62%,
     rgba(255, 255, 255, 0.5) 100%
   );
-  backdrop-filter: blur(4px) saturate(190%) brightness(1.03);
-  backdrop-filter: blur(4px) saturate(190%) brightness(1.03) url(#megsy-glass-warp);
+  backdrop-filter: blur(5px) saturate(200%) brightness(1.04);
+  backdrop-filter: blur(5px) saturate(200%) brightness(1.04) url(#megsy-glass-warp-tight);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
 }
@@ -478,8 +478,8 @@ html[data-theme="light"] .megsy-pricing {
 .megsy-pricing .megsy-plan-tile[data-selected="true"]::before,
 .megsy-checkout .megsy-pay-tile[data-selected="true"]::before {
   padding: 19px;
-  backdrop-filter: blur(6px) saturate(200%) brightness(1.05);
-  backdrop-filter: blur(6px) saturate(200%) brightness(1.05) url(#megsy-glass-warp);
+  backdrop-filter: blur(7px) saturate(210%) brightness(1.06);
+  backdrop-filter: blur(7px) saturate(210%) brightness(1.06) url(#megsy-glass-warp-tight);
   background: linear-gradient(
     158deg,
     rgba(255, 255, 255, 0.9) 0%,
