@@ -84,12 +84,13 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .checkout-input:focus { border-color: hsl(var(--foreground) / .5); box-shadow: 0 0 0 3px hsl(var(--foreground) / .06); }
 .checkout-cta {
   position: relative;
-  background: hsl(var(--card) / .45);
+  background: linear-gradient(180deg, hsl(var(--card) / .92), hsl(var(--card) / .58));
   color: hsl(var(--foreground));
-  border: 1px solid var(--checkout-edge);
-  box-shadow: var(--checkout-shadow);
-  backdrop-filter: blur(10px) saturate(130%);
-  transition: background .18s ease, box-shadow .18s ease;
+  font-weight: 500;
+  border: 1px solid hsl(var(--foreground) / .14);
+  box-shadow: inset 0 1px 1px hsl(var(--card) / .95), 0 14px 34px hsl(var(--foreground) / .12);
+  backdrop-filter: blur(14px) saturate(150%);
+  transition: background .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 .checkout-cta::before {
   content: "";
@@ -102,7 +103,11 @@ html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
   mask-composite: exclude;
   pointer-events: none;
 }
-.checkout-cta:hover { background: hsl(var(--card) / .7); }
+.checkout-cta:hover {
+  background: linear-gradient(180deg, hsl(var(--card) / 1), hsl(var(--card) / .74));
+  border-color: hsl(var(--foreground) / .22);
+}
+
 
 @media (max-width: 767px) {
   .megsy-checkout { --checkout-bg: oklch(.15 0 .0); --checkout-dot: hsl(var(--foreground) / .08); background: var(--checkout-bg); }
