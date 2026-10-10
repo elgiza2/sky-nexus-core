@@ -51,6 +51,10 @@ used, `FOR UPDATE SKIP LOCKED`).
 
 ## 4. Front-end rules
 
+<!-- LOVABLE:BEGIN -->
+- Checkout uses scoped checkout.css and shared Button controls, never pricing overrides. Why: consistent themes without pricing regressions.
+<!-- LOVABLE:END -->
+
 - Media runs require a live paid-plan check in both authenticated media routes and signed MCP tools; Higgsfield clones only a configured Hypit template, never substitutes a harness. Why: UI locks alone do not prevent free media spending or misrepresent the requested agent.
 - Auth reuses existing handlers; Chat aliases use ProtectedRoute with guest Welcome before mount. Why: prevent guest chat exposure.
 
