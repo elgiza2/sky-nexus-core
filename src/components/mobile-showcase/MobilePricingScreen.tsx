@@ -258,7 +258,7 @@ export default function MobilePricingScreen({
               >
                 <span
                   className={`flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                    selected ? "border-foreground" : "border-foreground/25"
+                    selected ? "border-foreground" : "border-foreground/40"
                   }`}
                 >
                   {selected && (
