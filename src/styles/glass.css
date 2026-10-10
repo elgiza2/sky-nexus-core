@@ -329,7 +329,7 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
 /* The square you did not pick steps back — same glass, same size, clearly
    muted — so the choice is obvious the instant the screen appears. */
 .megsy-pricing .megsy-plan-tile:not([data-selected="true"]) {
-  opacity: 0.62;
+  opacity: 0.72;
 }
 
 
@@ -343,7 +343,7 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: color-mix(in oklab, currentColor 68%, transparent);
+  color: color-mix(in oklab, currentColor 80%, transparent);
 }
 .megsy-pricing .megsy-plan-price {
   font-size: 26px;
@@ -355,7 +355,7 @@ html[data-theme="light"] .megsy-pricing .glass-tile {
 .megsy-pricing .megsy-plan-unit,
 .megsy-pricing .megsy-plan-strike {
   font-size: 11px;
-  color: color-mix(in oklab, currentColor 62%, transparent);
+  color: color-mix(in oklab, currentColor 76%, transparent);
 }
 .megsy-pricing .megsy-plan-strike {
   margin-top: 3px;
