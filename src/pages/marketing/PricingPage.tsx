@@ -19,10 +19,11 @@ import MegsyStar from "@/components/branding/MegsyStar";
 import { usePromoCountdown } from "@/hooks/usePromoCountdown";
 import { usePrefetchOnIdle } from "@/hooks/usePrefetchOnIdle";
 import { useIsMobile } from "@/hooks/use-mobile";
+import MobilePricingScreen from "@/components/mobile-showcase/MobilePricingScreen";
 import AppSidebar from "@/components/layout/AppSidebar";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
 import PlanCard from "@/pages/billing/referrals/PlanCard";
-import AnimatedPricing from "./AnimatedPricing";
+import DesktopPricing from "./DesktopPricing";
 
 import {
   PLANS as RAW_PLANS,
@@ -328,17 +329,14 @@ const PricingPage = () => {
         </div>
         <div className={isMobile ? "" : "min-h-[100dvh] bg-background"}>
           <div className={isMobile ? "" : "mx-auto w-full max-w-[480px] [transform:translateZ(0)]"}>
-            <AnimatedPricing
-              plans={PLANS}
-              faqs={FAQS}
-              currentPlan={currentPlan}
+            <MobilePricingScreen
               isYearly={isYearly}
-              setIsYearly={setIsYearly}
+              onToggleYearly={setIsYearly}
               loadingTier={loadingTier}
-              onSubscribe={(tier) =>
+              onSubscribe={(tier, opts) =>
                 handleSubscribe(tier, {
                   interval: isYearly ? "yearly" : "monthly",
-                  trial: false,
+                  trial: opts?.trial === true,
                 })
               }
               onMenuClick={() => setMobileOpen(true)}
@@ -401,7 +399,7 @@ const PricingPage = () => {
             style={{ scrollBehavior: "smooth" }}
           >
             <div className="min-h-dvh w-full bg-background text-foreground">
-              <AnimatedPricing
+              <DesktopPricing
                 plans={PLANS}
                 faqs={FAQS}
                 isYearly={isYearly}
@@ -412,6 +410,11 @@ const PricingPage = () => {
                   handleSubscribe(tier, { interval: isYearly ? "yearly" : "monthly", trial: false })
                 }
               />
+              {settled && (
+                <Suspense fallback={null}>
+                  <LandingFooter />
+                </Suspense>
+              )}
               {customCard !== null && (
                 <Suspense fallback={null}>
                   <CustomCardForm

@@ -1,9 +1,5 @@
 # Megsy — roadmap
 
-## Pricing animation reference (October 10, 2026)
-- [ ] Replace the rejected generated still mascot with the original chat Megsy character, animated flying upward with raised arms, superhero cape and visible air beneath; bring composition and reveal closer to the uploaded video.
-- [x] Rebuild pricing with the supplied blue-sky animated comparison reference and Megsy mascot, preserving catalog prices and subscription handlers. Verified phone/desktop, Arabic RTL, yearly $120 toggle, FAQ, reduced motion and guest subscribe → sign-in; build OK, no charge performed.
-
 ## Current checkout request
 - [x] Follow the uploaded prompt with liquid-glass edge highlights, large rounded numbered tiles, staggered entrance and slide-to-continue. Verified incomplete/full drag, keyboard continuation and card entry; no charge performed.
 - [x] Match checkout to site tokens and pricing backdrop; clean payment tiles and legible Visa identity. Selection, formatted card entry, light/dark and phone/desktop verified without a charge; pricing unchanged. Hosted payment completion not exercised (external authentication and real charge required).
