@@ -107,15 +107,12 @@ export default function MobilePricingScreen({
 
   const monthlyPrice = monthly.price;
   const yearlyPrice = yearly.price;
-  const monthlyOff = Math.round((1 - monthlyPrice / pro.monthlyPrice) * 100);
 
   const t = isAr
     ? {
         title: "قم بالترقية إلى Megsy Pro",
         monthly: "شهرياً",
         yearly: "سنوياً",
-        introBadge: `خصم ${monthlyOff}% على الشهر الأول`,
-        yearlyBadge: "4 أشهر مجاناً",
         perMonth: "/ الشهر الأول",
         perYear: "/ سنة",
         fine: `$${monthlyPrice}.00 للشهر الأول، ثم $${pro.monthlyPrice}.00/شهر. يمكنك الإلغاء في أي وقت.`,
@@ -128,8 +125,6 @@ export default function MobilePricingScreen({
         title: "Upgrade to Megsy Pro",
         monthly: "Monthly",
         yearly: "Yearly",
-        introBadge: `${monthlyOff}% off the first month`,
-        yearlyBadge: "4 months free",
         perMonth: "/first mo",
         perYear: "/year",
         fine: `$${monthlyPrice}.00 for the first month, then $${pro.monthlyPrice}.00/month. Cancel anytime.`,
