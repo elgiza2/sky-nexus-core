@@ -26,6 +26,9 @@ html[data-theme="dark"] .megsy-checkout .checkout-logo { color: hsl(var(--foregr
   font-size: 22px;
   line-height: 1;
 }
+/* In the pay button the wordmark must fit one line at label height. */
+.megsy-checkout .glass-cta .payment-visa { font-size: 14px; }
+
 html[data-theme="dark"] .payment-visa { color: hsl(var(--foreground)); }
 .payment-red { fill: var(--payment-red); }
 .payment-yellow { fill: var(--payment-yellow); }
